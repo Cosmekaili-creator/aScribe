@@ -11,6 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Upload, X, FileAudio, File, AlertCircle } from "lucide-react";
+import { useTranslation } from "@/i18n";
 
 interface MultiTrackUploadDialogProps {
 	open: boolean;
@@ -36,6 +37,7 @@ export function MultiTrackUploadDialog({
 	prePopulatedAupFile,
 	prePopulatedTitle,
 }: MultiTrackUploadDialogProps) {
+	const { t } = useTranslation();
 	const [title, setTitle] = useState("");
 	const [files, setFiles] = useState<FileWithPreview[]>([]);
 
@@ -122,11 +124,11 @@ export function MultiTrackUploadDialog({
 		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
 				<DialogHeader>
-					<DialogTitle>Upload Multi-Track Audio</DialogTitle>
+					<DialogTitle>{t('transcription.multitrack.title')}</DialogTitle>
 					<DialogDescription>
 						{prePopulatedFiles && prePopulatedAupFile
-							? `Auto-detected multi-track project with ${prePopulatedFiles.length} audio tracks. Review and upload when ready.`
-							: "Upload multiple audio tracks with an .aup Audacity project file for multi-speaker transcription."
+							? `t('transcription.multitrack.autoDetected').replace('{count}', String(prePopulatedFiles.length))`
+							: t('transcription.multitrack.description')
 						}
 					</DialogDescription>
 				</DialogHeader>
@@ -134,10 +136,10 @@ export function MultiTrackUploadDialog({
 				<div className="space-y-6">
 					{/* Title Input */}
 					<div className="space-y-2">
-						<Label htmlFor="title">Title *</Label>
+						<Label htmlFor="title">{t('transcription.multitrack.titleLabel')}</Label>
 						<Input
 							id="title"
-							placeholder="Enter a title for this recording..."
+							placeholder={t('transcription.multitrack.titlePlaceholder')}
 							value={title}
 							onChange={(e) => setTitle(e.target.value)}
 						/>
@@ -145,7 +147,7 @@ export function MultiTrackUploadDialog({
 
 					{/* File Upload Zone */}
 					<div className="space-y-4">
-						<Label>Files</Label>
+						<Label>{t('transcription.multitrack.filesLabel')}</Label>
 
 						{/* Drop Zone */}
 						<div
@@ -158,9 +160,9 @@ export function MultiTrackUploadDialog({
 								<Upload className="h-6 w-6 text-[var(--text-tertiary)] group-hover:text-[var(--brand-solid)] transition-colors" />
 							</div>
 							<div className="space-y-2">
-								<p className="text-lg font-medium text-[var(--text-primary)]">Drop files here or click to upload</p>
+								<p className="text-lg font-medium text-[var(--text-primary)]">{t('transcription.multitrack.dropZone')}</p>
 								<p className="text-sm text-[var(--text-secondary)]">
-									Upload multiple audio files and one .aup Audacity project file
+									{t('transcription.multitrack.dropZoneHint')}
 								</p>
 								<input
 									type="file"
@@ -171,7 +173,7 @@ export function MultiTrackUploadDialog({
 									id="file-upload"
 								/>
 								<Button className="mt-4 bg-[var(--brand-solid)] text-white hover:opacity-90 rounded-[var(--radius-btn)]">
-									Choose Files
+									{t('transcription.multitrack.chooseFiles')}
 								</Button>
 							</div>
 						</div>
@@ -179,7 +181,7 @@ export function MultiTrackUploadDialog({
 						{/* File List */}
 						{files.length > 0 && (
 							<div className="space-y-2">
-								<h4 className="font-medium text-sm">Uploaded Files:</h4>
+								<h4 className="font-medium text-sm">{t('transcription.multitrack.uploadedFiles')}</h4>
 
 								{/* AUP Files */}
 								{aupFiles.map(fileItem => (
@@ -189,7 +191,7 @@ export function MultiTrackUploadDialog({
 											<p className="font-medium text-[var(--text-primary)] truncate">
 												{fileItem.file.name}
 											</p>
-											<p className="text-xs text-[var(--success-solid)]">Audacity project file</p>
+											<p className="text-xs text-[var(--success-solid)]">{t('transcription.multitrack.audacityFile')}</p>
 										</div>
 										<Button
 											variant="ghost"
@@ -211,7 +213,7 @@ export function MultiTrackUploadDialog({
 												{fileItem.file.name}
 											</p>
 											<p className="text-xs text-[var(--warning-solid)]">
-												Speaker: {getSpeakerName(fileItem.file.name)}
+												{t('transcription.multitrack.speaker').replace('{name}', getSpeakerName(fileItem.file.name))}
 											</p>
 										</div>
 										<Button
@@ -233,19 +235,19 @@ export function MultiTrackUploadDialog({
 								{!hasAupFile && (
 									<div className="flex items-center gap-2 text-[var(--error)]">
 										<AlertCircle className="h-4 w-4" />
-										<span>An .aup Audacity project file is required</span>
+										<span>{t('transcription.multitrack.errorNoAup')}</span>
 									</div>
 								)}
 								{!hasAudioFiles && (
 									<div className="flex items-center gap-2 text-[var(--error)]">
 										<AlertCircle className="h-4 w-4" />
-										<span>At least one audio file is required</span>
+										<span>{t('transcription.multitrack.errorNoAudio')}</span>
 									</div>
 								)}
 								{!title.trim() && (
 									<div className="flex items-center gap-2 text-[var(--error)]">
 										<AlertCircle className="h-4 w-4" />
-										<span>Title is required</span>
+										<span>{t('transcription.multitrack.errorNoTitle')}</span>
 									</div>
 								)}
 							</div>
@@ -259,13 +261,13 @@ export function MultiTrackUploadDialog({
 						variant="outline"
 						onClick={() => onOpenChange(false)}
 					>
-						Cancel
+						{t('transcription.multitrack.cancel')}
 					</Button>
 					<Button
 						onClick={handleUpload}
 						disabled={!canUpload}
 					>
-						Upload
+						{t('transcription.multitrack.upload')}
 					</Button>
 				</DialogFooter>
 			</DialogContent>

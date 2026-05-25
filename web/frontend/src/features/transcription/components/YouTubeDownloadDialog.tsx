@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Youtube, Download, AlertCircle, CheckCircle } from "lucide-react";
 import { useYouTubeDownload } from "@/features/transcription/hooks/useAudioFiles";
+import { useTranslation } from "@/i18n";
 
 interface YouTubeDownloadDialogProps {
   isOpen: boolean;
@@ -24,6 +25,7 @@ export function YouTubeDownloadDialog({
   onDownloadComplete
 }: YouTubeDownloadDialogProps) {
   const { mutateAsync: downloadYouTube, isPending: isDownloading } = useYouTubeDownload();
+  const { t } = useTranslation();
   const [url, setUrl] = useState("");
   const [title, setTitle] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -37,12 +39,12 @@ export function YouTubeDownloadDialog({
     e.preventDefault();
 
     if (!url.trim()) {
-      setError("Please enter a YouTube URL");
+      setError(t('transcription.youtube.errorEmpty'));
       return;
     }
 
     if (!validateYouTubeUrl(url)) {
-      setError("Please enter a valid YouTube URL");
+      setError(t('transcription.youtube.errorInvalid'));
       return;
     }
 
@@ -56,7 +58,7 @@ export function YouTubeDownloadDialog({
         onDownloadComplete?.();
       }, 2000);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Network error occurred. Please try again.");
+      setError(err instanceof Error ? err.message : t('transcription.youtube.errorNetwork'));
     }
   };
 
@@ -81,10 +83,10 @@ export function YouTubeDownloadDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Youtube className="h-5 w-5 text-[var(--error)]" />
-            Download from YouTube
+            {t('transcription.youtube.title')}
           </DialogTitle>
           <DialogDescription>
-            Enter a YouTube video URL to download its audio for transcription
+            {t('transcription.youtube.description')}
           </DialogDescription>
         </DialogHeader>
 
@@ -95,17 +97,17 @@ export function YouTubeDownloadDialog({
             </div>
             <div className="text-center">
               <h3 className="font-medium text-[var(--text-primary)] mb-2">
-                Download Complete!
+                {t('transcription.youtube.complete')}
               </h3>
               <p className="text-sm text-[var(--text-secondary)]">
-                The audio has been downloaded and added to your audio files.
+                {t('transcription.youtube.completeDesc')}
               </p>
             </div>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="youtube-url">YouTube URL</Label>
+              <Label htmlFor="youtube-url">{t('transcription.youtube.urlLabel')}</Label>
               <Input
                 id="youtube-url"
                 type="url"
@@ -131,17 +133,17 @@ export function YouTubeDownloadDialog({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="custom-title">Custom Title (Optional)</Label>
+              <Label htmlFor="custom-title">{t('transcription.youtube.titleLabel')}</Label>
               <Input
                 id="custom-title"
                 type="text"
-                placeholder="Leave empty to use video title"
+                placeholder={t('transcription.youtube.titlePlaceholder')}
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 disabled={isDownloading}
               />
               <p className="text-xs text-[var(--text-tertiary)]">
-                If left empty, the video's title will be used automatically
+                {t('transcription.youtube.titleHint')}
               </p>
             </div>
 
@@ -159,7 +161,7 @@ export function YouTubeDownloadDialog({
                 onClick={handleClose}
                 disabled={isDownloading}
               >
-                Cancel
+                {t('transcription.youtube.cancel')}
               </Button>
               <Button
                 type="submit"
@@ -169,12 +171,12 @@ export function YouTubeDownloadDialog({
                 {isDownloading ? (
                   <>
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                    Downloading...
+                    {t('transcription.youtube.downloading')}
                   </>
                 ) : (
                   <>
                     <Download className="h-4 w-4 mr-2" />
-                    Download
+                    {t('transcription.youtube.download')}
                   </>
                 )}
               </Button>

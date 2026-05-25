@@ -5,6 +5,8 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Eye, EyeOff, User, Lock, Check, X } from "lucide-react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { LanguageSelector } from "./LanguageSelector";
+import { useTranslation } from "@/i18n";
 
 interface PasswordStrength {
 	hasMinLength: boolean;
@@ -16,6 +18,7 @@ interface PasswordStrength {
 
 export function AccountSettings() {
 	const { getAuthHeaders, logout } = useAuth();
+	const { t } = useTranslation();
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
 	const [success, setSuccess] = useState("");
@@ -162,22 +165,22 @@ export function AccountSettings() {
 				<div className="mb-4">
 					<div className="flex items-center space-x-2 mb-2">
 						<User className="h-5 w-5 text-[var(--brand-solid)]" />
-						<h3 className="text-lg font-medium text-[var(--text-primary)]">Change Username</h3>
+						<h3 className="text-lg font-medium text-[var(--text-primary)]">{t('settings.account.changeUsernameTitle')}</h3>
 					</div>
 					<p className="text-sm text-[var(--text-secondary)]">
-						Update your account username. You'll need to verify your current password.
+						{t('settings.account.changeUsernameDesc')}
 					</p>
 				</div>
 				<div>
 					<form onSubmit={handleUsernameChange} className="space-y-4">
 						<div className="space-y-2">
 							<Label htmlFor="newUsername" className="text-[var(--text-secondary)]">
-								New Username
+								{t('settings.account.newUsername')}
 							</Label>
 							<Input
 								id="newUsername"
 								type="text"
-								placeholder="Enter new username (3-50 characters)"
+								placeholder={t('settings.account.newUsernamePlaceholder')}
 								value={newUsername}
 								onChange={(e) => setNewUsername(e.target.value)}
 								disabled={loading}
@@ -190,13 +193,13 @@ export function AccountSettings() {
 
 						<div className="space-y-2">
 							<Label htmlFor="usernamePassword" className="text-[var(--text-secondary)]">
-								Current Password
+								{t('settings.account.currentPassword')}
 							</Label>
 							<div className="relative">
 								<Input
 									id="usernamePassword"
 									type={showUsernamePassword ? "text" : "password"}
-									placeholder="Enter your current password"
+									placeholder={t('settings.account.currentPasswordPlaceholder')}
 									value={usernamePassword}
 									onChange={(e) => setUsernamePassword(e.target.value)}
 									disabled={loading}
@@ -218,11 +221,16 @@ export function AccountSettings() {
 							className="!bg-[var(--brand-gradient)] hover:!opacity-90 !text-black dark:!text-white border-none shadow-lg shadow-orange-500/20"
 							disabled={loading || !newUsername.trim() || !usernamePassword.trim()}
 						>
-							{loading ? "Changing Username..." : "Change Username"}
+							{loading ? t('settings.account.changingUsername') : t('settings.account.changeUsernameBtn')}
 						</Button>
 					</form>
 				</div>
 			</div>
+
+			<Separator className="bg-[var(--border-subtle)]" />
+
+			{/* Language Section */}
+			<LanguageSelector />
 
 			<Separator className="bg-[var(--border-subtle)]" />
 
@@ -231,23 +239,23 @@ export function AccountSettings() {
 				<div className="mb-4">
 					<div className="flex items-center space-x-2 mb-2">
 						<Lock className="h-5 w-5 text-[var(--error)]" />
-						<h3 className="text-lg font-medium text-[var(--text-primary)]">Change Password</h3>
+						<h3 className="text-lg font-medium text-[var(--text-primary)]">{t('settings.account.changePasswordTitle')}</h3>
 					</div>
 					<p className="text-sm text-[var(--text-secondary)]">
-						Update your account password. You'll be automatically logged out after changing your password.
+						{t('settings.account.changePasswordDesc')}
 					</p>
 				</div>
 				<div>
 					<form onSubmit={handlePasswordChange} className="space-y-4">
 						<div className="space-y-2">
 							<Label htmlFor="currentPassword" className="text-[var(--text-secondary)]">
-								Current Password
+								{t('settings.account.currentPassword')}
 							</Label>
 							<div className="relative">
 								<Input
 									id="currentPassword"
 									type={showCurrentPassword ? "text" : "password"}
-									placeholder="Enter your current password"
+									placeholder={t('settings.account.currentPasswordPlaceholder')}
 									value={currentPassword}
 									onChange={(e) => setCurrentPassword(e.target.value)}
 									disabled={loading}
@@ -266,13 +274,13 @@ export function AccountSettings() {
 
 						<div className="space-y-2">
 							<Label htmlFor="newPassword" className="text-[var(--text-secondary)]">
-								New Password
+								{t('settings.account.newPassword')}
 							</Label>
 							<div className="relative">
 								<Input
 									id="newPassword"
 									type={showNewPassword ? "text" : "password"}
-									placeholder="Create a new secure password"
+									placeholder={t('settings.account.newPasswordPlaceholder')}
 									value={newPassword}
 									onChange={(e) => setNewPassword(e.target.value)}
 									disabled={loading}
@@ -290,13 +298,13 @@ export function AccountSettings() {
 
 							{newPassword && (
 								<div className="mt-3 space-y-2 p-3 bg-[var(--bg-main)]/50 rounded-lg border border-[var(--border-subtle)]">
-									<p className="text-sm font-medium text-[var(--text-primary)]">Password Requirements:</p>
+									<p className="text-sm font-medium text-[var(--text-primary)]">{t('settings.account.passwordRequirements')}</p>
 									<div className="grid grid-cols-1 gap-1">
-										<PasswordStrengthIndicator label="At least 8 characters" met={passwordStrength.hasMinLength} />
-										<PasswordStrengthIndicator label="One uppercase letter" met={passwordStrength.hasUppercase} />
-										<PasswordStrengthIndicator label="One lowercase letter" met={passwordStrength.hasLowercase} />
-										<PasswordStrengthIndicator label="One number" met={passwordStrength.hasNumber} />
-										<PasswordStrengthIndicator label="One special character" met={passwordStrength.hasSpecialChar} />
+										<PasswordStrengthIndicator label={t('settings.account.req8chars')} met={passwordStrength.hasMinLength} />
+										<PasswordStrengthIndicator label={t('settings.account.reqUppercase')} met={passwordStrength.hasUppercase} />
+										<PasswordStrengthIndicator label={t('settings.account.reqLowercase')} met={passwordStrength.hasLowercase} />
+										<PasswordStrengthIndicator label={t('settings.account.reqNumber')} met={passwordStrength.hasNumber} />
+										<PasswordStrengthIndicator label={t('settings.account.reqSpecial')} met={passwordStrength.hasSpecialChar} />
 									</div>
 								</div>
 							)}
@@ -304,13 +312,13 @@ export function AccountSettings() {
 
 						<div className="space-y-2">
 							<Label htmlFor="confirmPassword" className="text-[var(--text-secondary)]">
-								Confirm New Password
+								{t('settings.account.confirmNewPassword')}
 							</Label>
 							<div className="relative">
 								<Input
 									id="confirmPassword"
 									type={showConfirmPassword ? "text" : "password"}
-									placeholder="Confirm your new password"
+									placeholder={t('settings.account.confirmNewPasswordPlaceholder')}
 									value={confirmPassword}
 									onChange={(e) => setConfirmPassword(e.target.value)}
 									disabled={loading}
@@ -331,15 +339,15 @@ export function AccountSettings() {
 								<div className={`flex items-center gap-2 text-sm ${passwordsMatch ? 'text-[var(--success-solid)]' : 'text-[var(--error)]'
 									}`}>
 									{passwordsMatch ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
-									<span>{passwordsMatch ? "Passwords match" : "Passwords do not match"}</span>
+									<span>{passwordsMatch ? t('settings.account.passwordsMatch') : t('settings.account.passwordsMismatch')}</span>
 								</div>
 							)}
 						</div>
 
 						<div className="bg-[var(--warning-translucent)] border border-[var(--warning-solid)]/20 rounded-lg p-3">
-							<p className="text-[var(--warning-solid)] text-sm font-medium">⚠️ Warning</p>
+							<p className="text-[var(--warning-solid)] text-sm font-medium">{t('settings.account.warning')}</p>
 							<p className="text-[var(--warning-solid)] text-sm mt-1">
-								You will be automatically logged out after changing your password and will need to log in again with your new credentials.
+								{t('settings.account.logoutWarning')}
 							</p>
 						</div>
 
@@ -348,7 +356,7 @@ export function AccountSettings() {
 							className="!bg-[var(--brand-gradient)] hover:!opacity-90 !text-black dark:!text-white shadow-lg shadow-orange-500/20 border-none"
 							disabled={loading || !currentPassword.trim() || !isPasswordValid || !passwordsMatch}
 						>
-							{loading ? "Changing Password..." : "Change Password"}
+							{loading ? t('settings.account.changingPassword') : t('settings.account.changePasswordBtn')}
 						</Button>
 					</form>
 				</div>

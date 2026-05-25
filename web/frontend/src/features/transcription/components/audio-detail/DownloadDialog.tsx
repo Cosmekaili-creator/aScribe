@@ -14,6 +14,7 @@ import { useState } from "react";
 import { useTranscript, useAudioDetail } from "@/features/transcription/hooks/useAudioDetail";
 import { useSpeakerMappings } from "@/features/transcription/hooks/useTranscriptionSpeakers";
 import { useTranscriptDownload } from "@/features/transcription/hooks/useTranscriptDownload";
+import { useTranslation } from "@/i18n";
 
 interface DownloadDialogProps {
     audioId: string;
@@ -28,6 +29,7 @@ export function DownloadDialog({ audioId, isOpen, onClose, initialFormat = 'txt'
     const { data: speakerMappings = {} } = useSpeakerMappings(audioId, true);
     const { downloadTXT, downloadJSON } = useTranscriptDownload();
 
+    const { t } = useTranslation();
     const [includeSpeakerLabels, setIncludeSpeakerLabels] = useState(true);
     const [includeTimestamps, setIncludeTimestamps] = useState(true);
 
@@ -55,17 +57,17 @@ export function DownloadDialog({ audioId, isOpen, onClose, initialFormat = 'txt'
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2 text-xl">
                         <Sparkles className="h-5 w-5 text-primary" />
-                        Download Transcript
+                        {t('detail.download.title')}
                     </DialogTitle>
                     <DialogDescription>
-                        Configure download options for {initialFormat.toUpperCase()} format.
+                        {t('detail.download.description').replace('{format}', initialFormat.toUpperCase())}
                     </DialogDescription>
                 </DialogHeader>
 
                 <div className="space-y-4 py-4">
                     <div className="flex items-center justify-between">
                         <Label htmlFor="speaker-labels" className="text-carbon-700 dark:text-carbon-300">
-                            Include Speaker Labels
+                            {t('detail.download.speakerLabels')}
                         </Label>
                         <Switch
                             id="speaker-labels"
@@ -77,7 +79,7 @@ export function DownloadDialog({ audioId, isOpen, onClose, initialFormat = 'txt'
 
                     <div className="flex items-center justify-between">
                         <Label htmlFor="timestamps" className="text-carbon-700 dark:text-carbon-300">
-                            Include Timestamps
+                            {t('detail.download.timestamps')}
                         </Label>
                         <Switch
                             id="timestamps"
@@ -91,7 +93,7 @@ export function DownloadDialog({ audioId, isOpen, onClose, initialFormat = 'txt'
                         <div className="text-sm text-carbon-500 dark:text-carbon-400 bg-carbon-50 dark:bg-carbon-800 p-3 rounded-md">
                             <div className="flex items-center gap-2">
                                 <Check className="h-4 w-4 text-carbon-900 dark:text-carbon-100" />
-                                Transcript will be formatted as a single paragraph
+                                {t('detail.download.formatParagraph')}
                             </div>
                         </div>
                     )}
@@ -100,7 +102,7 @@ export function DownloadDialog({ audioId, isOpen, onClose, initialFormat = 'txt'
                         <div className="text-sm text-carbon-500 dark:text-carbon-400 bg-carbon-50 dark:bg-carbon-800 p-3 rounded-md">
                             <div className="flex items-center gap-2">
                                 <Check className="h-4 w-4 text-carbon-900 dark:text-carbon-100" />
-                                Transcript will be formatted in segments with selected labels
+                                {t('detail.download.formatSegments')}
                             </div>
                         </div>
                     )}
@@ -112,14 +114,14 @@ export function DownloadDialog({ audioId, isOpen, onClose, initialFormat = 'txt'
                         onClick={() => onClose(false)}
                         className="bg-white dark:bg-carbon-800 border-carbon-300 dark:border-carbon-600 text-carbon-700 dark:text-carbon-200 hover:bg-carbon-50 dark:hover:bg-carbon-700"
                     >
-                        Cancel
+                        {t('detail.download.cancel')}
                     </Button>
                     <Button
                         onClick={handleDownloadConfirm}
                         className="bg-carbon-900 dark:bg-carbon-700 hover:bg-carbon-950 dark:hover:bg-carbon-600 text-white"
                     >
                         <Download className="mr-2 h-4 w-4" />
-                        Download {initialFormat.toUpperCase()}
+                        {t('detail.download.submit').replace('{format}', initialFormat.toUpperCase())}
                     </Button>
                 </DialogFooter>
             </DialogContent>

@@ -13,6 +13,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useIsDesktop } from "@/hooks/useIsDesktop";
 import { X, StickyNote } from "lucide-react";
 import { computeWordOffsets } from "@/features/transcription/hooks/useKaraokeHighlight";
+import { useTranslation } from "@/i18n";
 import type { Transcript } from "@/features/transcription/hooks/useAudioDetail";
 import { cn } from "@/lib/utils";
 
@@ -57,6 +58,7 @@ export function TranscriptSection({
 }: TranscriptSectionProps & { className?: string }) {
     const isMobile = useIsMobile();
     const isDesktop = useIsDesktop();
+    const { t } = useTranslation();
     const queryClient = useQueryClient();
 
     // Data hooks
@@ -246,7 +248,7 @@ export function TranscriptSection({
                                 <div className="px-6 py-5 border-b border-[var(--border-subtle)] flex items-center justify-between">
                                     <h3 className="font-bold text-[var(--text-primary)] flex items-center gap-2 text-lg">
                                         <StickyNote className="h-5 w-5 text-[var(--brand-solid)]" />
-                                        Notes
+                                        {t('detail.transcript.notes')}
                                         <span className="ml-1 text-xs font-bold rounded-full px-2 py-0.5 bg-[var(--bg-main)] text-[var(--text-secondary)] border border-[var(--border-subtle)]">
                                             {notes.length}
                                         </span>
@@ -255,7 +257,7 @@ export function TranscriptSection({
                                         type="button"
                                         onClick={() => setNotesOpen(false)}
                                         className="h-8 w-8 inline-flex items-center justify-center rounded-[var(--radius-btn)] text-[var(--text-tertiary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-main)] transition-colors"
-                                        aria-label="Close notes"
+                                        aria-label={t('detail.transcript.closeNotes')}
                                     >
                                         <X className="h-5 w-5" />
                                     </button>

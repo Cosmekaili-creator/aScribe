@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import { Info, Clock, UsersRound } from "lucide-react";
 import { useExecutionData } from "@/features/transcription/hooks/useAudioDetail";
+import { useTranslation } from "@/i18n";
 
 interface ExecutionInfoDialogProps {
     audioId: string;
@@ -16,6 +17,7 @@ interface ExecutionInfoDialogProps {
 
 export function ExecutionInfoDialog({ audioId, isOpen, onClose }: ExecutionInfoDialogProps) {
     const { data: executionData, isLoading } = useExecutionData(audioId);
+    const { t } = useTranslation();
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
@@ -23,17 +25,17 @@ export function ExecutionInfoDialog({ audioId, isOpen, onClose }: ExecutionInfoD
                 <DialogHeader className="border-b border-[var(--border-subtle)] pb-4">
                     <DialogTitle className="text-[var(--text-primary)] flex items-center gap-2 text-xl font-bold tracking-tight">
                         <Info className="h-5 w-5 text-[var(--brand-solid)]" />
-                        Transcription Details
+                        {t('detail.execution.title')}
                     </DialogTitle>
                     <DialogDescription className="text-[var(--text-secondary)]">
-                        Technical execution metrics and processing parameters.
+                        {t('detail.execution.description')}
                     </DialogDescription>
                 </DialogHeader>
 
                 {isLoading ? (
                     <div className="py-12 flex flex-col items-center justify-center gap-4">
                         <div className="h-8 w-8 border-4 border-[var(--brand-solid)] border-t-transparent rounded-full animate-spin" />
-                        <span className="text-[var(--text-tertiary)] animate-pulse">Loading execution data...</span>
+                        <span className="text-[var(--text-tertiary)] animate-pulse">{t('detail.execution.loading')}</span>
                     </div>
                 ) : executionData && executionData.available !== false ? (
                     <div className="space-y-6 py-4">
@@ -41,21 +43,21 @@ export function ExecutionInfoDialog({ audioId, isOpen, onClose }: ExecutionInfoD
                         <div className="bg-[var(--bg-main)] rounded-[var(--radius-card)] border border-[var(--border-subtle)] p-4 sm:p-6 shadow-sm">
                             <h3 className="text-base font-bold text-[var(--text-primary)] mb-4 flex items-center gap-2">
                                 <Clock className="h-4 w-4 text-[var(--text-secondary)]" />
-                                Processing Timeline
+                                {t('detail.execution.timeline')}
                             </h3>
                             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
                                 <MetricCard
-                                    label="Started"
+                                    label={t('detail.execution.started')}
                                     value={executionData.started_at ? new Date(executionData.started_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'}
                                     subtext={executionData.started_at ? new Date(executionData.started_at).toLocaleDateString() : ''}
                                 />
                                 <MetricCard
-                                    label="Completed"
-                                    value={executionData.completed_at ? new Date(executionData.completed_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'In Progress'}
+                                    label={t('detail.execution.completed')}
+                                    value={executionData.completed_at ? new Date(executionData.completed_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : t('detail.execution.inProgress')}
                                     subtext={executionData.completed_at ? new Date(executionData.completed_at).toLocaleDateString() : ''}
                                 />
                                 <MetricCard
-                                    label="Duration"
+                                    label={t('detail.execution.duration')}
                                     value={executionData.processing_duration ? `${(executionData.processing_duration / 1000).toFixed(1)}s` : '...'}
                                     highlight
                                     className="col-span-2 sm:col-span-1"
@@ -68,7 +70,7 @@ export function ExecutionInfoDialog({ audioId, isOpen, onClose }: ExecutionInfoD
                             <div className="bg-[var(--bg-main)] rounded-[var(--radius-card)] border border-[var(--border-subtle)] p-4 sm:p-6 shadow-sm">
                                 <h3 className="text-base font-bold text-[var(--text-primary)] mb-4 flex items-center gap-2">
                                     <UsersRound className="h-4 w-4 text-[var(--text-secondary)]" />
-                                    Track Processing
+                                    {t('detail.execution.trackProcessing')}
                                 </h3>
                                 <div className="space-y-3">
                                     {executionData.multi_track_timings.map((timing, index) => (
@@ -94,7 +96,7 @@ export function ExecutionInfoDialog({ audioId, isOpen, onClose }: ExecutionInfoD
                         {executionData.actual_parameters && (
                             <div className="bg-[var(--bg-main)] rounded-[var(--radius-card)] border border-[var(--border-subtle)] p-4 sm:p-6 shadow-sm">
                                 <h3 className="text-base font-bold text-[var(--text-primary)] mb-4">
-                                    Configuration Parameters
+                                    {t('detail.execution.params')}
                                 </h3>
                                 <CuratedParamsDisplay params={executionData.actual_parameters} />
                             </div>
@@ -102,7 +104,7 @@ export function ExecutionInfoDialog({ audioId, isOpen, onClose }: ExecutionInfoD
                     </div>
                 ) : (
                     <div className="py-12 text-center text-[var(--text-tertiary)]">
-                        No execution metrics available for this file.
+                        {t('detail.execution.noData')}
                     </div>
                 )}
             </DialogContent>

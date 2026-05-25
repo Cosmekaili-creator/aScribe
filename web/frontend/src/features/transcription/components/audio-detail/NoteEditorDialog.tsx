@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { X, StickyNote } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/i18n";
 
 interface NoteEditorDialogProps {
     isOpen: boolean;
@@ -19,6 +20,7 @@ export function NoteEditorDialog({
     onCancel
 }: NoteEditorDialogProps) {
     const isMobile = useIsMobile();
+    const { t } = useTranslation();
     const [content, setContent] = useState("");
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -93,14 +95,14 @@ export function NoteEditorDialog({
                 <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-subtle)] bg-[var(--bg-card)]">
                     <div className="flex items-center gap-2">
                         <StickyNote className="h-4 w-4 text-[var(--brand-solid)]" />
-                        <span className="font-semibold text-sm text-[var(--text-primary)]">Add Note</span>
+                        <span className="font-semibold text-sm text-[var(--text-primary)]">{t('detail.notes.editor.title')}</span>
                     </div>
                     <Button
                         variant="ghost"
                         size="icon"
                         onClick={onCancel}
                         className="h-7 w-7"
-                        aria-label="Close"
+                        aria-label={t('detail.notes.editor.close')}
                     >
                         <X className="h-4 w-4" />
                     </Button>
@@ -121,7 +123,7 @@ export function NoteEditorDialog({
                     <textarea
                         ref={textareaRef}
                         className="w-full text-sm bg-[var(--bg-main)] border border-[var(--border-subtle)] rounded-[var(--radius-btn)] p-3 text-[var(--text-primary)] placeholder:text-[var(--text-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--brand-solid)] focus:border-transparent resize-none transition-all"
-                        placeholder="Write your note here..."
+                        placeholder={t('detail.notes.editor.placeholder')}
                         value={content}
                         onChange={e => setContent(e.target.value)}
                         onKeyDown={handleKeyDown}
@@ -130,7 +132,7 @@ export function NoteEditorDialog({
 
                     {/* Hint */}
                     <p className="text-xs text-[var(--text-tertiary)]">
-                        Press <kbd className="px-1.5 py-0.5 text-[10px] bg-[var(--bg-main)] border border-[var(--border-subtle)] rounded font-mono">⌘ Enter</kbd> to save
+                        {t('detail.notes.editor.hint')}
                     </p>
                 </div>
 
@@ -140,14 +142,14 @@ export function NoteEditorDialog({
                         variant="outline"
                         onClick={onCancel}
                     >
-                        Cancel
+                        {t('detail.notes.editor.cancel')}
                     </Button>
                     <Button
                         variant="brand"
                         onClick={handleSubmit}
                         disabled={!content.trim()}
                     >
-                        Save Note
+                        {t('detail.notes.editor.save')}
                     </Button>
                 </div>
             </div>

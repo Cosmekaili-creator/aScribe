@@ -1,6 +1,7 @@
 import { Plus, Ear } from "lucide-react";
 import type { SelectionMenuState } from "@/features/transcription/hooks/useSelectionMenu";
 import { useIsDesktop } from "@/hooks/useIsDesktop";
+import { useTranslation } from "@/i18n";
 
 interface TranscriptSelectionMenuProps {
     menuState: SelectionMenuState | null;
@@ -14,6 +15,7 @@ export function TranscriptSelectionMenu({
     onListenFromHere
 }: TranscriptSelectionMenuProps) {
     const isDesktop = useIsDesktop();
+    const { t } = useTranslation();
 
     if (!menuState || !menuState.visible) return null;
 
@@ -43,7 +45,7 @@ export function TranscriptSelectionMenu({
                             onAddNote();
                         }}
                     >
-                        <Plus className="h-5 w-5" /> <span>Add Note</span>
+                        <Plus className="h-5 w-5" /> <span>{t('detail.selection.addNote')}</span>
                     </button>
                     <div className="w-px h-5 bg-carbon-200 dark:bg-carbon-700" />
                     <button
@@ -54,7 +56,7 @@ export function TranscriptSelectionMenu({
                             onListenFromHere();
                         }}
                     >
-                        <Ear className="h-5 w-5" /> <span>Listen</span>
+                        <Ear className="h-5 w-5" /> <span>{t('detail.selection.listen')}</span>
                     </button>
                 </div>
             </div>
@@ -84,7 +86,7 @@ export function TranscriptSelectionMenu({
                         onAddNote();
                     }}
                 >
-                    <Plus className="h-4 w-4" /> <span>Note</span>
+                    <Plus className="h-4 w-4" /> <span>{t('detail.selection.note')}</span>
                 </button>
                 <div className="w-px h-4 bg-carbon-200 dark:bg-carbon-700" />
                 <button
@@ -95,7 +97,7 @@ export function TranscriptSelectionMenu({
                         onListenFromHere();
                     }}
                 >
-                    <Ear className="h-4 w-4" /> <span>Listen</span>
+                    <Ear className="h-4 w-4" /> <span>{t('detail.selection.listen')}</span>
                 </button>
             </div>
 

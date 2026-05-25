@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Check, XCircle } from "lucide-react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useTranslation } from "@/i18n";
 import {
     FormField, Section, InfoBanner, SelectField, SwitchField, SliderField, AdvancedAccordion,
     inputClassName,
@@ -204,23 +205,6 @@ const CANARY_LANGUAGES = [
     { value: "fr", label: "French" },
 ];
 
-const PARAM_DESCRIPTIONS = {
-    model: "Size of the Whisper model. Larger = more accurate but slower.",
-    language: "Source language. Auto-detect works for most cases.",
-    task: "Transcribe in original language or translate to English.",
-    device: "CPU (universal), GPU (faster, CUDA required), or AUTO.",
-    compute_type: "Float16 (faster), Float32 (accurate), Int8 (fastest).",
-    batch_size: "Segments processed at once. Higher = faster but more memory.",
-    diarize: "Identify and separate different speakers.",
-    diarize_model: "Pyannote (accurate, needs HF token) or NVIDIA Sortformer (up to 4 speakers).",
-    temperature: "0 = deterministic, higher = more creative.",
-    beam_size: "Search beams. Higher = better quality but slower.",
-    vad_method: "Voice detection: Pyannote (accurate) or Silero (fast).",
-    initial_prompt: "Context text to guide transcription style.",
-    hf_token: "Required for Pyannote diarization models.",
-    vad_onset: "Voice detection sensitivity. Lower values (0.3-0.4) catch quieter/distant speakers.",
-    vad_offset: "Speech ending sensitivity. Lower values detect speech endings more precisely.",
-};
 
 // ============================================================================
 // Main Component
@@ -246,6 +230,7 @@ export const TranscriptionConfigDialog = memo(function TranscriptionConfigDialog
     const [isValidating, setIsValidating] = useState(false);
     const [validationStatus, setValidationStatus] = useState<'idle' | 'valid' | 'invalid'>('idle');
     const [validationMessage, setValidationMessage] = useState("");
+    const { t } = useTranslation();
     const { getAuthHeaders } = useAuth();
     const [availableModels, setAvailableModels] = useState<string[]>(["whisper-1"]);
 
@@ -292,14 +277,14 @@ export const TranscriptionConfigDialog = memo(function TranscriptionConfigDialog
             if (response.ok && data.valid) {
                 setValidationStatus('valid');
                 setAvailableModels(data.models || ["whisper-1"]);
-                setValidationMessage("API key validated");
+                setValidationMessage(t('transcription.config.apiKeyValid'));
             } else {
                 setValidationStatus('invalid');
-                setValidationMessage(data.error || "Invalid API key");
+                setValidationMessage(data.error || t('transcription.config.apiKeyInvalid'));
             }
         } catch {
             setValidationStatus('invalid');
-            setValidationMessage("Validation failed");
+            setValidationMessage(t('transcription.config.validationFailed'));
         } finally {
             setIsValidating(false);
         }
@@ -314,8 +299,8 @@ export const TranscriptionConfigDialog = memo(function TranscriptionConfigDialog
     };
 
     const dialogTitle = title || (isProfileMode
-        ? (initialName ? `Edit "${initialName}"` : "New Transcription Profile")
-        : "Transcription Settings"
+        ? (initialName ? t('transcription.config.editProfile').replace('{name}', initialName) : t('transcription.config.newProfile'))
+        : t('transcription.config.title')
     );
 
     return (
@@ -331,8 +316,8 @@ export const TranscriptionConfigDialog = memo(function TranscriptionConfigDialog
                     </DialogTitle>
                     <DialogDescription className="text-[var(--text-secondary)] text-sm mt-1">
                         {isProfileMode
-                            ? "Configure and save your transcription settings."
-                            : "Choose a model and configure transcription parameters."
+                            ? t('transcription.config.profileDescription')
+                            : t('transcription.config.description')
                         }
                     </DialogDescription>
                 </DialogHeader>
@@ -343,22 +328,22 @@ export const TranscriptionConfigDialog = memo(function TranscriptionConfigDialog
                     {/* Profile Name/Description (if profile mode) */}
                     {isProfileMode && (
                         <div className="p-4 bg-[var(--bg-main)] rounded-xl border border-[var(--border-subtle)] space-y-4">
-                            <FormField label="Profile Name" htmlFor="profileName">
+                            <FormField label={t('transcription.config.profileName')} htmlFor="profileName">
                                 <Input
                                     id="profileName"
                                     value={profileName}
                                     onChange={(e) => setProfileName(e.target.value)}
-                                    placeholder="My transcription profile"
+                                    placeholder={t('transcription.config.profileNamePlaceholder')}
                                     className={inputClassName}
                                     required
                                 />
                             </FormField>
-                            <FormField label="Description" htmlFor="profileDesc" optional>
+                            <FormField label={t('transcription.config.profileDescriptionLabel')} htmlFor="profileDesc" optional>
                                 <Textarea
                                     id="profileDesc"
                                     value={profileDescription}
                                     onChange={(e) => setProfileDescription(e.target.value)}
-                                    placeholder="Describe this profile..."
+                                    placeholder={t('transcription.config.profileDescPlaceholder')}
                                     className={`${inputClassName} resize-none min-h-[80px]`}
                                     rows={2}
                                 />
@@ -368,8 +353,8 @@ export const TranscriptionConfigDialog = memo(function TranscriptionConfigDialog
 
                     {/* Model Family Selection */}
                     <SelectField
-                        label="Model Family"
-                        description="Choose the AI model for transcription. Each has different capabilities and requirements."
+                        label={t('transcription.config.modelFamily')}
+                        description={t('transcription.config.modelFamilyDesc')}
                         value={params.model_family}
                         onValueChange={(v) => updateParam('model_family', v)}
                         options={[
@@ -385,8 +370,8 @@ export const TranscriptionConfigDialog = memo(function TranscriptionConfigDialog
 
                     {/* Multi-track notice */}
                     {isMultiTrack && (
-                        <InfoBanner variant="info" title="Multi-track Audio Detected">
-                            Each audio track will be transcribed separately. Speaker diarization is disabled.
+                        <InfoBanner variant="info" title={t('transcription.config.multiTrackTitle')}>
+                            {t('transcription.config.multiTrackDesc')}
                         </InfoBanner>
                     )}
 
@@ -436,10 +421,10 @@ export const TranscriptionConfigDialog = memo(function TranscriptionConfigDialog
                         {loading ? (
                             <>
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Starting...
+                                {t('transcription.config.starting')}
                             </>
                         ) : (
-                            isProfileMode ? "Save Profile" : "Start Transcription"
+                            isProfileMode ? t('transcription.config.saveProfile') : t('transcription.config.startTranscription')
                         )}
                     </Button>
                 </DialogFooter>
@@ -458,15 +443,16 @@ function DiarizationSection({ id, params, updateParam, description }: {
     updateParam: <K extends keyof WhisperXParams>(key: K, value: WhisperXParams[K]) => void;
     description?: string;
 }) {
+    const { t } = useTranslation();
     return (
-        <Section title="Speaker Diarization" description={description}>
+        <Section title={t('transcription.config.speakerDiarization')} description={description}>
             <div className="space-y-4">
-                <SwitchField id={id} label="Enable speaker identification" checked={params.diarize} onCheckedChange={(v) => updateParam('diarize', v)} />
+                <SwitchField id={id} label={t('transcription.config.enableSpeakerIdent')} checked={params.diarize} onCheckedChange={(v) => updateParam('diarize', v)} />
 
                 {params.diarize && (
                     <div className="p-4 bg-[var(--bg-main)] rounded-xl border border-[var(--border-subtle)] space-y-4">
                         <SelectField
-                            label="Diarization Model"
+                            label={t('transcription.config.diarizationModel')}
                             value={params.diarize_model}
                             onValueChange={(v) => updateParam('diarize_model', v)}
                             options={[
@@ -476,7 +462,7 @@ function DiarizationSection({ id, params, updateParam, description }: {
                         />
 
                         <div className="grid grid-cols-2 gap-4">
-                            <FormField label="Min Speakers" optional>
+                            <FormField label={t('transcription.config.minSpeakers')} optional>
                                 <Input
                                     type="number" min={1} max={20} placeholder="Auto"
                                     value={params.min_speakers || ""}
@@ -484,7 +470,7 @@ function DiarizationSection({ id, params, updateParam, description }: {
                                     className={inputClassName}
                                 />
                             </FormField>
-                            <FormField label="Max Speakers" optional>
+                            <FormField label={t('transcription.config.maxSpeakers')} optional>
                                 <Input
                                     type="number" min={1} max={20} placeholder="Auto"
                                     value={params.max_speakers || ""}
@@ -496,7 +482,7 @@ function DiarizationSection({ id, params, updateParam, description }: {
 
                         {params.diarize_model === "pyannote" && (
                             <>
-                                <FormField label="Hugging Face Token" description={PARAM_DESCRIPTIONS.hf_token}>
+                                <FormField label={t('transcription.config.hfToken')} description={t('transcription.config.paramDesc.hf_token')}>
                                     <Input
                                         type="password" placeholder="hf_..."
                                         value={params.hf_token || ""}
@@ -508,7 +494,7 @@ function DiarizationSection({ id, params, updateParam, description }: {
                                 <div className="pt-3 border-t border-[var(--border-subtle)]">
                                     <p className="text-xs text-[var(--text-tertiary)] mb-3">Voice Detection Tuning (for noisy/distant audio)</p>
                                     <div className="grid grid-cols-2 gap-4">
-                                        <FormField label="VAD Onset" description={PARAM_DESCRIPTIONS.vad_onset}>
+                                        <FormField label={t('transcription.config.vadOnset')} description={t('transcription.config.paramDesc.vad_onset')}>
                                             <Input
                                                 type="number" min={0.1} max={0.9} step={0.05}
                                                 value={params.vad_onset}
@@ -516,7 +502,7 @@ function DiarizationSection({ id, params, updateParam, description }: {
                                                 className={inputClassName}
                                             />
                                         </FormField>
-                                        <FormField label="VAD Offset" description={PARAM_DESCRIPTIONS.vad_offset}>
+                                        <FormField label={t('transcription.config.vadOffset')} description={t('transcription.config.paramDesc.vad_offset')}>
                                             <Input
                                                 type="number" min={0.1} max={0.9} step={0.05}
                                                 value={params.vad_offset}
@@ -546,38 +532,39 @@ interface ConfigProps {
 }
 
 function WhisperConfig({ params, updateParam, isMultiTrack }: ConfigProps) {
+    const { t } = useTranslation();
     return (
         <div className="space-y-6">
-            <Section title="Model Settings">
+            <Section title={t('transcription.config.modelSettings')}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <SelectField label="Model Size" description={PARAM_DESCRIPTIONS.model} value={params.model} onValueChange={(v) => updateParam('model', v)} options={WHISPER_MODELS} />
-                    <SelectField label="Language" description={PARAM_DESCRIPTIONS.language} value={params.language || "auto"} onValueChange={(v) => updateParam('language', v === "auto" ? undefined : v)} options={LANGUAGES} />
-                    <SelectField label="Task" description={PARAM_DESCRIPTIONS.task} value={params.task} onValueChange={(v) => updateParam('task', v)} options={[{ value: "transcribe", label: "Transcribe" }, { value: "translate", label: "Translate to English" }]} />
-                    <SelectField label="Device" description={PARAM_DESCRIPTIONS.device} value={params.device} onValueChange={(v) => updateParam('device', v)} options={[{ value: "cpu", label: "CPU" }, { value: "cuda", label: "GPU (CUDA)" }]} />
+                    <SelectField label={t('transcription.config.modelSize')} description={t('transcription.config.paramDesc.model')} value={params.model} onValueChange={(v) => updateParam('model', v)} options={WHISPER_MODELS} />
+                    <SelectField label={t('transcription.config.language')} description={t('transcription.config.paramDesc.language')} value={params.language || "auto"} onValueChange={(v) => updateParam('language', v === "auto" ? undefined : v)} options={LANGUAGES} />
+                    <SelectField label={t('transcription.config.task')} description={t('transcription.config.paramDesc.task')} value={params.task} onValueChange={(v) => updateParam('task', v)} options={[{ value: "transcribe", label: t('transcription.config.transcribe') }, { value: "translate", label: t('transcription.config.translateToEnglish') }]} />
+                    <SelectField label={t('transcription.config.device')} description={t('transcription.config.paramDesc.device')} value={params.device} onValueChange={(v) => updateParam('device', v)} options={[{ value: "cpu", label: "CPU" }, { value: "cuda", label: "GPU (CUDA)" }]} />
                 </div>
             </Section>
 
             {!isMultiTrack && (
-                <DiarizationSection id="diarize" params={params} updateParam={updateParam} description="Identify and separate different speakers in the audio" />
+                <DiarizationSection id="diarize" params={params} updateParam={updateParam} description={t('transcription.config.diarizeSectionDesc')} />
             )}
 
             <AdvancedAccordion>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <SelectField label="Compute Type" description={PARAM_DESCRIPTIONS.compute_type} value={params.compute_type} onValueChange={(v) => updateParam('compute_type', v)} options={[{ value: "float32", label: "Float32 (Accurate)" }, { value: "float16", label: "Float16 (Fast)" }, { value: "int8", label: "Int8 (Fastest)" }]} />
-                    <FormField label="Batch Size" description={PARAM_DESCRIPTIONS.batch_size}>
+                    <SelectField label={t('transcription.config.computeType')} description={t('transcription.config.paramDesc.compute_type')} value={params.compute_type} onValueChange={(v) => updateParam('compute_type', v)} options={[{ value: "float32", label: t('transcription.config.float32') }, { value: "float16", label: t('transcription.config.float16') }, { value: "int8", label: t('transcription.config.int8') }]} />
+                    <FormField label={t('transcription.config.batchSize')} description={t('transcription.config.paramDesc.batch_size')}>
                         <Input type="number" min={1} max={64} value={params.batch_size} onChange={(e) => updateParam('batch_size', parseInt(e.target.value) || 8)} className={inputClassName} />
                     </FormField>
-                    <FormField label="Beam Size" description={PARAM_DESCRIPTIONS.beam_size}>
+                    <FormField label={t('transcription.config.beamSize')} description={t('transcription.config.paramDesc.beam_size')}>
                         <Input type="number" min={1} max={10} value={params.beam_size} onChange={(e) => updateParam('beam_size', parseInt(e.target.value) || 5)} className={inputClassName} />
                     </FormField>
-                    <FormField label="Temperature" description={PARAM_DESCRIPTIONS.temperature}>
+                    <FormField label={t('transcription.config.temperature')} description={t('transcription.config.paramDesc.temperature')}>
                         <Input type="number" min={0} max={1} step={0.1} value={params.temperature} onChange={(e) => updateParam('temperature', parseFloat(e.target.value) || 0)} className={inputClassName} />
                     </FormField>
                 </div>
 
-                <FormField label="Initial Prompt" description={PARAM_DESCRIPTIONS.initial_prompt} optional>
+                <FormField label={t('transcription.config.initialPrompt')} description={t('transcription.config.paramDesc.initial_prompt')} optional>
                     <Textarea
-                        placeholder="Optional context to guide transcription..."
+                        placeholder={t('transcription.config.initialPromptPlaceholder')}
                         value={params.initial_prompt || ""}
                         onChange={(e) => updateParam('initial_prompt', e.target.value || undefined)}
                         className={`${inputClassName} resize-none min-h-[80px]`}
@@ -585,15 +572,15 @@ function WhisperConfig({ params, updateParam, isMultiTrack }: ConfigProps) {
                     />
                 </FormField>
 
-                <SwitchField id="suppress_numerals" label="Suppress numerals (write numbers as words)" checked={params.suppress_numerals} onCheckedChange={(v) => updateParam('suppress_numerals', v)} />
+                <SwitchField id="suppress_numerals" label={t('transcription.config.suppressNumerals')} checked={params.suppress_numerals} onCheckedChange={(v) => updateParam('suppress_numerals', v)} />
 
                 <div className="pt-2 border-t border-[var(--border-subtle)] space-y-4">
-                    <SwitchField id="no_align" label="Skip word alignment (faster, less precise timestamps)" checked={params.no_align} onCheckedChange={(v) => updateParam('no_align', v)} />
+                    <SwitchField id="no_align" label={t('transcription.config.skipWordAlignment')} checked={params.no_align} onCheckedChange={(v) => updateParam('no_align', v)} />
 
                     {!params.no_align && (
-                        <FormField label="Custom Alignment Model" description="WhisperX-compatible alignment model (e.g., KBLab/wav2vec2-large-voxrex-swedish). Leave empty for default." optional>
+                        <FormField label={t('transcription.config.alignModel')} description={t('transcription.config.alignModelDesc')} optional>
                             <Input
-                                placeholder="model/path or HuggingFace ID"
+                                placeholder={t('transcription.config.alignModelPlaceholder')}
                                 value={params.align_model || ""}
                                 onChange={(e) => updateParam('align_model', e.target.value || undefined)}
                                 className={inputClassName}
@@ -607,12 +594,13 @@ function WhisperConfig({ params, updateParam, isMultiTrack }: ConfigProps) {
 }
 
 function ParakeetConfig({ params, updateParam, isMultiTrack }: ConfigProps) {
+    const { t } = useTranslation();
     return (
         <div className="space-y-6">
-            <Section title="Audio Context" description="Configure how much context the model uses for long audio files">
+            <Section title={t('transcription.config.audioContext')} description={t('transcription.config.audioContextDesc')}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <SliderField label="Left Context" value={params.attention_context_left} onValueChange={(v) => updateParam('attention_context_left', v)} min={64} max={512} step={64} />
-                    <SliderField label="Right Context" value={params.attention_context_right} onValueChange={(v) => updateParam('attention_context_right', v)} min={64} max={512} step={64} />
+                    <SliderField label={t('transcription.config.leftContext')} value={params.attention_context_left} onValueChange={(v) => updateParam('attention_context_left', v)} min={64} max={512} step={64} />
+                    <SliderField label={t('transcription.config.rightContext')} value={params.attention_context_right} onValueChange={(v) => updateParam('attention_context_right', v)} min={64} max={512} step={64} />
                 </div>
             </Section>
 
@@ -624,10 +612,11 @@ function ParakeetConfig({ params, updateParam, isMultiTrack }: ConfigProps) {
 }
 
 function CanaryConfig({ params, updateParam, isMultiTrack }: ConfigProps) {
+    const { t } = useTranslation();
     return (
         <div className="space-y-6">
-            <Section title="Language Settings">
-                <SelectField label="Source Language" value={params.language || "en"} onValueChange={(v) => updateParam('language', v)} options={CANARY_LANGUAGES} />
+            <Section title={t('transcription.config.languageSettings')}>
+                <SelectField label={t('transcription.config.sourceLanguage')} value={params.language || "en"} onValueChange={(v) => updateParam('language', v)} options={CANARY_LANGUAGES} />
             </Section>
 
             {!isMultiTrack && (
@@ -649,11 +638,12 @@ function OpenAIConfig({
     params, updateParam,
     isValidating, validationStatus, validationMessage, availableModels, onValidate
 }: OpenAIConfigProps) {
+    const { t } = useTranslation();
     return (
         <div className="space-y-6">
-            <Section title="API Configuration">
+            <Section title={t('transcription.config.apiConfiguration')}>
                 <div className="space-y-4">
-                    <FormField label="OpenAI API Key" description="Your API key. Leave empty to use server default if configured.">
+                    <FormField label={t('transcription.config.openaiApiKey')} description={t('transcription.config.openaiApiKeyDesc')}>
                         <div className="flex gap-2">
                             <Input
                                 type="password" placeholder="sk-..."
@@ -665,7 +655,7 @@ function OpenAIConfig({
                                 variant="outline" onClick={onValidate} disabled={isValidating}
                                 className="shrink-0 rounded-xl border-[var(--border-subtle)] cursor-pointer"
                             >
-                                {isValidating ? <Loader2 className="h-4 w-4 animate-spin" /> : "Validate"}
+                                {isValidating ? <Loader2 className="h-4 w-4 animate-spin" /> : t('transcription.config.validate')}
                             </Button>
                         </div>
                         {validationStatus !== 'idle' && (
@@ -676,14 +666,14 @@ function OpenAIConfig({
                         )}
                     </FormField>
 
-                    <SelectField label="Model" value={params.model || "whisper-1"} onValueChange={(v) => updateParam('model', v)} options={availableModels} />
-                    <SelectField label="Language" value={params.language || "auto"} onValueChange={(v) => updateParam('language', v === "auto" ? undefined : v)} options={LANGUAGES} />
+                    <SelectField label={t('transcription.config.modelLabel')} value={params.model || "whisper-1"} onValueChange={(v) => updateParam('model', v)} options={availableModels} />
+                    <SelectField label={t('transcription.config.language')} value={params.language || "auto"} onValueChange={(v) => updateParam('language', v === "auto" ? undefined : v)} options={LANGUAGES} />
                 </div>
             </Section>
 
             {params.model && params.model !== "whisper-1" && (
-                <InfoBanner variant="warning" title="Limited Features">
-                    Word-level timestamps are only supported by whisper-1. Synchronized playback won't be available.
+                <InfoBanner variant="warning" title={t('transcription.config.limitedFeatures')}>
+                    {t('transcription.config.limitedFeaturesDesc')}
                 </InfoBanner>
             )}
         </div>
@@ -691,18 +681,19 @@ function OpenAIConfig({
 }
 
 function VoxtralConfig({ params, updateParam }: ConfigProps) {
+    const { t } = useTranslation();
     return (
         <div className="space-y-6">
-            <InfoBanner variant="warning" title="Limited Features">
-                Voxtral does not support word-level timestamps. Synchronized playback, audio seeking, and timestamp-based features won't be available.
+            <InfoBanner variant="warning" title={t('transcription.config.limitedFeatures')}>
+                {t('transcription.config.voxtralLimitedDesc')}
             </InfoBanner>
 
-            <Section title="Language Settings">
-                <SelectField label="Language" description="Source language for transcription" value={params.language || "en"} onValueChange={(v) => updateParam('language', v)} options={LANGUAGES} />
+            <Section title={t('transcription.config.languageSettings')}>
+                <SelectField label={t('transcription.config.language')} description={t('transcription.config.languageDesc')} value={params.language || "en"} onValueChange={(v) => updateParam('language', v)} options={LANGUAGES} />
             </Section>
 
             <AdvancedAccordion>
-                <FormField label="Max Tokens" description="Maximum number of tokens to generate. Voxtral has a 32k context window and handles up to 30-40 minutes of audio.">
+                <FormField label={t('transcription.config.maxTokens')} description={t('transcription.config.maxTokensDesc')}>
                     <Input
                         type="number" min={1024} max={16384}
                         value={params.max_new_tokens || 8192}
@@ -716,17 +707,18 @@ function VoxtralConfig({ params, updateParam }: ConfigProps) {
 }
 
 function AssemblyAIConfig({ params, updateParam }: ConfigProps) {
+    const { t } = useTranslation();
     return (
         <div className="space-y-6">
-            <Section title="API Configuration">
+            <Section title={t('transcription.config.apiConfiguration')}>
                 <div className="space-y-4">
                     <FormField
                         label="AssemblyAI API Key"
-                        description="Your key from app.assemblyai.com. Leave empty to use the server's ASSEMBLYAI_API_KEY."
+                        description={t('transcription.config.assemblyaiApiKeyDesc')}
                     >
                         <Input
                             type="password"
-                            placeholder="your-assemblyai-api-key"
+                            placeholder={t('transcription.config.apiKeyPlaceholder')}
                             value={params.api_key || ""}
                             onChange={(e) => updateParam('api_key', e.target.value)}
                             className={inputClassName}
@@ -734,19 +726,19 @@ function AssemblyAIConfig({ params, updateParam }: ConfigProps) {
                     </FormField>
 
                     <SelectField
-                        label="Model"
-                        description="'Universal-2' is the standard model; 'Universal-3 Pro' is the highest quality; 'Nano' is fastest/cheapest."
+                        label={t('transcription.config.modelLabel')}
+                        description={t('transcription.config.assemblyaiModelDesc')}
                         value={params.model || "universal-2"}
                         onValueChange={(v) => updateParam('model', v)}
                         options={[
-                            { value: "universal-2", label: "Universal-2 (high accuracy)" },
-                            { value: "universal-3-pro", label: "Universal-3 Pro (best quality)" },
+                            { value: "universal-2", label: t('transcription.config.universal2') },
+                            { value: "universal-3-pro", label: t('transcription.config.universal3pro') },
                         ]}
                     />
 
                     <SelectField
-                        label="Language"
-                        description="Source language. 'Auto-detect' lets AssemblyAI identify it automatically."
+                        label={t('transcription.config.language')}
+                        description={t('transcription.config.assemblyaiLangDesc')}
                         value={params.language || "auto"}
                         onValueChange={(v) => updateParam('language', v === "auto" ? undefined : v)}
                         options={LANGUAGES}
@@ -754,32 +746,33 @@ function AssemblyAIConfig({ params, updateParam }: ConfigProps) {
 
                     <SwitchField
                         id="assemblyai-diarize"
-                        label="Speaker Labels — identify and label individual speakers"
+                        label={t('transcription.config.speakerLabels')}
                         checked={params.diarize}
                         onCheckedChange={(v) => updateParam('diarize', v)}
                     />
                 </div>
             </Section>
 
-            <InfoBanner variant="info" title="Cloud Transcription">
-                Audio is sent to AssemblyAI's servers. A ~60-second turnaround for 1 hour of audio is typical. No local CPU is used during transcription.
+            <InfoBanner variant="info" title={t('transcription.config.cloudTranscription')}>
+                {t('transcription.config.assemblyaiCloudDesc')}
             </InfoBanner>
         </div>
     );
 }
 
 function DeepgramConfig({ params, updateParam }: ConfigProps) {
+    const { t } = useTranslation();
     return (
         <div className="space-y-6">
-            <Section title="API Configuration">
+            <Section title={t('transcription.config.apiConfiguration')}>
                 <div className="space-y-4">
                     <FormField
                         label="Deepgram API Key"
-                        description="Your key from console.deepgram.com. Leave empty to use the server's DEEPGRAM_API_KEY."
+                        description={t('transcription.config.deepgramApiKeyDesc')}
                     >
                         <Input
                             type="password"
-                            placeholder="your-deepgram-api-key"
+                            placeholder={t('transcription.config.apiKeyPlaceholder')}
                             value={params.api_key || ""}
                             onChange={(e) => updateParam('api_key', e.target.value)}
                             className={inputClassName}
@@ -787,21 +780,21 @@ function DeepgramConfig({ params, updateParam }: ConfigProps) {
                     </FormField>
 
                     <SelectField
-                        label="Model"
-                        description="nova-2 offers the best accuracy for general use."
+                        label={t('transcription.config.modelLabel')}
+                        description={t('transcription.config.deepgramModelDesc')}
                         value={params.model || "nova-2"}
                         onValueChange={(v) => updateParam('model', v)}
                         options={[
-                            { value: "nova-2",         label: "Nova 2 (best accuracy)" },
-                            { value: "nova-2-medical", label: "Nova 2 Medical" },
-                            { value: "enhanced",       label: "Enhanced" },
-                            { value: "base",           label: "Base (fastest)" },
+                            { value: "nova-2",         label: t('transcription.config.nova2') },
+                            { value: "nova-2-medical", label: t('transcription.config.nova2medical') },
+                            { value: "enhanced",       label: t('transcription.config.enhanced') },
+                            { value: "base",           label: t('transcription.config.base') },
                         ]}
                     />
 
                     <SelectField
-                        label="Language"
-                        description="Source language. Required for non-nova-2 models."
+                        label={t('transcription.config.language')}
+                        description={t('transcription.config.deepgramLangDesc')}
                         value={params.language || "en"}
                         onValueChange={(v) => updateParam('language', v === "auto" ? undefined : v)}
                         options={LANGUAGES}
@@ -809,15 +802,15 @@ function DeepgramConfig({ params, updateParam }: ConfigProps) {
 
                     <SwitchField
                         id="deepgram-diarize"
-                        label="Speaker Diarization — identify and label individual speakers"
+                        label={t('transcription.config.speakerDiarizationLabel')}
                         checked={params.diarize}
                         onCheckedChange={(v) => updateParam('diarize', v)}
                     />
                 </div>
             </Section>
 
-            <InfoBanner variant="info" title="Cloud Transcription">
-                Audio is sent to Deepgram's servers. Results return in real-time (synchronous) — typically a few seconds for any file length. No local CPU is used.
+            <InfoBanner variant="info" title={t('transcription.config.cloudTranscription')}>
+                {t('transcription.config.deepgramCloudDesc')}
             </InfoBanner>
         </div>
     );

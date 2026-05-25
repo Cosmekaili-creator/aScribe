@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useTranslation } from "@/i18n";
 import WaveSurfer from "wavesurfer.js";
 import RecordPlugin from "wavesurfer.js/dist/plugins/record.js";
 import {
@@ -38,6 +39,7 @@ export function AudioRecorder({
 	onClose,
 	onRecordingComplete,
 }: AudioRecorderProps) {
+	const { t } = useTranslation();
 	const [wavesurfer, setWavesurfer] = useState<WaveSurfer | null>(null);
 	const [record, setRecord] = useState<RecordPlugin | null>(null);
 	const [isRecording, setIsRecording] = useState(false);
@@ -289,11 +291,10 @@ export function AudioRecorder({
 			<DialogContent className="sm:max-w-[600px] bg-white dark:bg-carbon-800 border-carbon-200 dark:border-carbon-700">
 				<DialogHeader>
 					<DialogTitle className="text-carbon-900 dark:text-carbon-100 text-xl font-bold">
-						Record Audio
+						{t('recorder.title')}
 					</DialogTitle>
 					<DialogDescription className="text-carbon-600 dark:text-carbon-400">
-						Record audio directly from your microphone and upload it for
-						transcription.
+						{t('recorder.description')}
 					</DialogDescription>
 				</DialogHeader>
 
@@ -301,12 +302,12 @@ export function AudioRecorder({
 					{/* Title Input */}
 					<div className="space-y-2">
 						<label className="text-sm font-medium text-carbon-700 dark:text-carbon-300">
-							Recording Title (Optional)
+							{t('recorder.titleLabel')}
 						</label>
 						<Input
 							value={title}
 							onChange={(e) => setTitle(e.target.value)}
-							placeholder="Enter a title for your recording..."
+							placeholder={t('recorder.titlePlaceholder')}
 							className="bg-white dark:bg-carbon-800 border-carbon-300 dark:border-carbon-600 text-carbon-900 dark:text-carbon-100"
 							disabled={isRecording}
 						/>
@@ -316,7 +317,7 @@ export function AudioRecorder({
 					{availableDevices.length > 1 && (
 						<div className="space-y-2">
 							<label className="text-sm font-medium text-carbon-700 dark:text-carbon-300">
-								Microphone
+								{t('recorder.microphone')}
 							</label>
 							<DropdownMenu>
 								<DropdownMenuTrigger asChild disabled={isRecording}>
@@ -374,14 +375,14 @@ export function AudioRecorder({
 							<span>
 								{isRecording
 									? isPaused
-										? "Recording Paused"
-										: "Recording..."
-									: "Ready to Record"}
+										? t('recorder.paused')
+										: t('recorder.recording')
+									: t('recorder.readyToRecord')}
 							</span>
 						</div>
 						{isRecording && (
 							<div className="text-xs text-brand-600 dark:text-brand-400 mt-1">
-								Keep this screen open while recording
+								{t('recorder.keepScreenOpen')}
 							</div>
 						)}
 					</div>
@@ -396,20 +397,20 @@ export function AudioRecorder({
 							<div className="absolute inset-0 flex items-center justify-center pointer-events-none">
 								<div className="text-carbon-400 dark:text-carbon-500 text-sm text-center">
 									<Mic className="h-8 w-8 mx-auto mb-2 opacity-50" />
-									<div>Waveform will appear here during recording</div>
+									<div>{t('recorder.waveformHint')}</div>
 									{!wavesurfer && (
 										<div className="text-xs text-red-400 mt-1">
-											Initializing recorder...
+											{t('recorder.initializing')}
 										</div>
 									)}
 									{wavesurfer && !record && (
 										<div className="text-xs text-yellow-400 mt-1">
-											Recorder plugin loading...
+											{t('recorder.pluginLoading')}
 										</div>
 									)}
 									{wavesurfer && record && (
 										<div className="text-xs text-green-400 mt-1">
-											Ready to record
+											{t('recorder.ready')}
 										</div>
 									)}
 								</div>
@@ -426,7 +427,7 @@ export function AudioRecorder({
 								className="bg-red-500 hover:bg-red-600 text-white px-8 py-3 rounded-xl font-medium transition-all duration-300 hover:scale-105"
 							>
 								<Mic className="h-5 w-5 mr-2" />
-								Start Recording
+								{t('recorder.start')}
 							</Button>
 						)}
 
@@ -441,12 +442,12 @@ export function AudioRecorder({
 									{isPaused ? (
 										<>
 											<Play className="h-5 w-5 mr-2" />
-											Resume
+											{t('recorder.resume')}
 										</>
 									) : (
 										<>
 											<Pause className="h-5 w-5 mr-2" />
-											Pause
+											{t('recorder.pause')}
 										</>
 									)}
 								</Button>
@@ -456,7 +457,7 @@ export function AudioRecorder({
 									className="bg-carbon-600 hover:bg-carbon-700 text-white px-6 py-3 rounded-xl"
 								>
 									<Square className="h-5 w-5 mr-2" />
-									Stop
+									{t('recorder.stop')}
 								</Button>
 							</>
 						)}
@@ -471,12 +472,12 @@ export function AudioRecorder({
 								{isUploading ? (
 									<>
 										<Loader2 className="h-5 w-5 mr-2 animate-spin" />
-										Uploading...
+										{t('recorder.uploading')}
 									</>
 								) : (
 									<>
 										<Upload className="h-5 w-5 mr-2" />
-										Upload Recording
+										{t('recorder.upload')}
 									</>
 								)}
 							</Button>
@@ -485,7 +486,7 @@ export function AudioRecorder({
 
 					{recordedBlob && (
 						<div className="text-center text-sm text-green-600 dark:text-green-400">
-							✓ Recording completed! Review and upload when ready.
+							{t('recorder.completed')}
 						</div>
 					)}
 				</div>

@@ -20,6 +20,7 @@ import {
     DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
+import { useTranslation } from '@/i18n';
 import type { Note } from '@/types/note';
 
 interface TranscriptToolbarProps {
@@ -65,6 +66,7 @@ export const TranscriptToolbar: React.FC<TranscriptToolbarProps> = ({
     onOpenChat,
     className
 }) => {
+    const { t } = useTranslation();
     return (
         <div className={cn(
             "flex items-center gap-1 p-1.5 rounded-2xl border shadow-sm backdrop-blur-md transition-all duration-300",
@@ -76,7 +78,7 @@ export const TranscriptToolbar: React.FC<TranscriptToolbarProps> = ({
             <ToolbarButton
                 active={transcriptMode === 'compact'}
                 onClick={() => setTranscriptMode(transcriptMode === 'compact' ? 'expanded' : 'compact')}
-                title={transcriptMode === 'compact' ? 'Switch to Timeline View' : 'Switch to Compact View'}
+                title={transcriptMode === 'compact' ? t('detail.toolbar.switchToTimeline') : t('detail.toolbar.switchToCompact')}
             >
                 {transcriptMode === 'compact' ? <List className="w-4 h-4" /> : <AlignLeft className="w-4 h-4" />}
             </ToolbarButton>
@@ -85,7 +87,7 @@ export const TranscriptToolbar: React.FC<TranscriptToolbarProps> = ({
             <ToolbarButton
                 active={autoScrollEnabled}
                 onClick={() => setAutoScrollEnabled(!autoScrollEnabled)}
-                title={autoScrollEnabled ? 'Disable Auto-Scroll' : 'Enable Auto-Scroll'}
+                title={autoScrollEnabled ? t('detail.toolbar.disableAutoScroll') : t('detail.toolbar.enableAutoScroll')}
             >
                 <ArrowDownCircle className="w-4 h-4" />
             </ToolbarButton>
@@ -96,7 +98,7 @@ export const TranscriptToolbar: React.FC<TranscriptToolbarProps> = ({
             <ToolbarButton
                 active={notesOpen}
                 onClick={() => setNotesOpen(!notesOpen)}
-                title="Toggle Notes"
+                title={t('detail.toolbar.toggleNotes')}
                 className="relative"
             >
                 <StickyNote className="w-4 h-4" />
@@ -111,7 +113,7 @@ export const TranscriptToolbar: React.FC<TranscriptToolbarProps> = ({
             {hasSpeakers && detectedSpeakersCount > 0 && (
                 <ToolbarButton
                     onClick={onOpenSpeakerRename}
-                    title="Rename Speakers"
+                    title={t('detail.toolbar.renameSpeakers')}
                 >
                     <Users className="w-4 h-4" />
                 </ToolbarButton>
@@ -121,7 +123,7 @@ export const TranscriptToolbar: React.FC<TranscriptToolbarProps> = ({
             <ToolbarButton
                 onClick={onOpenSummarize}
                 disabled={llmReady === false}
-                title={llmReady === false ? 'Configure LLM in Settings' : 'Summarize Transcript'}
+                title={llmReady === false ? t('detail.toolbar.configureLlm') : t('detail.toolbar.summarize')}
                 className={cn(llmReady === false && "opacity-50 cursor-not-allowed")}
             >
                 <Sparkles className="w-4 h-4" />
@@ -131,10 +133,10 @@ export const TranscriptToolbar: React.FC<TranscriptToolbarProps> = ({
 
             {/* Info & Logs Group */}
             <div className="flex items-center gap-0.5">
-                <ToolbarButton onClick={onOpenExecutionInfo} title="Execution Info">
+                <ToolbarButton onClick={onOpenExecutionInfo} title={t('detail.toolbar.executionInfo')}>
                     <Info className="w-4 h-4" />
                 </ToolbarButton>
-                <ToolbarButton onClick={onOpenLogs} title="View Logs">
+                <ToolbarButton onClick={onOpenLogs} title={t('detail.toolbar.viewLogs')}>
                     <FileText className="w-4 h-4" />
                 </ToolbarButton>
             </div>
@@ -151,7 +153,7 @@ export const TranscriptToolbar: React.FC<TranscriptToolbarProps> = ({
                             "hover:bg-carbon-100 dark:hover:bg-carbon-800",
                             "focus:outline-none focus:ring-2 focus:ring-brand-500/20"
                         )}
-                        title="Download"
+                        title={t('detail.toolbar.download')}
                     >
                         <Download className="w-4 h-4" />
                     </button>
@@ -159,15 +161,15 @@ export const TranscriptToolbar: React.FC<TranscriptToolbarProps> = ({
                 <DropdownMenuContent align="end" className="w-48 bg-white/95 dark:bg-carbon-900/95 backdrop-blur-xl border-carbon-200 dark:border-carbon-800">
                     <DropdownMenuItem onClick={onDownloadSRT} className="cursor-pointer">
                         <FileImage className="w-4 h-4 mr-2" />
-                        <span>Download SRT</span>
+                        <span>{t('detail.toolbar.downloadSrt')}</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={onDownloadTXT} className="cursor-pointer">
                         <AlignLeft className="w-4 h-4 mr-2" />
-                        <span>Download Text</span>
+                        <span>{t('detail.toolbar.downloadText')}</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={onDownloadJSON} className="cursor-pointer">
                         <FileJson className="w-4 h-4 mr-2" />
-                        <span>Download JSON</span>
+                        <span>{t('detail.toolbar.downloadJson')}</span>
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
@@ -175,7 +177,7 @@ export const TranscriptToolbar: React.FC<TranscriptToolbarProps> = ({
             <Divider />
 
             {/* Chat Button */}
-            <ToolbarButton onClick={onOpenChat} title="Open Chat">
+            <ToolbarButton onClick={onOpenChat} title={t('detail.toolbar.openChat')}>
                 <MessageCircle className="w-4 h-4" />
             </ToolbarButton>
         </div>

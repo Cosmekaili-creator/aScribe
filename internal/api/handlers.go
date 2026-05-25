@@ -2803,11 +2803,13 @@ func (h *Handler) SetUserDefaultProfile(c *gin.Context) {
 type UserSettingsResponse struct {
 	AutoTranscriptionEnabled bool    `json:"auto_transcription_enabled"`
 	DefaultProfileID         *string `json:"default_profile_id,omitempty"`
+	Language                 string  `json:"language"`
 }
 
 // UpdateUserSettingsRequest represents the request to update user settings
 type UpdateUserSettingsRequest struct {
-	AutoTranscriptionEnabled *bool `json:"auto_transcription_enabled,omitempty"`
+	AutoTranscriptionEnabled *bool   `json:"auto_transcription_enabled,omitempty"`
+	Language                 *string `json:"language,omitempty"`
 }
 
 // @Summary Get user settings
@@ -2835,6 +2837,7 @@ func (h *Handler) GetUserSettings(c *gin.Context) {
 	response := UserSettingsResponse{
 		AutoTranscriptionEnabled: user.AutoTranscriptionEnabled,
 		DefaultProfileID:         user.DefaultProfileID,
+		Language:                 user.Language,
 	}
 
 	c.JSON(http.StatusOK, response)
@@ -2875,6 +2878,9 @@ func (h *Handler) UpdateUserSettings(c *gin.Context) {
 	if req.AutoTranscriptionEnabled != nil {
 		user.AutoTranscriptionEnabled = *req.AutoTranscriptionEnabled
 	}
+	if req.Language != nil {
+		user.Language = *req.Language
+	}
 
 	// Save updated user
 	if err := h.userRepo.Update(c.Request.Context(), user); err != nil {
@@ -2885,6 +2891,7 @@ func (h *Handler) UpdateUserSettings(c *gin.Context) {
 	response := UserSettingsResponse{
 		AutoTranscriptionEnabled: user.AutoTranscriptionEnabled,
 		DefaultProfileID:         user.DefaultProfileID,
+		Language:                 user.Language,
 	}
 
 	c.JSON(http.StatusOK, response)

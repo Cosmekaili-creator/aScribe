@@ -11,6 +11,7 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useChatEvents } from "../contexts/ChatEventsContext";
 import { useToast } from "./ui/toast";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/i18n";
 
 // Helper function to parse thinking content from model responses
 function parseThinkingContent(content: string): { thinking: string | null; response: string } {
@@ -46,6 +47,7 @@ function parseThinkingContent(content: string): { thinking: string | null; respo
 
 // Collapsible thinking block component with streaming support
 function ThinkingBlock({ content, isStreaming = false }: { content: string; isStreaming?: boolean }) {
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(isStreaming); // Auto-expand when streaming
 
   // Auto-expand when streaming starts
@@ -61,7 +63,7 @@ function ThinkingBlock({ content, isStreaming = false }: { content: string; isSt
       >
         <Brain className={cn("h-4 w-4", isStreaming && "animate-pulse")} />
         <span className="font-medium">
-          {isStreaming ? "Thinking..." : "Thinking"}
+          {isStreaming ? t('chat.interface.thinking') : t('chat.interface.thoughtComplete')}
         </span>
         {isStreaming && (
           <span className="flex gap-1 ml-2">
@@ -116,6 +118,7 @@ interface ChatInterfaceProps {
 }
 
 export const ChatInterface = memo(function ChatInterface({ transcriptionId, activeSessionId, onSessionChange }: ChatInterfaceProps) {
+  const { t } = useTranslation();
   const { getAuthHeaders } = useAuth();
   const { emitSessionTitleUpdated, emitTitleGenerating } = useChatEvents();
   const { toast } = useToast();
@@ -467,10 +470,10 @@ export const ChatInterface = memo(function ChatInterface({ transcriptionId, acti
           size="sm"
           onClick={handleCopy}
           className="absolute right-2 top-2 h-auto px-2 py-1 text-xs opacity-0 group-hover:opacity-100 transition-opacity"
-          aria-label="Copy code"
+          aria-label={t('chat.interface.copyCode')}
         >
           {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
-          {copied ? 'Copied' : 'Copy'}
+          {copied ? t('chat.interface.copied') : t('chat.interface.copy')}
         </Button>
         <pre ref={preRef} className={props.className}>{props.children}</pre>
       </div>
@@ -481,12 +484,12 @@ export const ChatInterface = memo(function ChatInterface({ transcriptionId, acti
     return (
       <div className="h-full flex flex-col items-center justify-center p-6">
         <MessageCircle className="h-16 w-16 text-muted-foreground mb-4" />
-        <h3 className="text-lg font-medium mb-2">OpenAI Configuration Required</h3>
+        <h3 className="text-lg font-medium mb-2">{t('chat.interface.openAIConfigRequired')}</h3>
         <p className="text-sm text-muted-foreground text-center mb-4">
-          To use the chat feature, please configure your OpenAI API key in Settings.
+          {t('chat.interface.openAIConfigDescription')}
         </p>
         <Button onClick={() => window.location.href = "/settings"}>
-          Go to Settings
+          {t('chat.interface.goToSettings')}
         </Button>
       </div>
     );
@@ -520,7 +523,7 @@ export const ChatInterface = memo(function ChatInterface({ transcriptionId, acti
                                   size="icon"
                                   onClick={async () => { try { await navigator.clipboard.writeText(message.content || ''); } catch { /* ignore */ } }}
                                   className="absolute right-2 top-2 h-7 w-7 p-0 opacity-0 group-hover:opacity-100 transition-opacity text-[var(--brand-solid)] hover:bg-[var(--brand-solid)]/10 rounded-full"
-                                  title="Copy message"
+                                  title={t('chat.interface.copyMessage')}
                                 >
                                   <Copy className="h-3.5 w-3.5" />
                                 </Button>
@@ -556,7 +559,7 @@ export const ChatInterface = memo(function ChatInterface({ transcriptionId, acti
                                   size="icon"
                                   onClick={async () => { try { await navigator.clipboard.writeText(message.content || ''); } catch { /* ignore */ } }}
                                   className="absolute right-2 top-2 h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                                  title="Copy message"
+                                  title={t('chat.interface.copyMessage')}
                                 >
                                   <Copy className="h-3 w-3" />
                                 </Button>
@@ -642,7 +645,7 @@ export const ChatInterface = memo(function ChatInterface({ transcriptionId, acti
                                 <div className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
                                 <div className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                               </div>
-                              <span className="text-sm">Generating response...</span>
+                              <span className="text-sm">{t('chat.interface.generatingResponse')}</span>
                             </div>
                           </div>
                         </div>
@@ -666,7 +669,7 @@ export const ChatInterface = memo(function ChatInterface({ transcriptionId, acti
                     value={inputMessage}
                     onChange={(e) => setInputMessage(e.target.value)}
                     onKeyDown={handleKeyPress}
-                    placeholder="Type your message..."
+                    placeholder={t('chat.interface.placeholder')}
                     disabled={isLoading}
                     className="flex-1 border-0 bg-transparent focus-visible:ring-0 focus:ring-0 outline-none resize-none text-sm placeholder:text-muted-foreground font-reading px-4 h-9"
                   />
@@ -694,17 +697,17 @@ export const ChatInterface = memo(function ChatInterface({ transcriptionId, acti
                           ? "bg-orange-500/10 text-orange-600 dark:text-orange-400"
                           : "bg-muted text-muted-foreground"
                       )}>
-                        {Math.round((contextInfo.used / contextInfo.limit) * 100)}% context
+                        {Math.round((contextInfo.used / contextInfo.limit) * 100)}% {t('chat.interface.context')}
                       </span>
                       {contextInfo.trimmed > 0 && (
-                        <span className="text-amber-600 dark:text-amber-400" title={`${contextInfo.trimmed} older messages removed to fit context window`}>
-                          ({contextInfo.trimmed} trimmed)
+                        <span className="text-amber-600 dark:text-amber-400" title={t('chat.interface.trimmedTooltip').replace('{count}', String(contextInfo.trimmed))}>
+                          ({contextInfo.trimmed} {t('chat.interface.trimmed')})
                         </span>
                       )}
                     </div>
                   )}
                   <span className="text-carbon-500">
-                    AI can make mistakes. Verify important information.
+                    {t('chat.interface.disclaimer')}
                   </span>
                 </div>
               </div>
@@ -717,9 +720,9 @@ export const ChatInterface = memo(function ChatInterface({ transcriptionId, acti
             <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center mb-4">
               <MessageCircle className="h-8 w-8 text-muted-foreground" />
             </div>
-            <h3 className="text-lg font-bold text-foreground mb-2">How can I help you today?</h3>
+            <h3 className="text-lg font-bold text-foreground mb-2">{t('chat.interface.emptyTitle')}</h3>
             <p className="text-sm text-muted-foreground max-w-sm">
-              Start a conversation about this transcript or ask any questions you have.
+              {t('chat.interface.emptySubtitle')}
             </p>
           </div>
         </div>
@@ -734,7 +737,7 @@ export const ChatInterface = memo(function ChatInterface({ transcriptionId, acti
             onClick={() => setError(null)}
             className="mt-2 text-white hover:bg-red-600"
           >
-            Dismiss
+            {t('chat.interface.dismiss')}
           </Button>
         </div>
       )}

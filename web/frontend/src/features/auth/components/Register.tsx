@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "@/i18n";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,6 +23,7 @@ interface PasswordStrength {
 
 export function Register({ onRegister }: RegisterProps) {
 	const navigate = useNavigate();
+	const { t } = useTranslation();
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
@@ -106,18 +108,18 @@ export function Register({ onRegister }: RegisterProps) {
 						<ScriberrLogo onClick={() => navigate('/')} />
 					</div>
 					<h2 className="text-3xl font-bold text-carbon-900 dark:text-carbon-100">
-						Welcome to Scriberr
+						{t('auth.register.title')}
 					</h2>
 					<p className="mt-2 text-carbon-600 dark:text-carbon-400">
-						Create your admin account to get started
+						{t('auth.register.subtitle')}
 					</p>
 				</div>
 
 				<Card className="bg-white dark:bg-carbon-800 border-carbon-200 dark:border-carbon-700">
 					<CardHeader>
-						<CardTitle className="text-carbon-900 dark:text-carbon-100">Setup Admin Account</CardTitle>
+						<CardTitle className="text-carbon-900 dark:text-carbon-100">{t('auth.register.heading')}</CardTitle>
 						<CardDescription className="text-carbon-600 dark:text-carbon-400">
-							This will be the only account that can access this Scriberr instance
+							{t('auth.register.description')}
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
@@ -130,12 +132,12 @@ export function Register({ onRegister }: RegisterProps) {
 
 							<div className="space-y-2">
 								<Label htmlFor="username" className="text-carbon-700 dark:text-carbon-300">
-									Username
+									{t('auth.register.username')}
 								</Label>
 								<Input
 									id="username"
 									type="text"
-									placeholder="Choose a username (3-50 characters)"
+									placeholder={t('auth.register.usernamePlaceholder')}
 									value={username}
 									onChange={(e) => setUsername(e.target.value)}
 									disabled={loading}
@@ -148,13 +150,13 @@ export function Register({ onRegister }: RegisterProps) {
 
 							<div className="space-y-2">
 								<Label htmlFor="password" className="text-carbon-700 dark:text-carbon-300">
-									Password
+									{t('auth.register.password')}
 								</Label>
 								<div className="relative">
 									<Input
 										id="password"
 										type={showPassword ? "text" : "password"}
-										placeholder="Create a secure password"
+										placeholder={t('auth.register.passwordPlaceholder')}
 										value={password}
 										onChange={(e) => setPassword(e.target.value)}
 										disabled={loading}
@@ -174,13 +176,13 @@ export function Register({ onRegister }: RegisterProps) {
 
 								{password && (
 									<div className="mt-3 space-y-2 p-3 bg-carbon-50 dark:bg-carbon-800 rounded-lg">
-										<p className="text-sm font-medium text-carbon-700 dark:text-carbon-300">Password Requirements:</p>
+										<p className="text-sm font-medium text-carbon-700 dark:text-carbon-300">{t('auth.register.passwordRequirements')}</p>
 										<div className="grid grid-cols-1 gap-1">
-											<PasswordStrengthIndicator label="At least 8 characters" met={passwordStrength.hasMinLength} />
-											<PasswordStrengthIndicator label="One uppercase letter" met={passwordStrength.hasUppercase} />
-											<PasswordStrengthIndicator label="One lowercase letter" met={passwordStrength.hasLowercase} />
-											<PasswordStrengthIndicator label="One number" met={passwordStrength.hasNumber} />
-											<PasswordStrengthIndicator label="One special character" met={passwordStrength.hasSpecialChar} />
+											<PasswordStrengthIndicator label={t('auth.register.req8chars')} met={passwordStrength.hasMinLength} />
+											<PasswordStrengthIndicator label={t('auth.register.reqUppercase')} met={passwordStrength.hasUppercase} />
+											<PasswordStrengthIndicator label={t('auth.register.reqLowercase')} met={passwordStrength.hasLowercase} />
+											<PasswordStrengthIndicator label={t('auth.register.reqNumber')} met={passwordStrength.hasNumber} />
+											<PasswordStrengthIndicator label={t('auth.register.reqSpecial')} met={passwordStrength.hasSpecialChar} />
 										</div>
 									</div>
 								)}
@@ -188,13 +190,13 @@ export function Register({ onRegister }: RegisterProps) {
 
 							<div className="space-y-2">
 								<Label htmlFor="confirmPassword" className="text-carbon-700 dark:text-carbon-300">
-									Confirm Password
+									{t('auth.register.confirmPassword')}
 								</Label>
 								<div className="relative">
 									<Input
 										id="confirmPassword"
 										type={showConfirmPassword ? "text" : "password"}
-										placeholder="Confirm your password"
+										placeholder={t('auth.register.confirmPasswordPlaceholder')}
 										value={confirmPassword}
 										onChange={(e) => setConfirmPassword(e.target.value)}
 										disabled={loading}
@@ -217,7 +219,7 @@ export function Register({ onRegister }: RegisterProps) {
 									<div className={`flex items-center gap-2 text-sm ${passwordsMatch ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
 										}`}>
 										{passwordsMatch ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
-										<span>{passwordsMatch ? "Passwords match" : "Passwords do not match"}</span>
+										<span>{passwordsMatch ? t('auth.register.passwordsMatch') : t('auth.register.passwordsMismatch')}</span>
 									</div>
 								)}
 							</div>
@@ -228,7 +230,7 @@ export function Register({ onRegister }: RegisterProps) {
 								className="w-full"
 								disabled={loading || !username.trim() || !isPasswordValid || !passwordsMatch}
 							>
-								{loading ? "Creating Account..." : "Create Admin Account"}
+								{loading ? t('auth.register.creating') : t('auth.register.submit')}
 							</Button>
 						</form>
 					</CardContent>
@@ -236,7 +238,7 @@ export function Register({ onRegister }: RegisterProps) {
 
 				<div className="text-center">
 					<p className="text-sm text-carbon-600 dark:text-carbon-400">
-						This account will have full administrative access to your Scriberr instance
+						{t('auth.register.adminNote')}
 					</p>
 				</div>
 			</div>

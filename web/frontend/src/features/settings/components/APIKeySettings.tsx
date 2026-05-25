@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { APIKeyTable } from "./APIKeyTable";
 import { APIKeyCreateDialog } from "./APIKeyCreateDialog";
 import { APIKeyDisplayDialog } from "./APIKeyDisplayDialog";
+import { useTranslation } from "@/i18n";
 
 interface CreatedAPIKey {
 	id: string;
@@ -13,6 +14,7 @@ interface CreatedAPIKey {
 }
 
 export function APIKeySettings() {
+	const { t } = useTranslation();
 	const [createDialogOpen, setCreateDialogOpen] = useState(false);
 	const [displayDialogOpen, setDisplayDialogOpen] = useState(false);
 	const [createdKey, setCreatedKey] = useState<CreatedAPIKey | null>(null);
@@ -44,17 +46,17 @@ export function APIKeySettings() {
 				<div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-4">
 					<div>
 						<h3 className="text-lg font-medium text-[var(--text-primary)]">
-							API Keys
+							{t('settings.apikeys.title')}
 						</h3>
 						<p className="text-sm text-[var(--text-secondary)] mt-1">
-							Manage your API keys for external access to Scriberr.
+							{t('settings.apikeys.description')}
 						</p>
 					</div>
 					<Button
 						onClick={handleCreateAPIKey}
 						className="!bg-[var(--brand-gradient)] hover:!opacity-90 !text-black dark:!text-white shadow-lg shadow-orange-500/20 border-none"
 					>
-						Create New API Key
+						{t('settings.apikeys.createNew')}
 					</Button>
 				</div>
 

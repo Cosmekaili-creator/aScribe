@@ -19,6 +19,7 @@ import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
 import type { WhisperXParams } from "./TranscriptionConfigDialog";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useTranslation } from "@/i18n";
 
 interface TranscriptionProfile {
   id: string;
@@ -46,6 +47,7 @@ export function TranscribeDDialog({
   title,
 }: TranscribeDDialogProps) {
   const { getAuthHeaders } = useAuth();
+  const { t } = useTranslation();
   const [profiles, setProfiles] = useState<TranscriptionProfile[]>([]);
   const [selectedProfileId, setSelectedProfileId] = useState<string>("");
   const [profilesLoading, setProfilesLoading] = useState(false);
@@ -130,10 +132,10 @@ export function TranscribeDDialog({
       <DialogContent className="sm:max-w-md glass-card rounded-[var(--radius-card)] p-0 gap-0 overflow-hidden border border-[var(--border-subtle)] shadow-[var(--shadow-float)]">
         <DialogHeader className="p-6 pb-2">
           <DialogTitle className="text-xl font-bold tracking-tight text-[var(--text-primary)]">
-            {title || "Transcribe with Profile"}
+            {title || t('transcription.dialog.title')}
           </DialogTitle>
           <DialogDescription className="text-[var(--text-secondary)] text-sm mt-1.5">
-            Choose a saved profile to start transcription with your preferred settings.
+            {t('transcription.dialog.description')}
           </DialogDescription>
         </DialogHeader>
 
@@ -142,17 +144,17 @@ export function TranscribeDDialog({
         <div className="space-y-4 px-6 py-2">
           <div className="space-y-2">
             <Label htmlFor="profile" className="text-[var(--text-secondary)] font-medium">
-              Select Profile
+              {t('transcription.dialog.selectProfile')}
             </Label>
 
             {profilesLoading ? (
               <div className="flex items-center space-x-2 p-3 bg-[var(--bg-main)]/50 rounded-[var(--radius-btn)] border border-[var(--border-subtle)]">
                 <Loader2 className="h-4 w-4 animate-spin text-[var(--text-tertiary)]" />
-                <span className="text-sm text-[var(--text-secondary)]">Loading profiles...</span>
+                <span className="text-sm text-[var(--text-secondary)]">{t('transcription.dialog.loadingProfiles')}</span>
               </div>
             ) : profiles.length === 0 ? (
               <div className="p-3 bg-[var(--bg-main)]/50 rounded-[var(--radius-btn)] border border-[var(--border-subtle)]">
-                <span className="text-sm text-[var(--text-secondary)]">No profiles available</span>
+                <span className="text-sm text-[var(--text-secondary)]">{t('transcription.dialog.noProfiles')}</span>
               </div>
             ) : (
               <Select
@@ -160,7 +162,7 @@ export function TranscribeDDialog({
                 onValueChange={handleProfileChange}
               >
                 <SelectTrigger className="h-11 rounded-[var(--radius-btn)] bg-[var(--bg-main)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:ring-[var(--brand-light)] focus:border-[var(--brand-solid)] shadow-none">
-                  <SelectValue placeholder="Choose a profile..." />
+                  <SelectValue placeholder={t('transcription.dialog.profilePlaceholder')} />
                 </SelectTrigger>
                 <SelectContent className="glass-card rounded-[var(--radius-btn)] border border-[var(--border-subtle)] shadow-[var(--shadow-float)]">
                   {/* All profiles */}
@@ -175,7 +177,7 @@ export function TranscribeDDialog({
                           <span>{profile.name}</span>
                           {defaultProfile && profile.id === defaultProfile.id && (
                             <span className="text-xs text-[var(--success-solid)] bg-[var(--success-translucent)] px-1.5 py-0.5 rounded">
-                              Default
+                              {t('transcription.dialog.default')}
                             </span>
                           )}
                         </div>
@@ -193,20 +195,20 @@ export function TranscribeDDialog({
           </div>
 
           <div className="space-y-2">
-            <Label className="text-[var(--text-secondary)] font-medium">Number of speakers</Label>
+            <Label className="text-[var(--text-secondary)] font-medium">{t('transcription.dialog.speakerCount')}</Label>
             <Select value={String(speakersExpected)} onValueChange={v => setSpeakersExpected(Number(v))}>
               <SelectTrigger className="h-11 rounded-[var(--radius-btn)] bg-[var(--bg-main)] border border-[var(--border-subtle)] text-[var(--text-primary)] focus:ring-[var(--brand-light)] focus:border-[var(--brand-solid)] shadow-none">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="glass-card rounded-[var(--radius-btn)] border border-[var(--border-subtle)] shadow-[var(--shadow-float)]">
-                <SelectItem value="0" className="text-[var(--text-primary)] focus:bg-[var(--brand-light)] focus:text-[var(--brand-solid)] rounded-[8px] my-1 mx-1 cursor-pointer">Auto-detect</SelectItem>
+                <SelectItem value="0" className="text-[var(--text-primary)] focus:bg-[var(--brand-light)] focus:text-[var(--brand-solid)] rounded-[8px] my-1 mx-1 cursor-pointer">{t('transcription.dialog.autoDetect')}</SelectItem>
                 {[2, 3, 4, 5, 6].map(n => (
-                  <SelectItem key={n} value={String(n)} className="text-[var(--text-primary)] focus:bg-[var(--brand-light)] focus:text-[var(--brand-solid)] rounded-[8px] my-1 mx-1 cursor-pointer">{n} speakers</SelectItem>
+                  <SelectItem key={n} value={String(n)} className="text-[var(--text-primary)] focus:bg-[var(--brand-light)] focus:text-[var(--brand-solid)] rounded-[8px] my-1 mx-1 cursor-pointer">{t('transcription.dialog.speakers').replace('{n}', String(n))}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
             <p className="text-xs text-[var(--text-tertiary)]">
-              Improves speaker separation when you know how many people are speaking.
+              {t('transcription.dialog.speakerHint')}
             </p>
           </div>
         </div>
@@ -217,7 +219,7 @@ export function TranscribeDDialog({
             onClick={() => onOpenChange(false)}
             className="rounded-[var(--radius-btn)] text-[var(--text-secondary)] hover:bg-[var(--secondary)] hover:text-[var(--text-primary)]"
           >
-            Cancel
+            {t('transcription.dialog.cancel')}
           </Button>
           <Button
             onClick={handleStartTranscription}
@@ -227,10 +229,10 @@ export function TranscribeDDialog({
             {loading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Starting...
+                {t('transcription.dialog.starting')}
               </>
             ) : (
-              "Start Transcription"
+              t('transcription.dialog.start')
             )}
           </Button>
         </DialogFooter>

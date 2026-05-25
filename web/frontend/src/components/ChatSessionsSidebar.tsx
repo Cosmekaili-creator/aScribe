@@ -17,6 +17,7 @@ import {
 } from "./ui/alert-dialog"
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { useChatEvents } from '../contexts/ChatEventsContext'
+import { useTranslation } from '@/i18n'
 
 interface ChatSession {
   id: string
@@ -35,6 +36,7 @@ export function ChatSessionsSidebar({
   activeSessionId?: string
   onSessionChange: (id: string | null) => void
 }) {
+  const { t } = useTranslation()
   const { getAuthHeaders } = useAuth()
   const { subscribeSessionTitleUpdated, subscribeTitleGenerating } = useChatEvents()
   const [sessions, setSessions] = useState<ChatSession[]>([])
@@ -162,14 +164,14 @@ export function ChatSessionsSidebar({
       {/* Header */}
       <div className="flex-shrink-0 p-4">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold text-foreground">Chats</h2>
+          <h2 className="text-lg font-bold text-foreground">{t('chat.sessions.title')}</h2>
           <Dialog open={showNewSessionDialog} onOpenChange={setShowNewSessionDialog}>
             <DialogTrigger asChild>
               <Button
                 variant="ghost"
                 size="sm"
                 className="h-8 w-8 p-0 text-muted-foreground hover:text-[#FF6D20] hover:bg-orange-500/10 transition-colors"
-                title="New Chat"
+                title={t('chat.sessions.newChat')}
               >
                 <Plus className="h-5 w-5" />
               </Button>
@@ -180,18 +182,18 @@ export function ChatSessionsSidebar({
                   <div className="h-9 w-9 rounded-full bg-gradient-to-br from-[#FFAB40] to-[#FF6D20] flex items-center justify-center shadow-md">
                     <Sparkles className="h-4 w-4 text-white" />
                   </div>
-                  New Chat Session
+                  {t('chat.sessions.newChatSession')}
                 </DialogTitle>
                 <p className="text-sm text-[var(--text-tertiary)] mt-1">
-                  Start a conversation about this transcript
+                  {t('chat.sessions.newChatSubtitle')}
                 </p>
               </DialogHeader>
               <div className="p-5 space-y-5">
                 <div className="space-y-2">
-                  <Label htmlFor="model" className="text-sm font-medium text-[var(--text-secondary)]">Model</Label>
+                  <Label htmlFor="model" className="text-sm font-medium text-[var(--text-secondary)]">{t('chat.sessions.model')}</Label>
                   <Select value={selectedModel} onValueChange={setSelectedModel}>
                     <SelectTrigger className="w-full h-11 bg-[var(--bg-main)] border-[var(--border-subtle)] text-[var(--text-primary)] focus:ring-2 focus:ring-[var(--brand-solid)]/20 focus:border-[var(--brand-solid)] hover:border-[var(--brand-solid)]/50 transition-all rounded-xl">
-                      <SelectValue placeholder="Select a model" />
+                      <SelectValue placeholder={t('chat.sessions.selectModel')} />
                     </SelectTrigger>
                     <SelectContent className="bg-[var(--bg-card)] border-[var(--border-subtle)] rounded-xl shadow-lg">
                       {(availableModels || []).map(m => (
@@ -208,13 +210,13 @@ export function ChatSessionsSidebar({
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="title" className="text-sm font-medium text-[var(--text-secondary)]">
-                    Title <span className="text-[var(--text-tertiary)] font-normal">(optional)</span>
+                    {t('chat.sessions.titleLabel')} <span className="text-[var(--text-tertiary)] font-normal">({t('chat.sessions.optional')})</span>
                   </Label>
                   <Input
                     id="title"
                     value={newSessionTitle}
                     onChange={e => setNewSessionTitle(e.target.value)}
-                    placeholder="Auto-generated after 2 exchanges..."
+                    placeholder={t('chat.sessions.titlePlaceholder')}
                     className="h-11 bg-[var(--bg-main)] border-[var(--border-subtle)] focus-visible:ring-2 focus-visible:ring-[var(--brand-solid)]/20 focus-visible:border-[var(--brand-solid)] transition-all rounded-xl"
                   />
                 </div>
@@ -225,7 +227,7 @@ export function ChatSessionsSidebar({
                   onClick={() => setShowNewSessionDialog(false)}
                   className="h-11 px-6 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-main)] rounded-full w-full sm:w-auto"
                 >
-                  Cancel
+                  {t('chat.sessions.cancel')}
                 </Button>
                 <Button
                   onClick={createSession}
@@ -233,7 +235,7 @@ export function ChatSessionsSidebar({
                   className="h-11 px-6 bg-gradient-to-br from-[#FFAB40] to-[#FF3D00] text-white hover:scale-[1.02] active:scale-[0.98] transition-transform shadow-md disabled:opacity-50 disabled:cursor-not-allowed rounded-full w-full sm:w-auto"
                 >
                   <MessageSquare className="h-4 w-4 mr-2" />
-                  Start Chat
+                  {t('chat.sessions.startChat')}
                 </Button>
               </div>
             </DialogContent>
@@ -244,7 +246,7 @@ export function ChatSessionsSidebar({
         <div className="relative mb-4">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-[var(--text-tertiary)]" />
           <Input
-            placeholder="Search conversations..."
+            placeholder={t('chat.sessions.searchPlaceholder')}
             className="pl-10 bg-[var(--bg-card)] border-[var(--border-subtle)] shadow-sm text-sm focus-visible:ring-[var(--brand-solid)] transition-all"
             disabled
           />
@@ -257,8 +259,8 @@ export function ChatSessionsSidebar({
           <div className="flex flex-col items-center justify-center py-12 text-carbon-500 dark:text-carbon-400">
             <MessageSquare className="h-12 w-12 mb-4 text-carbon-300 dark:text-carbon-600" />
             <div className="text-sm text-center">
-              <p className="font-medium">No conversations yet</p>
-              <p className="mt-1 text-xs">Start a new chat to begin!</p>
+              <p className="font-medium">{t('chat.sessions.empty')}</p>
+              <p className="mt-1 text-xs">{t('chat.sessions.emptyHint')}</p>
             </div>
           </div>
         ) : (
@@ -291,9 +293,9 @@ export function ChatSessionsSidebar({
                       />
                     ) : (
                       <h3 className={`text-sm font-medium truncate leading-tight ${session.id === activeSessionId ? 'text-[#FF6D20]' : 'text-foreground group-hover:text-foreground'}`}>
-                        {session.title || 'Untitled Chat'}
+                        {session.title || t('chat.sessions.untitled')}
                         {generatingTitleIds.has(session.id) && (
-                          <span className="inline-flex items-center ml-2 text-brand-500 dark:text-brand-400" title="Generating title...">
+                          <span className="inline-flex items-center ml-2 text-brand-500 dark:text-brand-400" title={t('chat.sessions.generatingTitle')}>
                             <Sparkles className="h-3 w-3 animate-pulse" />
                           </span>
                         )}
@@ -317,7 +319,7 @@ export function ChatSessionsSidebar({
                         setEditingId(session.id);
                         setEditTitle(session.title);
                       }}
-                      title="Rename"
+                      title={t('chat.sessions.rename')}
                     >
                       <Edit2 className="h-3.5 w-3.5" />
                     </Button>
@@ -329,7 +331,7 @@ export function ChatSessionsSidebar({
                         e.stopPropagation();
                         initiateDelete(session.id);
                       }}
-                      title="Delete"
+                      title={t('chat.sessions.delete')}
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                     </Button>
@@ -345,18 +347,18 @@ export function ChatSessionsSidebar({
       <AlertDialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>
         <AlertDialogContent className="bg-[#FFFFFF] dark:bg-[#0A0A0A] border-[var(--border-subtle)] shadow-[var(--shadow-float)] rounded-[var(--radius-card)]">
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Chat Session?</AlertDialogTitle>
+            <AlertDialogTitle>{t('chat.sessions.deleteTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the chat history for this session.
+              {t('chat.sessions.deleteDescription')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="rounded-full border-[var(--border-subtle)] hover:bg-[var(--bg-main)]">Cancel</AlertDialogCancel>
+            <AlertDialogCancel className="rounded-full border-[var(--border-subtle)] hover:bg-[var(--bg-main)]">{t('chat.sessions.cancel')}</AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmDelete}
               className="rounded-full bg-red-500 text-white hover:bg-red-600 shadow-sm"
             >
-              Delete
+              {t('chat.sessions.delete')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

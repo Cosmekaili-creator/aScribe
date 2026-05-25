@@ -48,6 +48,7 @@ const JobStatusMonitor = memo(function JobStatusMonitor({ jobId }: { jobId: stri
 import { DebouncedSearchInput } from "@/components/DebouncedSearchInput";
 import { SwipeableItem } from "@/components/ui/swipeable-item";
 import { useSwipeHint } from "@/hooks/use-swipe-hint";
+import { useTranslation } from "@/i18n";
 
 
 
@@ -61,6 +62,7 @@ export const AudioFilesTable = memo(function AudioFilesTable({
 }: AudioFilesTableProps) {
 	const navigate = useNavigate();
 	const { getAuthHeaders } = useAuth();
+	const { t } = useTranslation();
 	const { shouldShowHint, markHintShown } = useSwipeHint();
 
 	// Table State
@@ -626,7 +628,7 @@ export const AudioFilesTable = memo(function AudioFilesTable({
 							<span className="text-xs font-medium tabular-nums">{percentage}%</span>
 						</div>
 					</TooltipTrigger>
-					<TooltipContent>Processing Multi-Track</TooltipContent>
+					<TooltipContent>{t('files.table.processingMultiTrack')}</TooltipContent>
 				</Tooltip>
 			);
 		}
@@ -640,7 +642,7 @@ export const AudioFilesTable = memo(function AudioFilesTable({
 								<Check className="h-5 w-5" strokeWidth={2.5} />
 							</div>
 						</TooltipTrigger>
-						<TooltipContent>Completed</TooltipContent>
+						<TooltipContent>{t('files.table.statusCompleted')}</TooltipContent>
 					</Tooltip>
 				);
 			case "processing":
@@ -651,7 +653,7 @@ export const AudioFilesTable = memo(function AudioFilesTable({
 								<Loader2 className="h-4 w-4 animate-spin" strokeWidth={2.5} />
 							</div>
 						</TooltipTrigger>
-						<TooltipContent>Processing</TooltipContent>
+						<TooltipContent>{t('files.table.statusProcessing')}</TooltipContent>
 					</Tooltip>
 				);
 			case "failed":
@@ -662,7 +664,7 @@ export const AudioFilesTable = memo(function AudioFilesTable({
 								<AlertCircle className="h-5 w-5" strokeWidth={2.5} />
 							</div>
 						</TooltipTrigger>
-						<TooltipContent>Failed</TooltipContent>
+						<TooltipContent>{t('files.table.statusFailed')}</TooltipContent>
 					</Tooltip>
 				);
 			case "pending": {
@@ -676,7 +678,7 @@ export const AudioFilesTable = memo(function AudioFilesTable({
 								</div>
 							</div>
 						</TooltipTrigger>
-						<TooltipContent>Queue Position: #{position}</TooltipContent>
+						<TooltipContent>{t('files.table.queuePosition').replace('{position}', String(position))}</TooltipContent>
 					</Tooltip>
 				);
 			}
@@ -688,7 +690,7 @@ export const AudioFilesTable = memo(function AudioFilesTable({
 								<Clock className="h-4 w-4" />
 							</div>
 						</TooltipTrigger>
-						<TooltipContent>Uploaded (Ready to Transcribe)</TooltipContent>
+						<TooltipContent>{t('files.table.statusUploaded')}</TooltipContent>
 					</Tooltip>
 				);
 			default:
@@ -699,7 +701,7 @@ export const AudioFilesTable = memo(function AudioFilesTable({
 								<Clock className="h-4 w-4" />
 							</div>
 						</TooltipTrigger>
-						<TooltipContent>Unknown Status</TooltipContent>
+						<TooltipContent>{t('files.table.statusUnknown')}</TooltipContent>
 					</Tooltip>
 				);
 		}
@@ -734,7 +736,7 @@ export const AudioFilesTable = memo(function AudioFilesTable({
 			{/* Toolbar */}
 			<div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
 				<DebouncedSearchInput
-					placeholder="Search recordings..."
+					placeholder={t('files.table.searchPlaceholder')}
 					value={globalFilter ?? ""}
 					onChange={(value) => setGlobalFilter(String(value))}
 					className="w-full sm:w-80 shadow-sm border-transparent focus:border-[var(--brand-solid)] bg-white dark:bg-zinc-900"
@@ -753,9 +755,9 @@ export const AudioFilesTable = memo(function AudioFilesTable({
 						<div className="p-4 bg-[var(--bg-main)] rounded-full mb-4">
 							<Music className="h-8 w-8 text-[var(--text-tertiary)]" />
 						</div>
-						<h3 className="text-lg font-medium text-[var(--text-primary)]">No recordings found</h3>
+						<h3 className="text-lg font-medium text-[var(--text-primary)]">{t('files.table.empty')}</h3>
 						<p className="text-[var(--text-secondary)] max-w-sm mt-2">
-							Upload an audio file or start a recording to get started.
+							{t('files.table.emptyHint')}
 						</p>
 					</div>
 				) : (
@@ -825,7 +827,7 @@ export const AudioFilesTable = memo(function AudioFilesTable({
 																<Wand2 className="h-5 w-5" strokeWidth={2} />
 															</Button>
 														</TooltipTrigger>
-														<TooltipContent>Transcribe</TooltipContent>
+														<TooltipContent>{t('files.table.transcribe')}</TooltipContent>
 													</Tooltip>
 
 													<Tooltip>
@@ -839,7 +841,7 @@ export const AudioFilesTable = memo(function AudioFilesTable({
 																<WandAdvancedIcon className="h-5 w-5" strokeWidth={2} />
 															</Button>
 														</TooltipTrigger>
-														<TooltipContent>Transcribe (Advanced)</TooltipContent>
+														<TooltipContent>{t('files.table.transcribeAdvanced')}</TooltipContent>
 													</Tooltip>
 												</>
 											)}
@@ -856,7 +858,7 @@ export const AudioFilesTable = memo(function AudioFilesTable({
 															<StopCircle className="h-5 w-5" strokeWidth={2} />
 														</Button>
 													</TooltipTrigger>
-													<TooltipContent>Stop Transcription</TooltipContent>
+													<TooltipContent>{t('files.table.stop')}</TooltipContent>
 												</Tooltip>
 											) : (
 												<Tooltip>
@@ -870,7 +872,7 @@ export const AudioFilesTable = memo(function AudioFilesTable({
 															<Trash2 className="h-5 w-5" strokeWidth={2} />
 														</Button>
 													</TooltipTrigger>
-													<TooltipContent>Delete</TooltipContent>
+													<TooltipContent>{t('files.table.delete')}</TooltipContent>
 												</Tooltip>
 											)}
 										</div>
@@ -895,7 +897,7 @@ export const AudioFilesTable = memo(function AudioFilesTable({
 							<span className="flex h-5 w-5 items-center justify-center rounded-full bg-[var(--brand-solid)] text-[10px] font-bold text-white shadow-sm">
 								{selectedCount}
 							</span>
-							<span className="text-sm font-medium text-[var(--text-primary)]">Selected</span>
+							<span className="text-sm font-medium text-[var(--text-primary)]">{t('files.table.selected')}</span>
 						</div>
 
 						<div className="h-4 w-px bg-[var(--border-subtle)] mx-1" />
@@ -913,7 +915,7 @@ export const AudioFilesTable = memo(function AudioFilesTable({
 									<Wand2 className="h-4 w-4" />
 								</Button>
 							</TooltipTrigger>
-							<TooltipContent>Transcribe Selected</TooltipContent>
+							<TooltipContent>{t('files.table.transcribeSelected')}</TooltipContent>
 						</Tooltip>
 
 						{/* Bulk Advanced Transcribe */}
@@ -929,7 +931,7 @@ export const AudioFilesTable = memo(function AudioFilesTable({
 									<WandAdvancedIcon className="h-4 w-4" />
 								</Button>
 							</TooltipTrigger>
-							<TooltipContent>Transcribe (Advanced)</TooltipContent>
+							<TooltipContent>{t('files.table.transcribeAdvanced')}</TooltipContent>
 						</Tooltip>
 
 						<div className="h-4 w-px bg-[var(--border-subtle)] mx-1" />
@@ -947,7 +949,7 @@ export const AudioFilesTable = memo(function AudioFilesTable({
 									<Trash2 className="h-4 w-4" />
 								</Button>
 							</TooltipTrigger>
-							<TooltipContent>Delete Selected</TooltipContent>
+							<TooltipContent>{t('files.table.deleteSelected')}</TooltipContent>
 						</Tooltip>
 
 						<div className="h-4 w-px bg-[var(--border-subtle)] mx-1" />
@@ -964,7 +966,7 @@ export const AudioFilesTable = memo(function AudioFilesTable({
 									<X className="h-4 w-4" />
 								</Button>
 							</TooltipTrigger>
-							<TooltipContent>Clear Selection</TooltipContent>
+							<TooltipContent>{t('files.table.clearSelection')}</TooltipContent>
 						</Tooltip>
 					</div>
 				</div>
@@ -999,14 +1001,14 @@ export const AudioFilesTable = memo(function AudioFilesTable({
 			<AlertDialog open={bulkDeleteDialogOpen} onOpenChange={setBulkDeleteDialogOpen}>
 				<AlertDialogContent>
 					<AlertDialogHeader>
-						<AlertDialogTitle>Are you sure?</AlertDialogTitle>
+						<AlertDialogTitle>{t('files.table.bulkDeleteTitle')}</AlertDialogTitle>
 						<AlertDialogDescription>
-							This will permanently delete {Object.keys(rowSelection).length} selected recordings.
+							{t('files.table.bulkDeleteDesc').replace('{count}', String(Object.keys(rowSelection).length))}
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
-						<AlertDialogCancel>Cancel</AlertDialogCancel>
-						<AlertDialogAction onClick={handleBulkDelete} className="bg-red-600 hover:bg-red-700">Delete</AlertDialogAction>
+						<AlertDialogCancel>{t('files.table.cancel')}</AlertDialogCancel>
+						<AlertDialogAction onClick={handleBulkDelete} className="bg-red-600 hover:bg-red-700">{t('files.table.delete')}</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>
 			</AlertDialog>
@@ -1029,17 +1031,15 @@ export const AudioFilesTable = memo(function AudioFilesTable({
 				<AlertDialogContent className="glass-card bg-[var(--bg-main)]/90 border-[var(--border-subtle)]">
 					<AlertDialogHeader>
 						<AlertDialogTitle className="text-[var(--text-primary)]">
-							Stop Transcription?
+							{t('files.table.stopTitle')}
 						</AlertDialogTitle>
 						<AlertDialogDescription className="text-[var(--text-secondary)]">
-							Are you sure you want to stop the transcription process
-							for "{selectedFile?.title || (selectedFile ? getFileName(selectedFile.audio_path) : "")}"?
-							Partially transcribed data may be saved.
+							{t('files.table.stopDesc').replace('{file}', selectedFile?.title || (selectedFile ? getFileName(selectedFile.audio_path) : ''))}
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
 						<AlertDialogCancel className="bg-[var(--secondary)] border-[var(--border-subtle)] text-[var(--text-secondary)] hover:bg-[var(--bg-card)]">
-							Cancel
+							{t('files.table.cancel')}
 						</AlertDialogCancel>
 						<AlertDialogAction
 							className="bg-[var(--warning)] text-white hover:opacity-90"
@@ -1048,10 +1048,10 @@ export const AudioFilesTable = memo(function AudioFilesTable({
 							{killingJobs.has(selectedFile?.id || "") ? (
 								<>
 									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-									Stopping...
+									{t('files.table.stopping')}
 								</>
 							) : (
-								"Stop Transcription"
+								t('files.table.stopAction')
 							)}
 						</AlertDialogAction>
 					</AlertDialogFooter>
@@ -1063,25 +1063,21 @@ export const AudioFilesTable = memo(function AudioFilesTable({
 				<AlertDialogContent className="glass-card bg-[var(--bg-main)]/90 border-[var(--border-subtle)]">
 					<AlertDialogHeader>
 						<AlertDialogTitle className="text-[var(--text-primary)]">
-							Delete Audio File
+							{t('files.table.deleteTitle')}
 						</AlertDialogTitle>
 						<AlertDialogDescription className="text-[var(--text-secondary)]">
-							Are you sure you want to delete "
-							{selectedFile?.title || (selectedFile ? getFileName(selectedFile.audio_path) : "")}
-							"? This action cannot be undone and will
-							permanently remove the audio file and any
-							transcription data.
+							{t('files.table.deleteDesc').replace('{file}', selectedFile?.title || (selectedFile ? getFileName(selectedFile.audio_path) : ''))}
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
 						<AlertDialogCancel className="bg-[var(--secondary)] border-[var(--border-subtle)] text-[var(--text-secondary)] hover:bg-[var(--bg-card)]">
-							Cancel
+							{t('files.table.cancel')}
 						</AlertDialogCancel>
 						<AlertDialogAction
 							className="bg-[var(--error)] text-white hover:opacity-90"
 							onClick={handleConfirmDelete}
 						>
-							Delete
+							{t('files.table.delete')}
 						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>

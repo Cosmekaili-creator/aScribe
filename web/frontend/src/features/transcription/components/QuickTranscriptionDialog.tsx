@@ -13,6 +13,7 @@ import { Upload, Clock, CheckCircle, XCircle, FileAudio, Zap } from "lucide-reac
 import { useTranscriptionProfiles, useQuickTranscription } from "@/features/transcription/hooks/useAudioFiles";
 import type { Profile } from "@/features/transcription/hooks/useAudioFiles";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useTranslation } from "@/i18n";
 
 
 
@@ -49,6 +50,7 @@ interface QuickTranscriptionDialogProps {
 
 export function QuickTranscriptionDialog({ isOpen, onClose }: QuickTranscriptionDialogProps) {
   const { getAuthHeaders } = useAuth();
+  const { t } = useTranslation();
   const { data: profiles = [] } = useTranscriptionProfiles();
   const { mutateAsync: submitQuickTranscription } = useQuickTranscription();
 
@@ -109,7 +111,7 @@ export function QuickTranscriptionDialog({ isOpen, onClose }: QuickTranscription
       startPolling(jobData.id);
 
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to submit transcription");
+      setError(err instanceof Error ? err.message : t('transcription.quick.submitError'));
       setStep("profile");
     }
   };
@@ -194,7 +196,7 @@ export function QuickTranscriptionDialog({ isOpen, onClose }: QuickTranscription
     const now = new Date();
     const hoursRemaining = Math.ceil((expiryTime.getTime() - now.getTime()) / (1000 * 60 * 60));
 
-    return `Expires in ${hoursRemaining} hours`;
+    return t('transcription.quick.expiresIn').replace('{hours}', String(hoursRemaining));
   };
 
   return (
@@ -203,10 +205,10 @@ export function QuickTranscriptionDialog({ isOpen, onClose }: QuickTranscription
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Zap className="h-5 w-5 text-[var(--warning-solid)]" />
-            Quick Transcription
+            {t('transcription.quick.title')}
           </DialogTitle>
           <DialogDescription>
-            Fast transcription without saving to your library - files auto-delete after 6 hours
+            {t('transcription.quick.description')}
           </DialogDescription>
         </DialogHeader>
 
@@ -219,10 +221,10 @@ export function QuickTranscriptionDialog({ isOpen, onClose }: QuickTranscription
               <CardContent className="flex flex-col items-center justify-center py-12">
                 <Upload className="h-12 w-12 text-[var(--text-tertiary)] mb-4" />
                 <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">
-                  Select Audio File
+                  {t('transcription.quick.selectFile')}
                 </h3>
                 <p className="text-[var(--text-secondary)] text-center">
-                  Click to choose an audio file from your device
+                  {t('transcription.quick.selectFileHint')}
                 </p>
               </CardContent>
             </Card>
@@ -253,11 +255,11 @@ export function QuickTranscriptionDialog({ isOpen, onClose }: QuickTranscription
 
             <div className="space-y-2">
               <label className="text-sm font-medium text-[var(--text-primary)]">
-                Transcription Profile
+                {t('transcription.quick.profile')}
               </label>
               <Select value={selectedProfile} onValueChange={setSelectedProfile}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a profile or use default settings" />
+                  <SelectValue placeholder={t('transcription.quick.profilePlaceholder')} />
                 </SelectTrigger>
                 <SelectContent>
                   {profiles.map((profile) => (
@@ -266,7 +268,7 @@ export function QuickTranscriptionDialog({ isOpen, onClose }: QuickTranscription
                         <span>{profile.name}</span>
                         {profile.is_default && (
                           <span className="text-xs bg-[var(--warning-translucent)] text-[var(--warning-solid)] px-2 py-0.5 rounded">
-                            Default
+                            {t('transcription.quick.default')}
                           </span>
                         )}
                       </div>
@@ -275,7 +277,7 @@ export function QuickTranscriptionDialog({ isOpen, onClose }: QuickTranscription
                 </SelectContent>
               </Select>
               <p className="text-xs text-[var(--text-tertiary)]">
-                Leave empty to use default settings
+                {t('transcription.quick.profileHint')}
               </p>
             </div>
 
@@ -287,10 +289,10 @@ export function QuickTranscriptionDialog({ isOpen, onClose }: QuickTranscription
 
             <div className="flex gap-2 justify-end">
               <Button variant="outline" onClick={handleClose}>
-                Cancel
+                {t('transcription.quick.cancel')}
               </Button>
               <Button onClick={handleSubmit}>
-                Start Transcription
+                {t('transcription.quick.start')}
               </Button>
             </div>
           </div>
@@ -301,10 +303,10 @@ export function QuickTranscriptionDialog({ isOpen, onClose }: QuickTranscription
             <div className="flex flex-col items-center">
               <Clock className="h-12 w-12 text-[var(--warning-solid)] animate-spin mb-4" />
               <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">
-                Transcribing Audio...
+                {t('transcription.quick.processing')}
               </h3>
               <p className="text-[var(--text-secondary)]">
-                This may take a few minutes depending on the audio length
+                {t('transcription.quick.processingHint')}
               </p>
               <p className="text-xs text-[var(--text-tertiary)] mt-2">
                 {getExpiryInfo()}
@@ -312,13 +314,13 @@ export function QuickTranscriptionDialog({ isOpen, onClose }: QuickTranscription
             </div>
 
             <div className="text-left bg-[var(--bg-card)] p-4 rounded-[var(--radius-card)] border border-[var(--border-subtle)]">
-              <h4 className="font-medium mb-2 text-[var(--text-primary)]">Job Details:</h4>
-              <p className="text-sm text-[var(--text-secondary)]">ID: {job.id}</p>
-              <p className="text-sm text-[var(--text-secondary)]">Status: {job.status}</p>
+              <h4 className="font-medium mb-2 text-[var(--text-primary)]">{t('transcription.quick.jobDetails')}</h4>
+              <p className="text-sm text-[var(--text-secondary)]">{t('transcription.quick.jobId').replace('{id}', job.id)}</p>
+              <p className="text-sm text-[var(--text-secondary)]">{t('transcription.quick.jobStatus').replace('{status}', job.status)}</p>
             </div>
 
             <Button variant="outline" onClick={handleClose}>
-              Cancel
+              {t('transcription.quick.cancel')}
             </Button>
           </div>
         )}
@@ -331,7 +333,7 @@ export function QuickTranscriptionDialog({ isOpen, onClose }: QuickTranscription
                   <CheckCircle className="h-5 w-5 text-[var(--success-solid)]" />
                   <div>
                     <h3 className="font-medium text-[var(--text-primary)]">
-                      Transcription Complete
+                      {t('transcription.quick.complete')}
                     </h3>
                     <p className="text-sm text-[var(--success-solid)]">
                       {getExpiryInfo()}
@@ -352,10 +354,10 @@ export function QuickTranscriptionDialog({ isOpen, onClose }: QuickTranscription
                       }
                     }}
                   >
-                    Copy Text
+                    {t('transcription.quick.copyText')}
                   </Button>
                   <Button onClick={handleClose}>
-                    Close
+                    {t('transcription.quick.close')}
                   </Button>
                 </div>
               </>
@@ -365,20 +367,20 @@ export function QuickTranscriptionDialog({ isOpen, onClose }: QuickTranscription
                   <XCircle className="h-5 w-5 text-[var(--error)]" />
                   <div>
                     <h3 className="font-medium text-[var(--text-primary)]">
-                      Transcription Failed
+                      {t('transcription.quick.failed')}
                     </h3>
                     <p className="text-sm text-[var(--error)]">
-                      {job.error_message || "An unknown error occurred"}
+                      {job.error_message || t('transcription.quick.unknownError')}
                     </p>
                   </div>
                 </div>
 
                 <div className="flex gap-2 justify-end">
                   <Button variant="outline" onClick={() => setStep("upload")}>
-                    Try Again
+                    {t('transcription.quick.tryAgain')}
                   </Button>
                   <Button onClick={handleClose}>
-                    Close
+                    {t('transcription.quick.close')}
                   </Button>
                 </div>
               </>

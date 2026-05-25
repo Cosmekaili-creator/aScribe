@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useTranslation } from "@/i18n";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
@@ -58,6 +59,7 @@ interface FormFieldProps {
  * Follows Scriberr design system
  */
 export function FormField({ label, htmlFor, description, optional, children }: FormFieldProps) {
+    const { t } = useTranslation();
     return (
         <div className="space-y-2">
             <div className="flex items-center gap-2">
@@ -67,7 +69,7 @@ export function FormField({ label, htmlFor, description, optional, children }: F
                 >
                     {label}
                     {optional && (
-                        <span className="ml-1 text-[var(--text-tertiary)] font-normal">(optional)</span>
+                        <span className="ml-1 text-[var(--text-tertiary)] font-normal">{t('transcription.form.optional')}</span>
                     )}
                 </Label>
                 {description && (
@@ -249,11 +251,12 @@ export function SliderField({ label, value, onValueChange, min, max, step }: {
  * AdvancedAccordion - Collapsible "Advanced Settings" section.
  */
 export function AdvancedAccordion({ children }: { children: ReactNode }) {
+    const { t } = useTranslation();
     return (
         <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="advanced" className="border border-[var(--border-subtle)] rounded-xl px-4">
                 <AccordionTrigger className="text-sm font-medium text-[var(--text-primary)] hover:no-underline py-4">
-                    Advanced Settings
+                    {t('transcription.form.advanced')}
                 </AccordionTrigger>
                 <AccordionContent className="pb-4 space-y-4">
                     {children}

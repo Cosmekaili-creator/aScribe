@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent } from '@/components/ui/card';
 import { Loader2, Users, Save, X } from 'lucide-react';
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useTranslation } from "@/i18n";
 // Note: Install framer-motion for enhanced animations
 // import { motion, AnimatePresence } from 'framer-motion';
 
@@ -31,6 +32,7 @@ const SpeakerRenameDialog: React.FC<SpeakerRenameDialogProps> = ({
   initialSpeakers = [],
 }) => {
   const { getAuthHeaders } = useAuth();
+  const { t } = useTranslation();
   const [speakerMappings, setSpeakerMappings] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -138,14 +140,14 @@ const SpeakerRenameDialog: React.FC<SpeakerRenameDialogProps> = ({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Users className="h-5 w-5" />
-            Rename Speakers
+            {t('detail.speakers.title')}
           </DialogTitle>
         </DialogHeader>
 
         {isLoading ? (
           <div className="flex items-center justify-center py-8">
             <Loader2 className="h-6 w-6 animate-spin" />
-            <span className="ml-2 text-sm text-muted-foreground">Loading speakers...</span>
+            <span className="ml-2 text-sm text-muted-foreground">{t('detail.speakers.loading')}</span>
           </div>
         ) : (
           <div className="space-y-4">
@@ -159,7 +161,7 @@ const SpeakerRenameDialog: React.FC<SpeakerRenameDialogProps> = ({
               <Card>
                 <CardContent className="pt-6 text-center text-muted-foreground">
                   <Users className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                  <p>No speakers found with diarization enabled.</p>
+                  <p>{t('detail.speakers.noSpeakers')}</p>
                 </CardContent>
               </Card>
             ) : (
@@ -176,7 +178,7 @@ const SpeakerRenameDialog: React.FC<SpeakerRenameDialogProps> = ({
                       id={`speaker-${speaker}`}
                       value={speakerMappings[speaker] || ''}
                       onChange={(e) => handleSpeakerNameChange(speaker, e.target.value)}
-                      placeholder={`Enter custom name for ${speaker}`}
+                      placeholder={t('detail.speakers.namePlaceholder').replace('{speaker}', speaker)}
                       className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
@@ -189,7 +191,7 @@ const SpeakerRenameDialog: React.FC<SpeakerRenameDialogProps> = ({
         <DialogFooter className="gap-2">
           <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isSaving}>
             <X className="h-4 w-4 mr-1" />
-            Cancel
+            {t('detail.speakers.cancel')}
           </Button>
           <Button
             onClick={saveSpeakerMappings}
@@ -199,12 +201,12 @@ const SpeakerRenameDialog: React.FC<SpeakerRenameDialogProps> = ({
             {isSaving ? (
               <>
                 <Loader2 className="h-4 w-4 mr-1 animate-spin" />
-                Saving...
+                {t('detail.speakers.saving')}
               </>
             ) : (
               <>
                 <Save className="h-4 w-4 mr-1" />
-                Save
+                {t('detail.speakers.save')}
               </>
             )}
           </Button>

@@ -4,6 +4,7 @@ import { ChatInterface } from "@/components/ChatInterface";
 import { Button } from "@/components/ui/button";
 import { X, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/i18n";
 
 interface ChatSidePanelProps {
     transcriptionId: string;
@@ -14,6 +15,7 @@ interface ChatSidePanelProps {
 
 export function ChatSidePanel({ transcriptionId, isOpen, onClose, isMobile }: ChatSidePanelProps) {
     // view state: 'list' (sessions) or 'chat' (active session)
+    const { t } = useTranslation();
     const [view, setView] = useState<'list' | 'chat'>('list');
     const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
 
@@ -57,7 +59,7 @@ export function ChatSidePanel({ transcriptionId, isOpen, onClose, isMobile }: Ch
                         </Button>
                     )}
                     <div className="flex items-center gap-2 font-bold text-[var(--text-primary)]">
-                        <span>{view === 'chat' ? 'Chat' : 'Sessions'}</span>
+                        <span>{view === 'chat' ? t('chat.title') : t('chat.sessions.title')}</span>
                     </div>
                 </div>
                 <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8 text-[var(--text-tertiary)] hover:text-[var(--text-primary)]">

@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useTranslation } from "@/i18n";
 
 interface CreatedAPIKey {
 	id: string;
@@ -32,6 +33,7 @@ export function APIKeyCreateDialog({
 	onOpenChange,
 	onKeyCreated,
 }: APIKeyCreateDialogProps) {
+	const { t } = useTranslation();
 	const [name, setName] = useState("");
 	const [description, setDescription] = useState("");
 	const [isCreating, setIsCreating] = useState(false);
@@ -42,7 +44,7 @@ export function APIKeyCreateDialog({
 		e.preventDefault();
 
 		if (!name.trim()) {
-			setError("Name is required");
+			setError(t('settings.apikeys.create.nameRequired'));
 			return;
 		}
 
@@ -78,11 +80,11 @@ export function APIKeyCreateDialog({
 				setError("");
 			} else {
 				const errorData = await response.json();
-				setError(errorData.error || "Failed to create API key");
+				setError(errorData.error || t('settings.apikeys.create.failed'));
 			}
 		} catch (error) {
 			console.error("Error creating API key:", error);
-			setError("Failed to create API key. Please try again.");
+			setError(t('settings.apikeys.create.failedRetry'));
 		} finally {
 			setIsCreating(false);
 		}
@@ -103,34 +105,33 @@ export function APIKeyCreateDialog({
 		<Dialog open={open} onOpenChange={handleOpenChange}>
 			<DialogContent className="sm:max-w-md bg-[var(--bg-card)] border-[var(--border-subtle)] text-[var(--text-primary)]">
 				<DialogHeader>
-					<DialogTitle>Create New API Key</DialogTitle>
+					<DialogTitle>{t('settings.apikeys.create.title')}</DialogTitle>
 					<DialogDescription>
-						Create a new API key for external access to Scriberr. Give it a
-						descriptive name to help you identify it later.
+						{t('settings.apikeys.create.description')}
 					</DialogDescription>
 				</DialogHeader>
 
 				<form onSubmit={handleSubmit} className="space-y-4">
 					<div className="space-y-2">
-						<Label htmlFor="name">Name *</Label>
+						<Label htmlFor="name">{t('settings.apikeys.create.nameLabel')}</Label>
 						<Input
 							id="name"
-							placeholder="e.g., My App Integration"
+							placeholder={t('settings.apikeys.create.namePlaceholder')}
 							value={name}
 							onChange={(e) => setName(e.target.value)}
 							maxLength={100}
 							disabled={isCreating}
 						/>
 						<div className="text-xs text-[var(--text-tertiary)]">
-							A friendly name to identify this API key
+							{t('settings.apikeys.create.nameDesc')}
 						</div>
 					</div>
 
 					<div className="space-y-2">
-						<Label htmlFor="description">Description</Label>
+						<Label htmlFor="description">{t('settings.apikeys.create.descLabel')}</Label>
 						<Textarea
 							id="description"
-							placeholder="Optional description of what this key will be used for"
+							placeholder={t('settings.apikeys.create.descPlaceholder')}
 							value={description}
 							onChange={(e) => setDescription(e.target.value)}
 							rows={3}
@@ -165,7 +166,7 @@ export function APIKeyCreateDialog({
 							disabled={isCreating || !name.trim()}
 							className="!bg-[var(--brand-gradient)] hover:!opacity-90 !text-black dark:!text-white border-none"
 						>
-							{isCreating ? "Creating..." : "Create API Key"}
+							{isCreating ? t('settings.apikeys.create.creating') : t('settings.apikeys.create.submit')}
 						</Button>
 					</DialogFooter>
 				</form>

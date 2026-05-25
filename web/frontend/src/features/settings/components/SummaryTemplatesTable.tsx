@@ -5,6 +5,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Trash2, FileText } from "lucide-react";
 import type { SummaryTemplate } from "./SummaryTemplateDialog";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useTranslation } from "@/i18n";
 
 interface SummaryTemplatesTableProps {
   onEdit: (tpl: SummaryTemplate) => void;
@@ -13,6 +14,7 @@ interface SummaryTemplatesTableProps {
 }
 
 export function SummaryTemplatesTable({ onEdit, refreshTrigger = 0, disabled = false }: SummaryTemplatesTableProps) {
+  const { t } = useTranslation();
   const { getAuthHeaders } = useAuth();
   const [items, setItems] = useState<SummaryTemplate[]>([]);
   const [loading, setLoading] = useState(true);
@@ -67,8 +69,8 @@ export function SummaryTemplatesTable({ onEdit, refreshTrigger = 0, disabled = f
         <div className="bg-[var(--bg-main)] rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center border border-[var(--border-subtle)]">
           <FileText className="h-8 w-8 text-[var(--text-tertiary)]" />
         </div>
-        <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">No summary templates</h3>
-        <p className="text-[var(--text-secondary)] mb-6 max-w-sm mx-auto">Create your first summarization template to reuse your prompt.</p>
+        <h3 className="text-lg font-medium text-[var(--text-primary)] mb-2">{t('settings.summary.table.empty')}</h3>
+        <p className="text-[var(--text-secondary)] mb-6 max-w-sm mx-auto">{t('settings.summary.table.emptyDesc')}</p>
       </div>
     );
   }
@@ -109,12 +111,12 @@ export function SummaryTemplatesTable({ onEdit, refreshTrigger = 0, disabled = f
                       </AlertDialogTrigger>
                       <AlertDialogContent className="bg-[var(--bg-card)] border-[var(--border-subtle)]">
                         <AlertDialogHeader>
-                          <AlertDialogTitle className="text-[var(--text-primary)]">Delete Template</AlertDialogTitle>
-                          <AlertDialogDescription className="text-[var(--text-secondary)]">Are you sure you want to delete "{tpl.name}"?</AlertDialogDescription>
+                          <AlertDialogTitle className="text-[var(--text-primary)]">{t('settings.summary.table.deleteTitle')}</AlertDialogTitle>
+                          <AlertDialogDescription className="text-[var(--text-secondary)]">{t('settings.summary.table.deleteConfirm').replace('{name}', tpl.name)}</AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel className="bg-[var(--bg-secondary)] border-[var(--border-subtle)] text-[var(--text-primary)] hover:bg-[var(--bg-main)]">Cancel</AlertDialogCancel>
-                          <AlertDialogAction className="bg-[var(--error)] text-white hover:bg-[var(--error)]/90" onClick={() => handleDelete(tpl.id!)}>Delete</AlertDialogAction>
+                          <AlertDialogAction className="bg-[var(--error)] text-white hover:bg-[var(--error)]/90" onClick={() => handleDelete(tpl.id!)}>{t('settings.summary.table.delete')}</AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>

@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Pencil, Trash2, Save, ExternalLink, Check, Copy } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "@/i18n";
 
 interface NotesSidebarProps {
   notes: Note[];
@@ -13,6 +14,7 @@ interface NotesSidebarProps {
 }
 
 export function NotesSidebar({ notes, onEdit, onDelete, onJumpTo }: NotesSidebarProps) {
+  const { t } = useTranslation();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draft, setDraft] = useState("");
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -43,8 +45,8 @@ export function NotesSidebar({ notes, onEdit, onDelete, onJumpTo }: NotesSidebar
   if (notes.length === 0) {
     return (
       <div className="h-full flex flex-col items-center justify-center text-center p-4 text-carbon-500 dark:text-carbon-400">
-        <p>No notes yet.</p>
-        <p className="text-sm mt-2">Select text in the transcript to add a note.</p>
+        <p>{t('detail.notes.sidebar.empty')}</p>
+        <p className="text-sm mt-2">{t('detail.notes.sidebar.emptyHint')}</p>
       </div>
     );
   }
@@ -57,7 +59,7 @@ export function NotesSidebar({ notes, onEdit, onDelete, onJumpTo }: NotesSidebar
             <button
               className="text-xs font-mono text-primary hover:underline flex items-center gap-1 bg-primary/10 px-1.5 py-0.5 rounded cursor-pointer transition-colors hover:bg-primary/20"
               onClick={() => onJumpTo(n.start_time)}
-              title="Jump to timestamp"
+              title={t('detail.notes.sidebar.jumpToTimestamp')}
             >
               <ExternalLink className="inline h-3 w-3 mr-1" /> {formatTime(n.start_time)} - {formatTime(n.end_time)}
             </button>
@@ -73,9 +75,9 @@ export function NotesSidebar({ notes, onEdit, onDelete, onJumpTo }: NotesSidebar
             <div className="mt-1">
               <Textarea value={draft} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setDraft(e.target.value)} rows={3} />
               <div className="flex justify-end gap-2 mt-2">
-                <Button variant="ghost" size="sm" onClick={() => setEditingId(null)} className="h-7 px-2 text-xs">Cancel</Button>
+                <Button variant="ghost" size="sm" onClick={() => setEditingId(null)} className="h-7 px-2 text-xs">{t('detail.notes.sidebar.cancel')}</Button>
                 <Button size="sm" onClick={() => handleSave(n.id)} className="h-7 px-2 text-xs gap-1">
-                  <Save className="h-3.5 w-3.5" /> Save
+                  <Save className="h-3.5 w-3.5" /> {t('detail.notes.sidebar.save')}
                 </Button>
               </div>
             </div>
@@ -87,13 +89,13 @@ export function NotesSidebar({ notes, onEdit, onDelete, onJumpTo }: NotesSidebar
 
           {editingId !== n.id && (
             <div className="flex justify-end gap-2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
-              <button onClick={() => handleCopy(n.content, n.id)} className="text-carbon-400 hover:text-carbon-600 dark:hover:text-carbon-300 transition-colors" title="Copy note">
+              <button onClick={() => handleCopy(n.content, n.id)} className="text-carbon-400 hover:text-carbon-600 dark:hover:text-carbon-300 transition-colors" title={t('detail.notes.sidebar.copy')}>
                 {copiedId === n.id ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
               </button>
-              <button onClick={() => handleEdit(n)} className="text-carbon-400 hover:text-primary transition-colors" title="Edit note">
+              <button onClick={() => handleEdit(n)} className="text-carbon-400 hover:text-primary transition-colors" title={t('detail.notes.sidebar.edit')}>
                 <Pencil className="h-3.5 w-3.5" />
               </button>
-              <button onClick={() => onDelete(n.id)} className="text-carbon-400 hover:text-red-500 transition-colors" title="Delete note">
+              <button onClick={() => onDelete(n.id)} className="text-carbon-400 hover:text-red-500 transition-colors" title={t('detail.notes.sidebar.delete')}>
                 <Trash2 className="h-3.5 w-3.5" />
               </button>
             </div>

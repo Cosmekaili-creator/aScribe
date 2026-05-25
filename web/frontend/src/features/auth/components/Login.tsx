@@ -6,6 +6,7 @@ import { ScriberrLogo } from "@/components/ScriberrLogo";
 import { useNavigate } from "react-router-dom";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
 import { Loader2, AlertCircle } from "lucide-react";
+import { useTranslation } from "@/i18n";
 
 interface LoginProps {
 	onLogin: (token: string) => void;
@@ -13,6 +14,7 @@ interface LoginProps {
 
 export function Login({ onLogin }: LoginProps) {
 	const navigate = useNavigate();
+	const { t } = useTranslation();
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [loading, setLoading] = useState(false);
@@ -73,10 +75,10 @@ export function Login({ onLogin }: LoginProps) {
 
 						<div className="space-y-2">
 							<h1 className="text-2xl font-semibold text-[var(--text-primary)] tracking-tight">
-								Welcome back
+								{t('auth.login.title')}
 							</h1>
 							<p className="text-[var(--text-secondary)] text-sm">
-								Sign in to continue to your workspace
+								{t('auth.login.subtitle')}
 							</p>
 						</div>
 					</div>
@@ -101,12 +103,12 @@ export function Login({ onLogin }: LoginProps) {
 									htmlFor="username"
 									className="text-sm font-medium text-[var(--text-primary)]"
 								>
-									Username
+									{t('auth.login.username')}
 								</Label>
 								<Input
 									id="username"
 									type="text"
-									placeholder="Enter your username"
+									placeholder={t('auth.login.usernamePlaceholder')}
 									value={username}
 									onChange={(e) => setUsername(e.target.value)}
 									disabled={loading}
@@ -125,12 +127,12 @@ export function Login({ onLogin }: LoginProps) {
 									htmlFor="password"
 									className="text-sm font-medium text-[var(--text-primary)]"
 								>
-									Password
+									{t('auth.login.password')}
 								</Label>
 								<Input
 									id="password"
 									type="password"
-									placeholder="Enter your password"
+									placeholder={t('auth.login.passwordPlaceholder')}
 									value={password}
 									onChange={(e) => setPassword(e.target.value)}
 									disabled={loading}
@@ -156,10 +158,10 @@ export function Login({ onLogin }: LoginProps) {
 								{loading ? (
 									<>
 										<Loader2 className="mr-2 h-4 w-4 animate-spin" />
-										Signing in...
+										{t('auth.login.signingIn')}
 									</>
 								) : (
-									"Sign In"
+									t('auth.login.submit')
 								)}
 							</Button>
 						</form>
@@ -167,7 +169,7 @@ export function Login({ onLogin }: LoginProps) {
 
 					{/* Footer Note */}
 					<p className="text-center text-xs text-[var(--text-tertiary)]">
-						Secure authentication for your transcription workspace
+						{t('auth.login.footer')}
 					</p>
 				</div>
 			</div>

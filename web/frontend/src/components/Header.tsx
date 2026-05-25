@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { isVideoFile, isAudioFile } from "../utils/fileProcessor";
 import { useGlobalUpload } from "@/contexts/GlobalUploadContext";
+import { useTranslation } from "@/i18n";
 
 interface FileWithType {
 	file: File;
@@ -32,6 +33,7 @@ interface HeaderProps {
 export function Header({ onFileSelect, onMultiTrackClick, onDownloadComplete }: HeaderProps) {
 	const navigate = useNavigate();
 	const { logout } = useAuth();
+	const { t } = useTranslation();
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const videoFileInputRef = useRef<HTMLInputElement>(null);
 	const [isRecorderOpen, setIsRecorderOpen] = useState(false);
@@ -95,7 +97,7 @@ export function Header({ onFileSelect, onMultiTrackClick, onDownloadComplete }: 
 			// Check for video files that were incorrectly uploaded via audio upload
 			const videoFiles = fileArray.filter(file => isVideoFile(file));
 			if (videoFiles.length > 0) {
-				alert(`Video files detected. Please use "Upload Videos" instead of "Upload Files" to upload ${videoFiles.map(f => f.name).join(', ')}`);
+				alert(t('header.videoFilesError'));
 				event.target.value = "";
 				return;
 			}
@@ -108,7 +110,7 @@ export function Header({ onFileSelect, onMultiTrackClick, onDownloadComplete }: 
 				event.target.value = "";
 			} else {
 				// No valid audio files found
-				alert("No valid audio files found. Please select audio files (.mp3, .wav, .flac, .m4a, .aac, .ogg)");
+				alert(t('header.audioFilesError'));
 				event.target.value = "";
 			}
 		}
@@ -152,7 +154,7 @@ export function Header({ onFileSelect, onMultiTrackClick, onDownloadComplete }: 
 								className="bg-gradient-to-br from-[#FFAB40] to-[#FF3D00] text-white shadow-[0_4px_12px_rgba(255,61,0,0.4)] hover:shadow-[0_6px_16px_rgba(255,61,0,0.5)] border-none h-8 w-8 sm:h-10 sm:w-10 rounded-lg transition-all hover:scale-105 active:scale-95 cursor-pointer"
 							>
 								<Plus className="h-5 w-5 sm:h-6 sm:w-6" />
-								<span className="sr-only">Add audio</span>
+								<span className="sr-only">{t('header.addAudio')}</span>
 							</Button>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent
@@ -167,9 +169,9 @@ export function Header({ onFileSelect, onMultiTrackClick, onDownloadComplete }: 
 									<Zap className="h-4 w-4" />
 								</div>
 								<div>
-									<div className="font-medium text-sm">Quick Transcribe</div>
+									<div className="font-medium text-sm">{t('header.quickTranscribe')}</div>
 									<div className="text-xs text-[var(--text-secondary)]">
-										Fast transcribe without saving
+										{t('header.quickTranscribeDesc')}
 									</div>
 								</div>
 							</DropdownMenuItem>
@@ -181,9 +183,9 @@ export function Header({ onFileSelect, onMultiTrackClick, onDownloadComplete }: 
 									<Youtube className="h-4 w-4" />
 								</div>
 								<div>
-									<div className="font-medium text-sm">YouTube URL</div>
+									<div className="font-medium text-sm">{t('header.youtubeUrl')}</div>
 									<div className="text-xs text-[var(--text-secondary)]">
-										Download audio from YouTube
+										{t('header.youtubeUrlDesc')}
 									</div>
 								</div>
 							</DropdownMenuItem>
@@ -195,9 +197,9 @@ export function Header({ onFileSelect, onMultiTrackClick, onDownloadComplete }: 
 									<Upload className="h-4 w-4" />
 								</div>
 								<div>
-									<div className="font-medium text-sm">Upload Files</div>
+									<div className="font-medium text-sm">{t('header.uploadFiles')}</div>
 									<div className="text-xs text-[var(--text-secondary)]">
-										Choose one or more audio files
+										{t('header.uploadFilesDesc')}
 									</div>
 								</div>
 							</DropdownMenuItem>
@@ -209,9 +211,9 @@ export function Header({ onFileSelect, onMultiTrackClick, onDownloadComplete }: 
 									<Video className="h-4 w-4" />
 								</div>
 								<div>
-									<div className="font-medium text-sm">Upload Videos</div>
+									<div className="font-medium text-sm">{t('header.uploadVideos')}</div>
 									<div className="text-xs text-[var(--text-secondary)]">
-										Extract audio from video files
+										{t('header.uploadVideosDesc')}
 									</div>
 								</div>
 							</DropdownMenuItem>
@@ -223,9 +225,9 @@ export function Header({ onFileSelect, onMultiTrackClick, onDownloadComplete }: 
 									<Mic className="h-4 w-4" />
 								</div>
 								<div>
-									<div className="font-medium text-sm">Record Audio</div>
+									<div className="font-medium text-sm">{t('header.recordAudio')}</div>
 									<div className="text-xs text-[var(--text-secondary)]">
-										Record using microphone
+										{t('header.recordAudioDesc')}
 									</div>
 								</div>
 							</DropdownMenuItem>
@@ -237,9 +239,9 @@ export function Header({ onFileSelect, onMultiTrackClick, onDownloadComplete }: 
 									<MonitorSpeaker className="h-4 w-4" />
 								</div>
 								<div>
-									<div className="font-medium text-sm">Record System Audio</div>
+									<div className="font-medium text-sm">{t('header.recordSystemAudio')}</div>
 									<div className="text-xs text-[var(--text-secondary)]">
-										Capture screen + microphone
+										{t('header.recordSystemAudioDesc')}
 									</div>
 								</div>
 							</DropdownMenuItem>
@@ -251,9 +253,9 @@ export function Header({ onFileSelect, onMultiTrackClick, onDownloadComplete }: 
 									<Users className="h-4 w-4" />
 								</div>
 								<div>
-									<div className="font-medium text-sm">Multi-Track Audio</div>
+									<div className="font-medium text-sm">{t('header.multitrack')}</div>
 									<div className="text-xs text-[var(--text-secondary)]">
-										Upload multiple speaker tracks
+										{t('header.multitrackDesc')}
 									</div>
 								</div>
 							</DropdownMenuItem>
@@ -269,21 +271,21 @@ export function Header({ onFileSelect, onMultiTrackClick, onDownloadComplete }: 
 								className="h-8 w-8 sm:h-10 sm:w-10 hover:bg-[var(--secondary)] rounded-[var(--radius-btn)] cursor-pointer text-[var(--text-secondary)]"
 							>
 								<Grip className="h-4 w-4 sm:h-5 sm:w-5" />
-								<span className="sr-only">Open menu</span>
+								<span className="sr-only">{t('header.openMenu')}</span>
 							</Button>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent align="end" className="w-48 glass-card border-[var(--border-subtle)] p-2 rounded-[var(--radius-card)] shadow-[var(--shadow-float)]">
 							<DropdownMenuItem onClick={handleHomeClick} className="cursor-pointer rounded-[var(--radius-btn)] focus:bg-[var(--secondary)] py-2.5">
 								<Home className="h-4 w-4 mr-2" />
-								Home
+								{t('header.home')}
 							</DropdownMenuItem>
 							<DropdownMenuItem onClick={handleSettingsClick} className="cursor-pointer rounded-[var(--radius-btn)] focus:bg-[var(--secondary)] py-2.5">
 								<Settings className="h-4 w-4 mr-2" />
-								Settings
+								{t('header.settings')}
 							</DropdownMenuItem>
 							<DropdownMenuItem onClick={handleLogout} className="cursor-pointer rounded-[var(--radius-btn)] focus:bg-[var(--error)]/10 text-[var(--error)] py-2.5">
 								<LogOut className="h-4 w-4 mr-2" />
-								Logout
+								{t('header.logout')}
 							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>

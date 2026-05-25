@@ -31,7 +31,6 @@ import { useSummaryTemplates, useSummarizer, useExistingSummary } from "@/featur
 
 import { useTranscript, useAudioDetail, type Transcript } from "@/features/transcription/hooks/useAudioDetail";
 import { useSpeakerMappings } from "@/features/transcription/hooks/useTranscriptionSpeakers";
-
 import { Sparkles, Download, Copy, RefreshCw, ChevronDown, FileText } from "lucide-react";
 
 // Helper function to format transcript with speaker labels

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Trash2, Calendar, Clock } from "lucide-react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useTranslation } from "@/i18n";
 
 interface APIKey {
 	id: string;
@@ -18,6 +19,7 @@ interface APIKeyTableProps {
 }
 
 export function APIKeyTable({ refreshTrigger, onKeyChange }: APIKeyTableProps) {
+	const { t } = useTranslation();
 	const [apiKeys, setApiKeys] = useState<APIKey[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -49,7 +51,7 @@ export function APIKeyTable({ refreshTrigger, onKeyChange }: APIKeyTableProps) {
 	}, [refreshTrigger, getAuthHeaders]);
 
 	const handleDelete = async (id: string) => {
-		if (!confirm("Are you sure you want to delete this API key? This action cannot be undone.")) {
+		if (!confirm(t('settings.apikeys.table.deleteConfirm'))) {
 			return;
 		}
 
@@ -93,7 +95,7 @@ export function APIKeyTable({ refreshTrigger, onKeyChange }: APIKeyTableProps) {
 	if (loading) {
 		return (
 			<div className="flex items-center justify-center h-32">
-				<div className="text-carbon-500 dark:text-carbon-400">Loading API keys...</div>
+				<div className="text-carbon-500 dark:text-carbon-400">{t('settings.apikeys.table.loading')}</div>
 			</div>
 		);
 	}
@@ -102,10 +104,10 @@ export function APIKeyTable({ refreshTrigger, onKeyChange }: APIKeyTableProps) {
 		return (
 			<div className="text-center py-8">
 				<div className="text-[var(--text-secondary)] mb-2">
-					No API keys found
+					{t('settings.apikeys.table.empty')}
 				</div>
 				<div className="text-sm text-[var(--text-tertiary)]">
-					Create your first API key to get started with external access
+					{t('settings.apikeys.table.emptyDesc')}
 				</div>
 			</div>
 		);
@@ -117,22 +119,22 @@ export function APIKeyTable({ refreshTrigger, onKeyChange }: APIKeyTableProps) {
 				<thead>
 					<tr className="border-b border-carbon-200 dark:border-carbon-600">
 						<th className="text-left py-2 px-2 sm:py-3 sm:px-4 font-medium text-[var(--text-secondary)]">
-							Name
+							{t('settings.apikeys.table.name')}
 						</th>
 						<th className="hidden sm:table-cell text-left py-2 px-2 sm:py-3 sm:px-4 font-medium text-[var(--text-secondary)]">
-							Description
+							{t('settings.apikeys.table.description')}
 						</th>
 						<th className="hidden sm:table-cell text-left py-2 px-2 sm:py-3 sm:px-4 font-medium text-[var(--text-secondary)]">
-							Key Preview
+							{t('settings.apikeys.table.keyPreview')}
 						</th>
 						<th className="hidden sm:table-cell text-left py-2 px-2 sm:py-3 sm:px-4 font-medium text-[var(--text-secondary)]">
-							Created
+							{t('settings.apikeys.table.created')}
 						</th>
 						<th className="hidden sm:table-cell text-left py-2 px-2 sm:py-3 sm:px-4 font-medium text-[var(--text-secondary)]">
-							Last Used
+							{t('settings.apikeys.table.lastUsed')}
 						</th>
 						<th className="text-right py-2 px-2 sm:py-3 sm:px-4 font-medium text-[var(--text-secondary)]">
-							Actions
+							{t('settings.apikeys.table.actions')}
 						</th>
 					</tr>
 				</thead>
@@ -149,7 +151,7 @@ export function APIKeyTable({ refreshTrigger, onKeyChange }: APIKeyTableProps) {
 							</td>
 							<td className="hidden sm:table-cell py-2 px-2 sm:py-3 sm:px-4">
 								<div className="text-sm text-carbon-600 dark:text-carbon-400">
-									{apiKey.description || "—"}
+									{apiKey.description || t('settings.apikeys.table.noDescription')}
 								</div>
 							</td>
 							<td className="hidden sm:table-cell py-2 px-2 sm:py-3 sm:px-4">
@@ -171,7 +173,7 @@ export function APIKeyTable({ refreshTrigger, onKeyChange }: APIKeyTableProps) {
 											{formatDateTime(apiKey.last_used)}
 										</>
 									) : (
-										"Never"
+										t('settings.apikeys.table.never')
 									)}
 								</div>
 							</td>

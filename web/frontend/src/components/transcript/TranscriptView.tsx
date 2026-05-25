@@ -3,6 +3,7 @@ import { useKaraokeHighlight, computeWordOffsets, findActiveWordIndex } from '@/
 import { cn } from '@/lib/utils';
 import { useIsDesktop } from '@/hooks/useIsDesktop';
 import type { Note } from '@/types/note';
+import { useTranslation } from '@/i18n';
 
 // Helper for cross-browser caret position
 function getCaretOffsetFromPoint(x: number, y: number) {
@@ -65,6 +66,8 @@ export const TranscriptView = forwardRef<HTMLDivElement, TranscriptViewProps>(({
     onSeek,
     className
 }, ref) => {
+
+    const { t } = useTranslation();
 
     const getDisplaySpeakerName = (originalSpeaker: string): string => {
         return speakerMappings[originalSpeaker] || originalSpeaker;
@@ -242,7 +245,7 @@ export const TranscriptView = forwardRef<HTMLDivElement, TranscriptViewProps>(({
     if (!transcript) {
         return (
             <div className="flex flex-col items-center justify-center h-64 text-carbon-400">
-                <p>No transcript available.</p>
+                <p>{t('detail.transcript.noTranscript')}</p>
             </div>
         );
     }

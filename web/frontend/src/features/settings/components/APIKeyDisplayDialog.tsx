@@ -11,6 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Copy, Check, AlertTriangle } from "lucide-react";
+import { useTranslation } from "@/i18n";
 
 interface CreatedAPIKey {
 	id: string;
@@ -33,6 +34,7 @@ export function APIKeyDisplayDialog({
 	apiKey,
 	onClose,
 }: APIKeyDisplayDialogProps) {
+	const { t } = useTranslation();
 	const [copied, setCopied] = useState(false);
 
 	const handleCopy = async () => {
@@ -76,11 +78,10 @@ export function APIKeyDisplayDialog({
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
 						<Check className="h-5 w-5 text-green-600" />
-						API Key Created Successfully
+						{t('settings.apikeys.display.title')}
 					</DialogTitle>
 					<DialogDescription>
-						Your API key has been created. Copy it now and store it securely -
-						you won't be able to see the full key again.
+						{t('settings.apikeys.display.description')}
 					</DialogDescription>
 				</DialogHeader>
 
@@ -89,10 +90,9 @@ export function APIKeyDisplayDialog({
 						<div className="flex items-start gap-3">
 							<AlertTriangle className="h-5 w-5 text-yellow-600 dark:text-yellow-400 mt-0.5 flex-shrink-0" />
 							<div className="text-sm text-yellow-800 dark:text-yellow-200">
-								<div className="font-medium mb-1">Important Security Notice</div>
+								<div className="font-medium mb-1">{t('settings.apikeys.display.securityTitle')}</div>
 								<div>
-									This is the only time you'll see the full API key. Make sure to copy
-									and store it in a secure location before closing this dialog.
+									{t('settings.apikeys.display.securityDesc')}
 								</div>
 							</div>
 						</div>
@@ -100,7 +100,7 @@ export function APIKeyDisplayDialog({
 
 					<div className="space-y-3">
 						<div>
-							<Label className="text-sm font-medium">Name</Label>
+							<Label className="text-sm font-medium">{t('settings.apikeys.display.name')}</Label>
 							<div className="text-carbon-900 dark:text-carbon-100 mt-1">
 								{apiKey.name}
 							</div>
@@ -108,7 +108,7 @@ export function APIKeyDisplayDialog({
 
 						{apiKey.description && (
 							<div>
-								<Label className="text-sm font-medium">Description</Label>
+								<Label className="text-sm font-medium">{t('settings.apikeys.display.desc')}</Label>
 								<div className="text-carbon-600 dark:text-carbon-400 mt-1">
 									{apiKey.description}
 								</div>
@@ -117,7 +117,7 @@ export function APIKeyDisplayDialog({
 
 						<div>
 							<Label htmlFor="api-key" className="text-sm font-medium">
-								API Key
+								{t('settings.apikeys.display.apiKey')}
 							</Label>
 							<div className="flex items-center gap-2 mt-1">
 								<Input
@@ -143,14 +143,14 @@ export function APIKeyDisplayDialog({
 							</div>
 							{copied && (
 								<div className="text-sm text-green-600 dark:text-green-400 mt-1">
-									Copied to clipboard!
+									{t('settings.apikeys.display.copied')}
 								</div>
 							)}
 						</div>
 
 						<div className="bg-carbon-50 dark:bg-carbon-800 rounded-lg p-3">
 							<div className="text-sm text-carbon-600 dark:text-carbon-400">
-								<div className="font-medium mb-1">Usage Example:</div>
+								<div className="font-medium mb-1">{t('settings.apikeys.display.usageExample')}</div>
 								<div className="font-mono text-xs bg-white dark:bg-carbon-900 p-2 rounded border">
 									curl -H "X-API-Key: {apiKey.key}" http://localhost:8080/api/v1/...
 								</div>
@@ -161,7 +161,7 @@ export function APIKeyDisplayDialog({
 
 				<DialogFooter>
 					<Button onClick={handleClose} className="w-full">
-						I've Saved My API Key
+						{t('settings.apikeys.display.saved')}
 					</Button>
 				</DialogFooter>
 			</DialogContent>

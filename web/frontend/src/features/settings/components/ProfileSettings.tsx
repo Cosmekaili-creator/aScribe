@@ -7,6 +7,7 @@ import { TranscriptionConfigDialog, type WhisperXParams } from "@/components/Tra
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Settings } from "lucide-react";
+import { useTranslation } from "@/i18n";
 
 interface TranscriptionProfile {
 	id: string;
@@ -24,6 +25,7 @@ interface UserSettings {
 }
 
 export function ProfileSettings() {
+	const { t } = useTranslation();
 	const [profileDialogOpen, setProfileDialogOpen] = useState(false);
 	const [editingProfile, setEditingProfile] = useState<TranscriptionProfile | null>(null);
 	const [refreshTrigger, setRefreshTrigger] = useState(0);
@@ -146,14 +148,14 @@ export function ProfileSettings() {
 			if (response.ok) {
 				const updatedSettings = await response.json();
 				setUserSettings(updatedSettings);
-				setSuccess(`Auto-transcription ${enabled ? "enabled" : "disabled"} successfully!`);
+				setSuccess(enabled ? t('settings.profile.autoEnabled') : t('settings.profile.autoDisabled'));
 			} else {
 				const errorData = await response.json();
-				setError(errorData.error || "Failed to update setting");
+				setError(errorData.error || t('settings.profile.updateFailed'));
 			}
 		} catch (error) {
 			console.error("Error updating auto-transcription setting:", error);
-			setError("Network error. Please try again.");
+			setError(t('settings.profile.networkError'));
 		}
 	};
 
@@ -243,26 +245,26 @@ export function ProfileSettings() {
 				<div className="mb-4">
 					<div className="flex items-center space-x-2 mb-2">
 						<Settings className="h-5 w-5 text-[var(--brand-solid)]" />
-						<h3 className="text-lg font-medium text-[var(--text-primary)]">Auto-Transcription</h3>
+						<h3 className="text-lg font-medium text-[var(--text-primary)]">{t('settings.profile.autoTitle')}</h3>
 					</div>
 					<p className="text-sm text-[var(--text-secondary)]">
-						Configure automatic transcription behavior for uploaded files.
+						{t('settings.profile.autoDesc')}
 					</p>
 				</div>
 
 				{settingsLoading ? (
 					<div className="flex items-center space-x-2 py-4">
 						<div className="animate-spin rounded-full h-4 w-4 border-b-2 border-carbon-600 dark:border-carbon-400"></div>
-						<span className="text-sm text-carbon-600 dark:text-carbon-400">Loading settings...</span>
+						<span className="text-sm text-carbon-600 dark:text-carbon-400">{t('settings.profile.loading')}</span>
 					</div>
 				) : (
 					<div className="flex items-center justify-between py-2">
 						<div>
 							<Label htmlFor="auto-transcription" className="text-[var(--text-primary)] font-medium">
-								Automatic Transcription on Upload
+								{t('settings.profile.autoLabel')}
 							</Label>
 							<p className="text-sm text-[var(--text-secondary)] mt-1">
-								When enabled, uploaded audio files will automatically be queued for transcription using your default profile.
+								{t('settings.profile.autoDetail')}
 							</p>
 						</div>
 						<Switch
@@ -280,17 +282,17 @@ export function ProfileSettings() {
 				<div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-4">
 					<div>
 						<h3 className="text-lg font-medium text-[var(--text-primary)]">
-							Transcription Profiles
+							{t('settings.profile.profilesTitle')}
 						</h3>
 						<p className="text-sm text-[var(--text-secondary)] mt-1">
-							Manage your saved transcription configurations for quick access.
+							{t('settings.profile.profilesDesc')}
 						</p>
 					</div>
 					<Button
 						onClick={handleCreateProfile}
 						className="!bg-[var(--brand-gradient)] hover:!opacity-90 !text-black dark:!text-white shadow-lg shadow-orange-500/20 border-none"
 					>
-						Create New Profile
+						{t('settings.profile.createNew')}
 					</Button>
 				</div>
 
@@ -299,10 +301,10 @@ export function ProfileSettings() {
 					<div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
 						<div className="flex-1">
 							<label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
-								Default Profile
+								{t('settings.profile.defaultProfile')}
 							</label>
 							<p className="text-xs text-[var(--text-secondary)]">
-								The profile to use by default when starting new transcriptions.
+								{t('settings.profile.defaultDesc')}
 							</p>
 						</div>
 						<div className="w-full sm:w-64">
@@ -315,10 +317,10 @@ export function ProfileSettings() {
 									<SelectValue
 										placeholder={
 											isLoadingProfiles
-												? "Loading..."
+												? t('settings.profile.loadingDefault')
 												: profiles.length === 0
-													? "No profiles available"
-													: "Select default profile"
+													? t('settings.profile.noProfiles')
+													: t('settings.profile.selectDefault')
 										}
 									/>
 								</SelectTrigger>

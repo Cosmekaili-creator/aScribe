@@ -18,10 +18,12 @@ import { SummaryTemplateDialog, type SummaryTemplate } from "../components/Summa
 import { SummaryTemplatesTable } from "../components/SummaryTemplatesTable";
 import { CLISettingsTab } from "../components/CLISettingsTab";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useTranslation } from "@/i18n";
 
 export function Settings() {
   const [activeTab, setActiveTab] = useState("transcription");
   const { getAuthHeaders } = useAuth();
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [summaryDialogOpen, setSummaryDialogOpen] = useState(false);
   const [editingSummary, setEditingSummary] = useState<SummaryTemplate | null>(null);
@@ -55,10 +57,10 @@ export function Settings() {
       <div className="bg-[var(--bg-card)] border border-[var(--border-subtle)] shadow-[var(--shadow-card)] rounded-[var(--radius-card)] p-2 sm:p-6 mt-8">
         <div className="mb-4 sm:mb-8">
           <h1 className="text-2xl font-display font-bold text-[var(--text-primary)] mb-2">
-            Settings
+            {t('settings.page.title')}
           </h1>
           <p className="text-[var(--text-secondary)]">
-            Manage your account settings and transcription profiles.
+            {t('settings.page.description')}
           </p>
         </div>
 
@@ -75,7 +77,7 @@ export function Settings() {
               className="flex items-center justify-center gap-2 h-9 py-1.5 data-[state=active]:bg-[var(--bg-card)] data-[state=active]:shadow-sm data-[state=active]:text-[var(--text-primary)] text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] font-medium rounded-lg text-xs sm:text-sm transition-all"
             >
               <SettingsIcon className="h-4 w-4" />
-              <span className="hidden sm:inline">Transcription</span>
+              <span className="hidden sm:inline">{t('settings.page.tabTranscription')}</span>
             </TabsTrigger>
             <TabsTrigger
               value="account"
@@ -83,7 +85,7 @@ export function Settings() {
               className="flex items-center justify-center gap-2 h-9 py-1.5 data-[state=active]:bg-[var(--bg-card)] data-[state=active]:shadow-sm data-[state=active]:text-[var(--text-primary)] text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] font-medium rounded-lg text-xs sm:text-sm transition-all"
             >
               <User className="h-4 w-4" />
-              <span className="hidden sm:inline">Account</span>
+              <span className="hidden sm:inline">{t('settings.page.tabAccount')}</span>
             </TabsTrigger>
             <TabsTrigger
               value="apikeys"
@@ -91,7 +93,7 @@ export function Settings() {
               className="flex items-center justify-center gap-2 h-9 py-1.5 data-[state=active]:bg-[var(--bg-card)] data-[state=active]:shadow-sm data-[state=active]:text-[var(--text-primary)] text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] font-medium rounded-lg text-xs sm:text-sm transition-all"
             >
               <Key className="h-4 w-4" />
-              <span className="hidden sm:inline">API Keys</span>
+              <span className="hidden sm:inline">{t('settings.page.tabApiKeys')}</span>
             </TabsTrigger>
             <TabsTrigger
               value="llms"
@@ -99,7 +101,7 @@ export function Settings() {
               className="flex items-center justify-center gap-2 h-9 py-1.5 data-[state=active]:bg-[var(--bg-card)] data-[state=active]:shadow-sm data-[state=active]:text-[var(--text-primary)] text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] font-medium rounded-lg text-xs sm:text-sm transition-all"
             >
               <Bot className="h-4 w-4" />
-              <span className="hidden sm:inline">LLMs</span>
+              <span className="hidden sm:inline">{t('settings.page.tabLlms')}</span>
             </TabsTrigger>
             <TabsTrigger
               value="summary"
@@ -107,7 +109,7 @@ export function Settings() {
               className="flex items-center justify-center gap-2 h-9 py-1.5 data-[state=active]:bg-[var(--bg-card)] data-[state=active]:shadow-sm data-[state=active]:text-[var(--text-primary)] text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] font-medium rounded-lg text-xs sm:text-sm transition-all"
             >
               <FileText className="h-4 w-4" />
-              <span className="hidden sm:inline">Summary</span>
+              <span className="hidden sm:inline">{t('settings.page.tabSummary')}</span>
             </TabsTrigger>
             <TabsTrigger
               value="cli"
@@ -115,7 +117,7 @@ export function Settings() {
               className="flex items-center justify-center gap-2 h-9 py-1.5 data-[state=active]:bg-[var(--bg-card)] data-[state=active]:shadow-sm data-[state=active]:text-[var(--text-primary)] text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] font-medium rounded-lg text-xs sm:text-sm transition-all"
             >
               <Terminal className="h-4 w-4" />
-              <span className="hidden sm:inline">CLI Watcher</span>
+              <span className="hidden sm:inline">{t('settings.page.tabCli')}</span>
             </TabsTrigger>
           </TabsList>
 
@@ -144,8 +146,8 @@ export function Settings() {
             <div className="bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-[var(--radius-card)] p-4 sm:p-6 shadow-sm">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-4">
                 <div>
-                  <h3 className="text-lg font-medium text-[var(--text-primary)]">Summarization Templates</h3>
-                  <p className="text-sm text-[var(--text-secondary)] mt-1">Create and manage prompts used to summarize transcripts.</p>
+                  <h3 className="text-lg font-medium text-[var(--text-primary)]">{t('settings.page.summaryTemplatesTitle')}</h3>
+                  <p className="text-sm text-[var(--text-secondary)] mt-1">{t('settings.page.summaryTemplatesDesc')}</p>
                 </div>
                 <div className="flex items-center gap-3">
                   <Button
@@ -153,13 +155,13 @@ export function Settings() {
                     onClick={() => { setEditingSummary(null); setSummaryDialogOpen(true); }}
                     disabled={!llmConfigured}
                   >
-                    <Plus className="h-4 w-4" /> New Template
+                    <Plus className="h-4 w-4" /> {t('settings.page.newTemplate')}
                   </Button>
                 </div>
               </div>
               {!llmConfigured && (
                 <div className="mb-3 text-sm text-[var(--warning-solid)] bg-[var(--warning-translucent)] border border-[var(--warning-solid)]/20 rounded-md px-3 py-2">
-                  Configure an LLM provider in the LLMs tab to enable summary templates and model selection.
+                  {t('settings.page.llmNotConfigured')}
                 </div>
               )}
               <SummaryTemplatesTable onEdit={(tpl) => { setEditingSummary(tpl); setSummaryDialogOpen(true); }} refreshTrigger={summaryRefresh} disabled={!llmConfigured} />

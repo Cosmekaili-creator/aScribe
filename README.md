@@ -5,70 +5,38 @@
 </br>
 </br>
 <p align="center">
-Scriberr is an open-source, and completely offline audio transcription application designed for self-hosters who value privacy and performance.
+Scriberr is an open-source, self-hosted audio transcription application designed for privacy and performance.
 </p>
 
 <p align="center">
-  <a href="https://scriberr.app">Website</a> •
-  <a href="https://scriberr.app/docs/">Docs</a> •
-  <a href="https://scriberr.app/api">API Reference</a>
-</p>
-
-<p align="center">
-<a href='https://ko-fi.com/H2H41KQZA3' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+  <a href="https://github.com/Cosmekaili-creator/Scriberr">Source</a> •
+  <a href="https://github.com/rishikanthc/scriberr">Upstream project</a>
 </p>
 
 <div align="center">
   <img src="screenshots/hero.png" alt="Scriberr Desktop App" width="800" />
 </div>
 
-## Update on project status
-Hi everyone,
-It’s been a while since the last update, so I wanted to share what’s been going on with Scriberr.
+## About this fork
 
-Recently, I was affected by layoffs at eBay (around 800 roles were impacted), and I unfortunately was one of them. The past few weeks have been a bit overwhelming as I’ve been focused on figuring out next steps and actively searching for new opportunities.
+This is a fork of [Scriberr by rishikanthc](https://github.com/rishikanthc/scriberr), maintained for the ARCS architecture agency. It includes all upstream features plus:
 
-Because of that, I haven’t been able to spend time on Scriberr lately. As much as I’d love to keep pushing it forward, I need to prioritize getting back on my feet first. Development is paused for now, but **definitely not abandoned. I still have a lot of ideas and plans I’m excited to come back to.**
-
-That said, if anyone in the community is interested in contributing or helping move the project forward during this time, I’d be very open to collaborating. I’d love to see Scriberr continue to evolve even while I’m temporarily away from active development.
-
-I really appreciate all the support, interest, and encouragement this project has received so far. It genuinely means a lot, and I’m looking forward to continuing work on Scriberr once things stabilize on my end.
-Thanks again for your patience and support, I truly appreciate it.
-
-In the meantime, if you happen to know of any opportunities in AI/ML engineering or research, I’d be incredibly grateful for any referrals or connections. You can find more about my work and experience here: https://rishikanthc.com
-
-## Sponsors
-
-![recall.ai-logo](https://cdn.prod.website-files.com/620d732b1f1f7b244ac89f0e/66b294e51ee15f18dd2b171e_recall-logo.svg) Meeting Transcription API   
-If you're looking for a transcription API for meetings, consider checking out [Recall.ai](https://www.recall.ai/?utm_source=github&utm_medium=sponsorship&utm_campaign=rishikanthc-scriberr), an API that works with Zoom, Google Meet, Microsoft Teams, and more.
-Recall.ai diarizes by pulling the speaker data and seperate audio streams from the meeting platforms, which means 100% accurate speaker diarization with actual speaker names.
+- **Internationalization (i18n)**: Full French/English UI, language preference stored per user account and auto-detected from the browser
+- Additional cloud transcription providers (AssemblyAI, Deepgram), multi-track Audacity import, and other upstream additions
 
 ## Introduction
 
-At its core, Scriberr allows you to transcribe audio and video locally on your machine, ensuring no data is ever sent to a third-party cloud provider.
+Scriberr allows you to transcribe audio and video locally on your machine, ensuring no data is ever sent to a third-party cloud provider.
 Leveraging state-of-the-art machine learning models (such as **NVIDIA Parakeet**, and **Canary**) or the older more popular **Whisper** models, it delivers high-accuracy text with word-level timing.
 
-Scriberr goes beyond simple transcription and provides various advanced capabilities.
-It combines powerful under-the-hood AI with a polished, fluid user interface that makes managing your recordings feel effortless. Whether you are sorting through voice notes or analyzing long meetings, Scriberr provides a beautiful environment to get work done:
+Scriberr goes beyond simple transcription and provides various advanced capabilities:
 
-- **Smart Speaker Detection**: Scriberr automatically detects different speakers (Diarization) and labels exactly who said what.
-- **Chat with your Audio**: Connect seamlessly with Ollama or OpenAI API compatible providers. You can generate summaries, ask questions, or have a full conversation with your transcripts right inside the app.
-- **Built for your Workflow**: With extensive APIs and Folder Watcher that automatically processes new files in a folder, Scriberr fits right into your existing automations (like n8n).
-- **Capture & Organize**: Use the built-in audio recorder to capture thoughts on the fly, and the integrated note-taking features to annotate your transcripts as you listen.
-- **Native Experience everywhere**: Scriberr supports PWA (Progressive Web App) installation, giving you a native app experience on your desktop or mobile device.
-- **A Polished UI**: I’ve focused on the little UI niceties that make the app feel responsive and satisfying to use.
-
-[View full list of features →](https://scriberr.app/docs/features)
-
-### Why I built this
-
-The inspiration for Scriberr was born out of privacy paranoia and not wanting to pay for subscription.
-About a year ago, I purchased a [Plaud Note](https://www.plaud.ai/) for recording voice memos. I loved the device itself; the form factor, microphone quality, and workflow were excellent.
-
-However, transcription was done on their cloud servers. As someone who is paranoid about privacy I wasn't comfortable with uploading my recordings to a third party provider.
-Moreover I was hit with subscription costs: $100 a year for 20 hours of transcription per month, or $240 a year for unlimited access. As an avid self-hoster with a background in ML and AI, it felt wrong to pay such a premium for a service I knew I could engineer myself.
-
-I decided to build Scriberr to bridge that gap, creating a powerful, private, and free alternative for everyone.
+- **Smart Speaker Detection**: Automatically detects different speakers (Diarization) and labels exactly who said what.
+- **Chat with your Audio**: Connect seamlessly with Ollama or OpenAI API compatible providers. Generate summaries, ask questions, or have a full conversation with your transcripts right inside the app.
+- **Built for your Workflow**: Extensive APIs and a Folder Watcher that automatically processes new files, fitting right into existing automations (like n8n).
+- **Capture & Organize**: Built-in audio recorder and integrated note-taking features to annotate your transcripts as you listen.
+- **Native Experience everywhere**: PWA (Progressive Web App) installation, giving you a native app experience on desktop or mobile.
+- **Multi-language UI**: Switch between English and French in Account Settings; preference is saved per user account.
 
 ## Screenshots
 
@@ -146,26 +114,9 @@ You will need to update your Docker volume configuration to split your data:
 
 The Python environment and models need to be reinitialized for v1.2.0. If the application detects an old environment, it may attempt to use it, leading to compatibility errors. Starting with a fresh `/app/whisperx-env` volume ensures the correct dependencies are installed.
 
-### Install with Homebrew (macOS & Linux)
-
-The easiest way to install Scriberr is using Homebrew. If you don’t have Homebrew installed, [get it here first](https://brew.sh/).
-
-```bash
-# Add the Scriberr tap
-brew tap rishikanthc/scriberr
-
-# Install Scriberr (automatically installs UV dependency)
-brew install scriberr
-
-# Start the server
-scriberr
-```
-
-Open [http://localhost:8080](http://localhost:8080) in your browser.
-
 ### Configuration
 
-Scriberr works out of the box. However, for Homebrew or manual installations, you can customize the application behavior using environment variables or a `.env` file placed in the same directory as the binary (or where you run the command from).
+Scriberr works out of the box. For Homebrew or manual installations, you can customize the application behavior using environment variables or a `.env` file placed in the same directory as the binary.
 
 > **Docker Users:** You can ignore this section if you are using `docker-compose.yml`, as these values are already configured with sane defaults.
 
@@ -182,27 +133,13 @@ Scriberr works out of the box. However, for Homebrew or manual installations, yo
 | `TRANSCRIPTS_DIR` | Directory for storing transcripts. | `data/transcripts` |
 | `WHISPERX_ENV` | Path to the managed Python environment for models. | `data/whisperx-env` |
 | `OPENAI_API_KEY` | API Key for OpenAI (optional). | `""` |
+| `ASSEMBLYAI_API_KEY` | API Key for AssemblyAI cloud transcription (optional). | `""` |
+| `DEEPGRAM_API_KEY` | API Key for Deepgram cloud transcription (optional). | `""` |
 | `JWT_SECRET` | Secret for signing JWTs. Auto-generated if not set. | Auto-generated |
-
-**Example `.env` file:**
-
-```bash
-# Server settings
-HOST=localhost
-PORT=8080
-APP_ENV=production
-
-# Paths
-DATABASE_PATH=/var/lib/scriberr/data/scriberr.db
-UPLOAD_DIR=/var/lib/scriberr/data/uploads
-
-# Security
-JWT_SECRET=your-super-secret-key-change-this
-```
 
 ### Docker Deployment
 
-For a containerized setup, you can use Docker. We provide two configurations: one for standard CPU usage and one optimized for NVIDIA GPUs (CUDA).
+For a containerized setup, you can use Docker. Two configurations are provided: standard CPU and NVIDIA GPU (CUDA).
 
 > [!IMPORTANT]
 > **Permissions:** Ensure you set the `PUID` and `PGID` environment variables to your host user's UID and GID (typically `1000` on Linux) to avoid permission issues with the SQLite database. You can find your UID/GID by running `id` on your host.
@@ -211,10 +148,6 @@ For a containerized setup, you can use Docker. We provide two configurations: on
 
 #### Standard Deployment (CPU)
 
-Use this configuration for running Scriberr on any machine without a dedicated NVIDIA GPU.
-
-1.  Create a file named `docker-compose.yml`:
-
 ```yaml
 services:
   scriberr:
@@ -222,23 +155,20 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - scriberr_data:/app/data # volume for data
-      - env_data:/app/whisperx-env # volume for models and python envs
+      - scriberr_data:/app/data
+      - env_data:/app/whisperx-env
     environment:
       - PUID=${PUID:-1000}
       - PGID=${PGID:-1000}
-      - APP_ENV=production # DO NOT CHANGE THIS
-      # CORS: comma-separated list of allowed origins for production
+      - APP_ENV=production
       # - ALLOWED_ORIGINS=https://your-domain.com
-      # - SECURE_COOKIES=false # Uncomment this ONLY if you are not using SSL
+      # - SECURE_COOKIES=false
     restart: unless-stopped
 
 volumes:
   scriberr_data: {}
   env_data: {}
 ```
-
-2.  Run the container:
 
 ```bash
 docker compose up -d
@@ -246,45 +176,8 @@ docker compose up -d
 
 #### NVIDIA GPU Deployment (CUDA)
 
-If you have a compatible NVIDIA GPU, this configuration enables hardware acceleration for significantly faster transcription.
-
 1.  Ensure you have the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) installed.
-2.  Create a file named `docker-compose.cuda.yml`:
-
-```yaml
-services:
-  scriberr:
-    image: ghcr.io/rishikanthc/scriberr-cuda:v1.2.0
-    ports:
-      - "8080:8080"
-    volumes:
-      - scriberr_data:/app/data # volume for data
-      - env_data:/app/whisperx-env # volume for models and python envs
-    restart: unless-stopped
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities:
-                - gpu
-    environment:
-      - NVIDIA_VISIBLE_DEVICES=all
-      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
-      - PUID=${PUID:-1000}
-      - PGID=${PGID:-1000}
-      - APP_ENV=production # DO NOT CHANGE THIS
-      # CORS: comma-separated list of allowed origins for production
-      # - ALLOWED_ORIGINS=https://your-domain.com
-      # - SECURE_COOKIES=false # Uncomment this ONLY if you are not using SSL
-
-volumes:
-  scriberr_data: {}
-  env_data: {}
-```
-
-3.  Run the container with the CUDA configuration:
+2.  Use `docker-compose.cuda.yml` from this repository and run:
 
 ```bash
 docker compose -f docker-compose.cuda.yml up -d
@@ -292,86 +185,47 @@ docker compose -f docker-compose.cuda.yml up -d
 
 #### GPU Compatibility
 
-Scriberr provides separate Docker images for different NVIDIA GPU generations due to CUDA/PyTorch compatibility requirements:
-
-| GPU Generation | Compute Capability | Docker Image | Docker Compose File |
-|:---|:---|:---|:---|
-| GTX 10-series (Pascal) | sm_61 | `scriberr-cuda` | `docker-compose.cuda.yml` |
-| RTX 20-series (Turing) | sm_75 | `scriberr-cuda` | `docker-compose.cuda.yml` |
-| RTX 30-series (Ampere) | sm_86 | `scriberr-cuda` | `docker-compose.cuda.yml` |
-| RTX 40-series (Ada Lovelace) | sm_89 | `scriberr-cuda` | `docker-compose.cuda.yml` |
-| **RTX 50-series (Blackwell)** | sm_120 | `scriberr-cuda-blackwell` | `docker-compose.blackwell.yml` |
-
-**RTX 50-series users (RTX 5080, 5090, etc.):** You must use the Blackwell-specific image. The standard CUDA image will not work due to PyTorch CUDA compatibility requirements. Use:
-
-```bash
-docker compose -f docker-compose.blackwell.yml up -d
-```
-
-Or for local builds:
-
-```bash
-docker compose -f docker-compose.build.blackwell.yml up -d
-```
+| GPU Generation | Compute Capability | Docker Compose File |
+|:---|:---|:---|
+| GTX 10-series (Pascal) | sm_61 | `docker-compose.cuda.yml` |
+| RTX 20-series (Turing) | sm_75 | `docker-compose.cuda.yml` |
+| RTX 30-series (Ampere) | sm_86 | `docker-compose.cuda.yml` |
+| RTX 40-series (Ada Lovelace) | sm_89 | `docker-compose.cuda.yml` |
+| **RTX 50-series (Blackwell)** | sm_120 | `docker-compose.blackwell.yml` |
 
 ### App Startup
 
-When you run Scriberr for the first time, it may take several minutes to start. This is normal!
+When you run Scriberr for the first time, it may take several minutes to start while it:
 
-The application needs to:
-1.  Initialize the Python environments.
-2.  Download the necessary machine learning models (Whisper, PyAnnote, NVIDIA NeMo).
-3.  Configure the database.
+1. Initializes the Python environments.
+2. Downloads the necessary machine learning models (Whisper, PyAnnote, NVIDIA NeMo).
+3. Configures the database.
 
-**Subsequent runs will be much faster** because all models and environments are persisted to the `env_data` volume (or your local mapped folders).
+**Subsequent runs will be much faster** because all models and environments are persisted to the `env_data` volume.
 
-You will know the application is ready when you see the line: `msg="Scriberr is ready" url=http://0.0.0.0:8080`.
+You will know the application is ready when you see: `msg="Scriberr is ready" url=http://0.0.0.0:8080`.
 
 ### Troubleshooting
 
-#### 1. SQLite OOM Error (out of memory)
+#### SQLite OOM Error (out of memory)
 
-If you see an "out of memory (14)" error from SQLite (specifically `SQLITE_CANTOPEN`), it usually means a permissions issue. The database engine cannot create temporary files in the data directory.
-
-You can fix this by setting the `PUID` and `PGID` in your `docker-compose.yml` to match your host user's UID and GID, or by manually changing the ownership of the mapped folders on your host:
+If you see an "out of memory (14)" error from SQLite (`SQLITE_CANTOPEN`), it usually means a permissions issue. Fix it by setting `PUID`/`PGID` to match your host user, or:
 
 ```bash
-# If you used a named volume (e.g., 'scriberr_scriberr_data'):
-sudo chown -R 1000:1000 /var/lib/docker/volumes/scriberr_scriberr_data/_data
-
-# If you mapped a specific host folder (e.g., ./scriberr_data):
 sudo chown -R 1000:1000 ./scriberr_data
 sudo chown -R 1000:1000 ./env_data
 ```
 
-Replace `1000` with the value you set for `PUID`/`PGID` (default is `1000`).
+#### "Unable to load audio stream"
 
-#### 2. "Unable to load audio stream"
+This is caused by the **Secure Cookies** flag. When `APP_ENV=production`, Scriberr sets `SECURE_COOKIES=true`, which blocks cookies over HTTP.
 
-If the application loads but you cannot play or see the audio waveform (receiving "Unable to load audio stream"), this is often due to the **Secure Cookies** security flag.
+- **Recommended:** Deploy behind a reverse proxy (Nginx, Caddy, Traefik) with SSL/TLS.
+- **Alternative:** Set `SECURE_COOKIES=false` in your `docker-compose.yml` environment.
 
-By default, when `APP_ENV=production`, Scriberr enables `SECURE_COOKIES=true`. This prevents cookies from being sent over insecure (HTTP) connections.
+## Adding a new UI language
 
-**Solutions:**
-- **Recommended:** Deploy Scriberr behind a Reverse Proxy (like Nginx, Caddy, or Traefik) and use SSL/TLS (HTTPS).
-- **Alternative:** If you must access over plain HTTP, set the following environment variable in your `docker-compose.yml`:
-  ```yaml
-  environment:
-    - SECURE_COOKIES=false
-  ```
-
-## Post installation
-
-Once you have Scriberr up and running:
-
-- **Configure Diarization**: To enable speaker identification, visit the [Configuration page](https://scriberr.app/docs/configuration).
-- **Usage Guide**: For a detailed usage guide, visit [https://scriberr.app/docs/usage](https://scriberr.app/docs/usage).
-
-## LLM Disclosure
-
-This project was developed using AI agents as pair programmer. It was NOT vibe coded. For context I’m a ML/AI researcher by profession and I have been programming for over a decade now. The codebase follows software engineering best practices and principles and all architecture decisions were made by me. All code generated by LLMs was reviewed and tested to the best of my abilities.
-
-## Donating
-
-<a href='https://ko-fi.com/H2H41KQZA3' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
-
+1. Copy `web/frontend/src/i18n/en.ts` → `web/frontend/src/i18n/<code>.ts` (e.g. `de.ts`)
+2. Translate the values
+3. In `web/frontend/src/i18n/index.tsx`, add the language code to `SUPPORTED` and import the catalog
+4. Rebuild and redeploy

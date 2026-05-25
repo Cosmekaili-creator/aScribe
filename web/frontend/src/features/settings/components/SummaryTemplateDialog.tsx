@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { FormField, SelectField, SwitchField, inputClassName } from "@/components/transcription/FormHelpers";
 import { Loader2 } from "lucide-react";
+import { useTranslation } from "@/i18n";
 
 export interface SummaryTemplate {
   id?: string;
@@ -26,6 +27,7 @@ interface SummaryTemplateDialogProps {
 }
 
 export function SummaryTemplateDialog({ open, onOpenChange, onSave, initial }: SummaryTemplateDialogProps) {
+  const { t } = useTranslation();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [model, setModel] = useState("");
@@ -87,51 +89,51 @@ export function SummaryTemplateDialog({ open, onOpenChange, onSave, initial }: S
         {/* Header */}
         <DialogHeader className="px-6 pt-6 pb-4 border-b border-[var(--border-subtle)]">
           <DialogTitle className="text-xl font-semibold text-[var(--text-primary)]">
-            {initial ? 'Edit Summary Template' : 'New Summary Template'}
+            {initial ? t('settings.summary.dialog.editTitle') : t('settings.summary.dialog.newTitle')}
           </DialogTitle>
           <DialogDescription className="text-[var(--text-secondary)] text-sm mt-1">
-            Create a reusable prompt to generate summaries from transcripts.
+            {t('settings.summary.dialog.description')}
           </DialogDescription>
         </DialogHeader>
 
         {/* Scrollable Content */}
         <div className="flex-1 overflow-y-auto px-6 py-6 space-y-5">
           {/* Name Field */}
-          <FormField label="Template Name" htmlFor="templateName">
+          <FormField label={t('settings.summary.dialog.nameLabel')} htmlFor="templateName">
             <Input
               id="templateName"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="e.g., Concise Bullet Summary"
+              placeholder={t('settings.summary.dialog.namePlaceholder')}
               className={inputClassName}
             />
           </FormField>
 
           {/* Model Selection */}
           <SelectField
-            label="Model"
-            description="Choose the LLM model to use for generating summaries."
+            label={t('settings.summary.dialog.modelLabel')}
+            description={t('settings.summary.dialog.modelDesc')}
             value={model}
             onValueChange={setModel}
             options={models}
           />
 
           {/* Description Field */}
-          <FormField label="Description" htmlFor="templateDesc" optional>
+          <FormField label={t('settings.summary.dialog.descLabel')} htmlFor="templateDesc" optional>
             <Input
               id="templateDesc"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Brief description of this template"
+              placeholder={t('settings.summary.dialog.descPlaceholder')}
               className={inputClassName}
             />
           </FormField>
 
           {/* Prompt Field */}
           <FormField
-            label="Prompt"
+            label={t('settings.summary.dialog.promptLabel')}
             htmlFor="templatePrompt"
-            description="Instructions for the model. The transcript will be provided as context."
+            description={t('settings.summary.dialog.promptDesc')}
           >
             <Textarea
               id="templatePrompt"
@@ -139,17 +141,14 @@ export function SummaryTemplateDialog({ open, onOpenChange, onSave, initial }: S
               className={`${inputClassName} resize-y min-h-[200px] max-h-[50vh]`}
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
-              placeholder="Write the summarization instructions...
-
-Example:
-Summarize the following transcript into concise bullet points. Focus on key decisions, action items, and important discussion topics."
+              placeholder={t('settings.summary.dialog.promptPlaceholder')}
             />
           </FormField>
 
           {/* Include Speaker Info Toggle */}
           <SwitchField
             id="includeSpeakerInfo"
-            label="Include speaker identification in transcript"
+            label={t('settings.summary.dialog.includeSpeakers')}
             checked={includeSpeakerInfo}
             onCheckedChange={setIncludeSpeakerInfo}
           />
@@ -172,10 +171,10 @@ Summarize the following transcript into concise bullet points. Focus on key deci
             {saving ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Saving...
+                {t('settings.summary.dialog.saving')}
               </>
             ) : (
-              initial ? 'Update Template' : 'Create Template'
+              initial ? t('settings.summary.dialog.update') : t('settings.summary.dialog.create')
             )}
           </Button>
         </DialogFooter>

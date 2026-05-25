@@ -3,11 +3,13 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/i18n";
 
 export function CLIAuthConfirmation() {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const { getAuthHeaders } = useAuth()
+    const { t } = useTranslation()
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
     const [user, setUser] = useState<{ id: number; username: string } | null>(null)
@@ -26,17 +28,17 @@ export function CLIAuthConfirmation() {
                     const data = await res.json()
                     setUser(data.user)
                 } else {
-                    setError('You must be logged in to authorize the CLI.')
+                    setError(t('auth.cli.notLoggedIn'))
                 }
             } catch {
-                setError('Failed to verify session.')
+                setError(t('auth.cli.sessionFailed'))
             } finally {
                 setLoading(false)
             }
         }
 
         if (!callbackUrl) {
-            setError('Invalid request: Missing callback URL.')
+            setError(t('auth.cli.missingCallback'))
             setLoading(false)
             return
         }
@@ -64,11 +66,11 @@ export function CLIAuthConfirmation() {
                 // Redirect to the CLI callback URL
                 window.location.href = data.redirect_url
             } else {
-                setError('Failed to authorize CLI.')
+                setError(t('auth.cli.authFailed'))
                 setProcessing(false)
             }
         } catch {
-            setError('An error occurred.')
+            setError(t('auth.cli.error'))
             setProcessing(false)
         }
     }
@@ -98,7 +100,7 @@ export function CLIAuthConfirmation() {
                         variant="outline"
                         onClick={() => navigate("/")}
                     >
-                        Go Home
+                        {t('auth.cli.goHome')}
                     </Button>
                 </div>
             </Layout>
@@ -116,11 +118,13 @@ export function CLIAuthConfirmation() {
                     </div>
 
                     <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-2">
-                        Authorize CLI Device?
+                        {t('auth.cli.title')}
                     </h1>
 
                     <p className="text-[var(--text-secondary)] mb-6">
-                        <span className="font-bold">{deviceName}</span> wants to access your account <span className="font-bold">{user?.username}</span>.
+                        {t('auth.cli.description')
+                            .replace('{deviceName}', deviceName)
+                            .replace('{username}', user?.username ?? '')}
                     </p>
 
                     <div className="flex flex-col gap-3">
@@ -130,7 +134,7 @@ export function CLIAuthConfirmation() {
                             disabled={processing}
                             className="w-full"
                         >
-                            {processing ? 'Authorizing...' : 'Approve'}
+                            {processing ? t('auth.cli.authorizing') : t('auth.cli.approve')}
                         </Button>
                         <Button
                             variant="outline"
@@ -138,7 +142,7 @@ export function CLIAuthConfirmation() {
                             disabled={processing}
                             className="w-full"
                         >
-                            Deny
+                            {t('auth.cli.deny')}
                         </Button>
                     </div>
                 </div>

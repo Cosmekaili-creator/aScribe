@@ -6,6 +6,7 @@ import 'highlight.js/styles/github-dark-dimmed.css'
 import './App.css'
 import App from './App.tsx'
 import { ThemeProvider } from './contexts/ThemeContext'
+import { LanguageProvider } from './i18n'
 import { BrowserRouter } from 'react-router-dom'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { TooltipProvider } from '@/components/ui/tooltip'
@@ -24,6 +25,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
+        <LanguageProvider>
         <BrowserRouter>
           <TooltipProvider>
             <ToastProvider>
@@ -37,6 +39,7 @@ createRoot(document.getElementById('root')!).render(
             </ToastProvider>
           </TooltipProvider>
         </BrowserRouter>
+        </LanguageProvider>
       </ThemeProvider>
     </QueryClientProvider>
   </StrictMode>,

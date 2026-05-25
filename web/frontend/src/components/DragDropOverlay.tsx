@@ -1,5 +1,6 @@
 import { FileAudio, Video, Users, Upload, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/i18n";
 
 interface DragDropOverlayProps {
 	isDragging: boolean;
@@ -16,6 +17,8 @@ export function DragDropOverlay({
 	fileDescription,
 	errorMessage
 }: DragDropOverlayProps) {
+	const { t } = useTranslation();
+
 	if (!isDragging || dragCount === 0) {
 		return null;
 	}
@@ -39,18 +42,18 @@ export function DragDropOverlay({
 
 	const getTitle = () => {
 		if (errorMessage) {
-			return "Invalid Files";
+			return t('dragdrop.invalid');
 		}
 
 		switch (fileType) {
 			case 'multitrack':
-				return "Multi-Track Audio Project";
+				return t('dragdrop.multitrack');
 			case 'video':
-				return "Video Files";
+				return t('dragdrop.video');
 			case 'single':
-				return "Audio Files";
+				return t('dragdrop.audio');
 			default:
-				return "Drop Files Here";
+				return t('dragdrop.dropHere');
 		}
 	};
 
@@ -59,7 +62,7 @@ export function DragDropOverlay({
 			return errorMessage;
 		}
 
-		return fileDescription || "Release to upload";
+		return fileDescription || t('dragdrop.releaseToUpload');
 	};
 
 	const getBorderColor = () => {
@@ -135,7 +138,7 @@ export function DragDropOverlay({
 				{/* Multi-track badge */}
 				{fileType === 'multitrack' && !errorMessage && (
 					<div className="mt-3 px-3 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-full text-sm font-medium">
-						Auto-detected multi-track project
+						{t('dragdrop.autoDetected')}
 					</div>
 				)}
 			</div>

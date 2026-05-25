@@ -15,8 +15,10 @@ import {
 	validateMultiTrackFiles
 } from "@/utils/fileProcessor";
 import { useGlobalUpload } from "@/contexts/GlobalUploadContext";
+import { useTranslation } from "@/i18n";
 
 export function Dashboard() {
+	const { t } = useTranslation();
 	// Get upload functionality from global context
 	const {
 		handleFileSelect,
@@ -144,7 +146,7 @@ export function Dashboard() {
 				<div className="mb-8 glass-card rounded-[var(--radius-card)] p-6 sm:p-8 shadow-[var(--shadow-float)] border border-[var(--border-subtle)] animate-in fade-in slide-in-from-top-4 duration-500">
 					<div className="flex items-center justify-between mb-6">
 						<h3 className="text-lg font-bold tracking-tight text-[var(--text-primary)]">
-							Uploading Files ({uploadProgress.filter(p => p.status === 'success').length}/{uploadProgress.length})
+							{t('dashboard.uploadingFiles').replace('{completed}', String(uploadProgress.filter(p => p.status === 'success').length)).replace('{total}', String(uploadProgress.length))}
 						</h3>
 						{!isUploading && (
 							<Button
@@ -193,9 +195,9 @@ export function Dashboard() {
 									)}
 								</div>
 								<div className="flex-shrink-0 text-xs font-medium text-[var(--text-tertiary)]">
-									{progress.status === 'uploading' && 'Uploading...'}
-									{progress.status === 'success' && 'Completed'}
-									{progress.status === 'error' && 'Failed'}
+									{progress.status === 'uploading' && t('dashboard.uploading')}
+									{progress.status === 'success' && t('dashboard.completed')}
+									{progress.status === 'error' && t('dashboard.failed')}
 								</div>
 							</div>
 						))}
@@ -217,7 +219,7 @@ export function Dashboard() {
 				errorMessage={draggedFileGroup && !hasValidFiles(draggedFileGroup)
 					? (draggedFileGroup.type === 'multitrack'
 						? validateMultiTrackFiles([...draggedFileGroup.files, draggedFileGroup.aupFile!]).error
-						: "No supported files found")
+						: t('dashboard.noSupportedFiles'))
 					: undefined}
 			/>
 		</MainLayout>

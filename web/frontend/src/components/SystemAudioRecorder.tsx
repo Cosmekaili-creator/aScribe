@@ -29,6 +29,7 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/toast";
+import { useTranslation } from "@/i18n";
 
 interface SystemAudioRecorderProps {
 	isOpen: boolean;
@@ -74,6 +75,7 @@ export function SystemAudioRecorder({
 	const [permissionDenied, setPermissionDenied] = useState(false);
 	const [micAvailable, setMicAvailable] = useState(true);
 
+	const { t } = useTranslation();
 	const { toast } = useToast();
 
 	// Browser compatibility check - only Chromium browsers supported
@@ -488,7 +490,7 @@ export function SystemAudioRecorder({
 					<DialogHeader>
 						<DialogTitle className="flex items-center gap-2">
 							<MonitorSpeaker className="h-5 w-5 text-[var(--brand-solid)]" />
-							Record System Audio
+							{t('recorder.system.title')}
 						</DialogTitle>
 					</DialogHeader>
 
@@ -496,13 +498,13 @@ export function SystemAudioRecorder({
 						<XCircle className="h-6 w-6 text-[var(--error)] flex-shrink-0" />
 						<div>
 							<h3 className="font-semibold mb-2 text-[var(--text-primary)]">
-								Browser Not Supported
+								{t('recorder.system.browserNotSupported')}
 							</h3>
 							<p className="text-sm mb-3 text-[var(--text-secondary)]">
 								{compatibilityError}
 							</p>
 							<p className="text-xs text-[var(--text-tertiary)]">
-								You can use "Record Audio" for microphone-only recording.
+								{t('recorder.system.useMicInstead')}
 							</p>
 						</div>
 					</div>
@@ -512,7 +514,7 @@ export function SystemAudioRecorder({
 							setCompatibilityError(null);
 							onClose();
 						}}>
-							Close
+							{t('recorder.system.close')}
 						</Button>
 					</div>
 				</DialogContent>
@@ -533,7 +535,7 @@ export function SystemAudioRecorder({
 					<DialogHeader>
 						<DialogTitle className="flex items-center gap-2">
 							<MonitorSpeaker className="h-5 w-5 text-[var(--brand-solid)]" />
-							Record System Audio
+							{t('recorder.system.title')}
 						</DialogTitle>
 					</DialogHeader>
 
@@ -541,22 +543,20 @@ export function SystemAudioRecorder({
 						<AlertCircle className="h-6 w-6 text-[var(--warning-solid)] flex-shrink-0" />
 						<div>
 							<h3 className="font-semibold mb-2 text-[var(--text-primary)]">
-								Screen Sharing Permission Required
+								{t('recorder.system.permissionRequired')}
 							</h3>
 							<p className="text-sm mb-3 text-[var(--text-secondary)]">
-								You denied screen sharing permission. Please click "Try Again"
-								and allow access when prompted.
+								{t('recorder.system.permissionDeniedDescription')}
 							</p>
 							<p className="text-xs font-medium text-[var(--warning-solid)]">
-								Make sure to check "Share system audio" or "Share tab audio"
-								in the browser picker!
+								{t('recorder.system.permissionTip')}
 							</p>
 						</div>
 					</div>
 
 					<div className="flex justify-end gap-3">
 						<Button variant="outline" onClick={handleClose}>
-							Cancel
+							{t('recorder.system.cancel')}
 						</Button>
 						<Button
 							onClick={() => {
@@ -564,7 +564,7 @@ export function SystemAudioRecorder({
 								startRecording();
 							}}
 						>
-							Try Again
+							{t('recorder.system.tryAgain')}
 						</Button>
 					</div>
 				</DialogContent>
@@ -580,7 +580,7 @@ export function SystemAudioRecorder({
 					<DialogHeader>
 						<DialogTitle className="flex items-center gap-2">
 							<MonitorSpeaker className="h-5 w-5 text-[var(--brand-solid)]" />
-							Recording Complete
+							{t('recorder.system.recordingComplete')}
 						</DialogTitle>
 					</DialogHeader>
 
@@ -590,10 +590,10 @@ export function SystemAudioRecorder({
 							<CheckCircle className="h-5 w-5 text-[var(--success-solid)] flex-shrink-0" />
 							<div>
 								<h3 className="font-semibold text-[var(--text-primary)]">
-									Recording Complete!
+									{t('recorder.system.recordingCompleteTitle')}
 								</h3>
 								<p className="text-sm text-[var(--text-secondary)]">
-									Duration: {formatTime(recordingTime)}
+									{t('recorder.system.duration')}: {formatTime(recordingTime)}
 								</p>
 							</div>
 						</div>
@@ -601,12 +601,12 @@ export function SystemAudioRecorder({
 						{/* Title Input */}
 						<div className="space-y-2">
 							<label className="text-sm font-medium text-[var(--text-primary)]">
-								Recording Title
+								{t('recorder.system.recordingTitle')}
 							</label>
 							<Input
 								value={title}
 								onChange={(e) => setTitle(e.target.value)}
-								placeholder="Enter a title for your recording..."
+								placeholder={t('recorder.system.titlePlaceholder')}
 							/>
 						</div>
 
@@ -619,12 +619,12 @@ export function SystemAudioRecorder({
 							{isUploading ? (
 								<>
 									<Loader2 className="h-5 w-5 mr-2 animate-spin" />
-									Uploading...
+									{t('recorder.system.uploading')}
 								</>
 							) : (
 								<>
 									<Upload className="h-5 w-5 mr-2" />
-									Upload Recording
+									{t('recorder.system.upload')}
 								</>
 							)}
 						</Button>
@@ -642,7 +642,7 @@ export function SystemAudioRecorder({
 					<DialogHeader>
 						<DialogTitle className="flex items-center gap-2">
 							<MonitorSpeaker className="h-5 w-5 text-[var(--brand-solid)]" />
-							Recording System Audio
+							{t('recorder.system.recordingSystemAudio')}
 						</DialogTitle>
 					</DialogHeader>
 
@@ -652,10 +652,10 @@ export function SystemAudioRecorder({
 							<div className="h-3 w-3 bg-[var(--error)] rounded-full animate-pulse flex-shrink-0" />
 							<div>
 								<h3 className="font-semibold text-[var(--text-primary)]">
-									Recording System Audio{micAvailable ? " + Microphone" : " Only"}
+									{micAvailable ? t('recorder.system.recordingWithMic') : t('recorder.system.recordingOnly')}
 								</h3>
 								<p className="text-xs text-[var(--text-secondary)]">
-									Recording continues even if you switch tabs
+									{t('recorder.system.recordingContinues')}
 								</p>
 							</div>
 						</div>
@@ -667,7 +667,7 @@ export function SystemAudioRecorder({
 							</div>
 							<div className="flex items-center justify-center gap-2 text-sm text-[var(--text-secondary)]">
 								<div className="h-2 w-2 bg-[var(--error)] rounded-full animate-pulse" />
-								<span>Recording...</span>
+								<span>{t('recorder.system.recordingStatus')}</span>
 							</div>
 						</div>
 
@@ -678,7 +678,7 @@ export function SystemAudioRecorder({
 									<div className="flex items-center gap-2">
 										<MonitorSpeaker className="h-4 w-4 text-[var(--brand-solid)]" />
 										<label className="text-sm font-medium text-[var(--text-primary)]">
-											System Audio
+											{t('recorder.system.systemAudio')}
 										</label>
 									</div>
 									<Slider
@@ -697,7 +697,7 @@ export function SystemAudioRecorder({
 									<div className="flex items-center gap-2">
 										<Mic className="h-4 w-4 text-[var(--brand-solid)]" />
 										<label className="text-sm font-medium text-[var(--text-primary)]">
-											Microphone
+											{t('recorder.system.microphone')}
 										</label>
 									</div>
 									<Slider
@@ -723,7 +723,7 @@ export function SystemAudioRecorder({
 								variant="secondary"
 							>
 								<Square className="h-5 w-5 mr-2" />
-								Stop Recording
+								{t('recorder.system.stop')}
 							</Button>
 						</div>
 					</div>
@@ -739,11 +739,10 @@ export function SystemAudioRecorder({
 				<DialogHeader>
 					<DialogTitle className="flex items-center gap-2">
 						<MonitorSpeaker className="h-5 w-5 text-[var(--brand-solid)]" />
-						Record System Audio
+						{t('recorder.system.title')}
 					</DialogTitle>
 					<DialogDescription>
-						Capture system audio from your screen/tab along with your microphone
-						for meeting recordings.
+						{t('recorder.system.description')}
 					</DialogDescription>
 				</DialogHeader>
 
@@ -751,21 +750,21 @@ export function SystemAudioRecorder({
 					{/* Instructions Card */}
 					<div className="p-4 bg-[var(--brand-light)] border border-[var(--brand-solid)]/20 rounded-[var(--radius-card)]">
 						<h3 className="font-semibold mb-3 text-[var(--text-primary)]">
-							How it works:
+							{t('recorder.system.howItWorks')}
 						</h3>
 						<ol className="space-y-3 text-sm text-[var(--text-secondary)]">
 							<li className="flex gap-3">
 								<span className="font-bold text-[var(--brand-solid)] flex-shrink-0">
 									1.
 								</span>
-								<span>Click "Start Recording" below</span>
+								<span>{t('recorder.system.step1')}</span>
 							</li>
 							<li className="flex gap-3">
 								<span className="font-bold text-[var(--brand-solid)] flex-shrink-0">
 									2.
 								</span>
 								<span>
-									Select a <strong>Chrome Tab</strong> from the browser picker (not window or screen)
+									{t('recorder.system.step2')}
 								</span>
 							</li>
 							<li className="flex gap-3">
@@ -773,19 +772,19 @@ export function SystemAudioRecorder({
 									3.
 								</span>
 								<span>
-									<strong>Check "Share tab audio"</strong> checkbox at the bottom
+									{t('recorder.system.step3')}
 								</span>
 							</li>
 							<li className="flex gap-3">
 								<span className="font-bold text-[var(--brand-solid)] flex-shrink-0">
 									4.
 								</span>
-								<span>Allow microphone access when prompted (optional)</span>
+								<span>{t('recorder.system.step4')}</span>
 							</li>
 						</ol>
 						<div className="mt-4 p-3 bg-[var(--warning-translucent)] border border-[var(--warning-solid)]/20 rounded-[var(--radius-btn)]">
 							<p className="text-xs text-[var(--text-secondary)]">
-								<strong>💡 Tip:</strong> Use headphones to prevent echo and ensure the best recording quality!
+								<strong>💡 {t('recorder.system.tip')}:</strong> {t('recorder.system.tipText')}
 							</p>
 						</div>
 					</div>
@@ -793,12 +792,12 @@ export function SystemAudioRecorder({
 					{/* Title Input */}
 					<div className="space-y-2">
 						<label className="text-sm font-medium text-[var(--text-primary)]">
-							Recording Title (Optional)
+							{t('recorder.system.recordingTitleOptional')}
 						</label>
 						<Input
 							value={title}
 							onChange={(e) => setTitle(e.target.value)}
-							placeholder="Enter a title for your recording..."
+							placeholder={t('recorder.system.titlePlaceholder')}
 							disabled={isRecording}
 						/>
 					</div>
@@ -807,7 +806,7 @@ export function SystemAudioRecorder({
 					{availableDevices.length > 1 && (
 						<div className="space-y-2">
 							<label className="text-sm font-medium text-[var(--text-primary)]">
-								Microphone
+								{t('recorder.system.microphone')}
 							</label>
 							<DropdownMenu>
 								<DropdownMenuTrigger asChild disabled={isRecording}>
@@ -856,15 +855,15 @@ export function SystemAudioRecorder({
 					{/* Audio Settings */}
 					<div className="space-y-3">
 						<label className="text-sm font-medium text-[var(--text-primary)]">
-							Audio Settings
+							{t('recorder.system.audioSettings')}
 						</label>
 						<div className="flex items-center justify-between p-3 bg-[var(--bg-card)] border border-[var(--border-subtle)] rounded-[var(--radius-card)]">
 							<div className="flex-1">
 								<div className="text-sm font-medium text-[var(--text-primary)]">
-									Automatic Gain Control
+									{t('recorder.system.autoGainControl')}
 								</div>
 								<p className="text-xs text-[var(--text-tertiary)] mt-1">
-									Automatically adjusts microphone volume for consistent audio levels
+									{t('recorder.system.autoGainControlDescription')}
 								</p>
 							</div>
 							<Switch
@@ -882,7 +881,7 @@ export function SystemAudioRecorder({
 						className="w-full rounded-xl text-white cursor-pointer bg-gradient-to-r from-[#FFAB40] to-[#FF3D00] hover:opacity-90 active:scale-[0.98] transition-all shadow-lg shadow-orange-500/20"
 					>
 						<MonitorSpeaker className="h-5 w-5 mr-2" />
-						Start Recording
+						{t('recorder.system.start')}
 					</Button>
 				</div>
 			</DialogContent>

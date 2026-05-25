@@ -23,6 +23,7 @@ import { LogsDialog } from "./audio-detail/LogsDialog";
 import { SummaryDialog } from "./audio-detail/SummaryDialog";
 import { ChatSidePanel } from "./ChatSidePanel";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useTranslation } from "@/i18n";
 
 // Types
 interface AudioDetailViewProps {
@@ -33,6 +34,7 @@ export const AudioDetailView = function AudioDetailView({ audioId: propAudioId }
     const { audioId: paramAudioId } = useParams<{ audioId: string }>();
     const audioId = propAudioId || paramAudioId;
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     // Refs
     const audioPlayerRef = useRef<EmberPlayerRef>(null);
@@ -133,7 +135,7 @@ export const AudioDetailView = function AudioDetailView({ audioId: propAudioId }
         }
     };
 
-    if (!audioId) return <div>Invalid Audio ID</div>;
+    if (!audioId) return <div>{t('detail.invalidId')}</div>;
 
     // Handler for notes/chat exclusivity
     const handleSetNotesOpen = (open: boolean) => {
@@ -147,7 +149,7 @@ export const AudioDetailView = function AudioDetailView({ audioId: propAudioId }
     };
 
 
-    if (!audioId) return <div>Invalid Audio ID</div>;
+    if (!audioId) return <div>{t('detail.invalidId')}</div>;
 
     // Render
     if (isLoading) {
@@ -161,8 +163,8 @@ export const AudioDetailView = function AudioDetailView({ audioId: propAudioId }
     if (error || !audioFile) {
         return (
             <div className="h-full flex flex-col items-center justify-center gap-4">
-                <p className="text-red-500">Failed to load audio details.</p>
-                <Button onClick={() => navigate('/dashboard')}>Go to Dashboard</Button>
+                <p className="text-red-500">{t('detail.loadError')}</p>
+                <Button onClick={() => navigate('/dashboard')}>{t('detail.goToDashboard')}</Button>
             </div>
         );
     }
@@ -211,7 +213,7 @@ export const AudioDetailView = function AudioDetailView({ audioId: propAudioId }
                                                     onClick={() => setIsEditingTitle(true)}
                                                 >
                                                     <h1 className="text-3xl font-bold tracking-tight text-[var(--text-primary)] truncate font-display">
-                                                        {audioFile.title || "Untitled Recording"}
+                                                        {audioFile.title || t('detail.untitledRecording')}
                                                     </h1>
                                                     <Edit2 className="h-4 w-4 text-[var(--text-tertiary)] opacity-0 group-hover:opacity-100 transition-opacity" />
                                                 </div>
@@ -231,7 +233,7 @@ export const AudioDetailView = function AudioDetailView({ audioId: propAudioId }
                                                                     <Check className="h-5 w-5" strokeWidth={2.5} />
                                                                 </div>
                                                             </TooltipTrigger>
-                                                            <TooltipContent>Completed</TooltipContent>
+                                                            <TooltipContent>{t('detail.statusCompleted')}</TooltipContent>
                                                         </Tooltip>
                                                     )}
                                                     {audioFile.status === 'processing' && (
@@ -241,7 +243,7 @@ export const AudioDetailView = function AudioDetailView({ audioId: propAudioId }
                                                                     <Loader2 className="h-5 w-5 animate-spin" strokeWidth={2.5} />
                                                                 </div>
                                                             </TooltipTrigger>
-                                                            <TooltipContent>Processing</TooltipContent>
+                                                            <TooltipContent>{t('detail.statusProcessing')}</TooltipContent>
                                                         </Tooltip>
                                                     )}
                                                     {audioFile.status === 'failed' && (
@@ -251,7 +253,7 @@ export const AudioDetailView = function AudioDetailView({ audioId: propAudioId }
                                                                     <AlertCircle className="h-5 w-5" strokeWidth={2.5} />
                                                                 </div>
                                                             </TooltipTrigger>
-                                                            <TooltipContent>Failed</TooltipContent>
+                                                            <TooltipContent>{t('detail.statusFailed')}</TooltipContent>
                                                         </Tooltip>
                                                     )}
                                                     {audioFile.status === 'pending' && (
@@ -261,7 +263,7 @@ export const AudioDetailView = function AudioDetailView({ audioId: propAudioId }
                                                                     <Clock className="h-5 w-5" strokeWidth={2.5} />
                                                                 </div>
                                                             </TooltipTrigger>
-                                                            <TooltipContent>Queued</TooltipContent>
+                                                            <TooltipContent>{t('detail.statusQueued')}</TooltipContent>
                                                         </Tooltip>
                                                     )}
                                                 </div>
@@ -282,7 +284,7 @@ export const AudioDetailView = function AudioDetailView({ audioId: propAudioId }
                                                 )}
                                             >
                                                 <MessageCircle className="h-4 w-4" />
-                                                <span className="hidden sm:inline">Chat</span>
+                                                <span className="hidden sm:inline">{t('detail.chat')}</span>
                                             </Button>
 
                                             <DropdownMenu>
@@ -301,52 +303,52 @@ export const AudioDetailView = function AudioDetailView({ audioId: propAudioId }
                                                     {transcript?.word_segments && transcript.word_segments.length > 0 ? (
                                                         <DropdownMenuItem onClick={() => setTranscriptMode(transcriptMode === 'compact' ? 'expanded' : 'compact')} className="rounded-[8px] cursor-pointer">
                                                             {transcriptMode === 'compact' ? <List className="mr-2 h-4 w-4 opacity-70" /> : <AlignLeft className="mr-2 h-4 w-4 opacity-70" />}
-                                                            {transcriptMode === 'compact' ? 'Timeline View' : 'Compact View'}
+                                                            {transcriptMode === 'compact' ? t('detail.menu.timelineView') : t('detail.menu.compactView')}
                                                         </DropdownMenuItem>
                                                     ) : (
                                                         <DropdownMenuItem disabled className="rounded-[8px] opacity-50 cursor-not-allowed">
                                                             <List className="mr-2 h-4 w-4 opacity-70" />
-                                                            Timeline View (No timestamps)
+                                                            {t('detail.menu.timelineNoTimestamps')}
                                                         </DropdownMenuItem>
                                                     )}
                                                     <DropdownMenuItem onClick={() => setAutoScrollEnabled(!autoScrollEnabled)} className="rounded-[8px] cursor-pointer">
                                                         <ArrowDownCircle className={cn("mr-2 h-4 w-4 opacity-70", autoScrollEnabled && "text-[var(--brand-solid)]")} />
-                                                        Auto Scroll {autoScrollEnabled ? 'On' : 'Off'}
+                                                        {t('detail.menu.autoScroll')} {autoScrollEnabled ? t('detail.menu.on') : t('detail.menu.off')}
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem onClick={() => handleSetNotesOpen(!notesOpen)} className="rounded-[8px] cursor-pointer">
                                                         <StickyNote className={cn("mr-2 h-4 w-4 opacity-70", notesOpen && "text-[var(--brand-solid)]")} />
-                                                        Notes
+                                                        {t('detail.menu.notes')}
                                                     </DropdownMenuItem>
                                                     <DropdownMenuSeparator className="bg-[var(--border-subtle)] my-1" />
                                                     <DropdownMenuItem onClick={() => handleSetChatOpen(!chatOpen)} className="rounded-[8px] cursor-pointer">
                                                         <MessageCircle className={cn("mr-2 h-4 w-4 opacity-70", chatOpen && "text-[var(--brand-solid)]")} />
-                                                        Chat with Audio
+                                                        {t('detail.menu.chatWithAudio')}
                                                     </DropdownMenuItem>
                                                     {transcript?.segments?.some((s: TranscriptSegment) => s.speaker) && (
                                                         <DropdownMenuItem onClick={() => setSpeakerRenameOpen(true)} className="rounded-[8px] cursor-pointer">
                                                             <Users className="mr-2 h-4 w-4 opacity-70" />
-                                                            Rename Speakers
+                                                            {t('detail.menu.renameSpeakers')}
                                                         </DropdownMenuItem>
                                                     )}
                                                     <DropdownMenuItem onClick={() => setSummaryDialogOpen(true)} className="rounded-[8px] cursor-pointer text-[var(--brand-solid)] focus:text-[var(--brand-solid)] focus:bg-[var(--brand-light)]">
-                                                        <Bot className="mr-2 h-4 w-4" /> AI Summary
+                                                        <Bot className="mr-2 h-4 w-4" /> {t('detail.menu.aiSummary')}
                                                     </DropdownMenuItem>
                                                     <DropdownMenuSeparator className="bg-[var(--border-subtle)] my-1" />
                                                     <DropdownMenuItem onClick={() => transcript && downloadSRT(transcript, audioFile?.title || 'transcript', speakerMappings)} className="rounded-[8px] cursor-pointer">
-                                                        <FileImage className="mr-2 h-4 w-4 opacity-70" /> Download SRT
+                                                        <FileImage className="mr-2 h-4 w-4 opacity-70" /> {t('detail.menu.downloadSrt')}
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem onClick={() => { setDownloadFormat('txt'); setDownloadDialogOpen(true); }} className="rounded-[8px] cursor-pointer">
-                                                        <AlignLeft className="mr-2 h-4 w-4 opacity-70" /> Download Text
+                                                        <AlignLeft className="mr-2 h-4 w-4 opacity-70" /> {t('detail.menu.downloadText')}
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem onClick={() => { setDownloadFormat('json'); setDownloadDialogOpen(true); }} className="rounded-[8px] cursor-pointer">
-                                                        <FileJson className="mr-2 h-4 w-4 opacity-70" /> Download JSON
+                                                        <FileJson className="mr-2 h-4 w-4 opacity-70" /> {t('detail.menu.downloadJson')}
                                                     </DropdownMenuItem>
                                                     <DropdownMenuSeparator className="bg-[var(--border-subtle)] my-1" />
                                                     <DropdownMenuItem onClick={() => setExecutionDialogOpen(true)} className="rounded-[8px] cursor-pointer">
-                                                        <Activity className="mr-2 h-4 w-4 opacity-70" /> Execution Info
+                                                        <Activity className="mr-2 h-4 w-4 opacity-70" /> {t('detail.menu.executionInfo')}
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem onClick={() => setLogsDialogOpen(true)} className="rounded-[8px] cursor-pointer">
-                                                        <FileText className="mr-2 h-4 w-4 opacity-70" /> View Logs
+                                                        <FileText className="mr-2 h-4 w-4 opacity-70" /> {t('detail.menu.viewLogs')}
                                                     </DropdownMenuItem>
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
