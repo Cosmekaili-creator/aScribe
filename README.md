@@ -9,7 +9,6 @@ Scriberr is an open-source, self-hosted audio transcription application designed
 </p>
 
 <p align="center">
-  <a href="https://github.com/Cosmekaili-creator/Scriberr">Source</a> •
   <a href="https://github.com/rishikanthc/scriberr">Upstream project</a>
 </p>
 
@@ -19,7 +18,7 @@ Scriberr is an open-source, self-hosted audio transcription application designed
 
 ## About this fork
 
-This is a fork of [Scriberr by rishikanthc](https://github.com/rishikanthc/scriberr), maintained for the ARCS architecture agency. It includes all upstream features plus:
+This is a fork of [Scriberr by rishikanthc](https://github.com/rishikanthc/scriberr). It includes all upstream features plus:
 
 - **Internationalization (i18n)**: Full French/English UI, language preference stored per user account and auto-detected from the browser
 - Additional cloud transcription providers (AssemblyAI, Deepgram), multi-track Audacity import, and other upstream additions
