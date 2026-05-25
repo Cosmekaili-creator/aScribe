@@ -65,3 +65,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const useTranslation = () => useContext(LanguageContext)
+
+const localeMap: Record<SupportedLanguage, string> = { en: 'en-US', fr: 'fr-FR' }
+// eslint-disable-next-line react-refresh/only-export-components
+export const useLocale = () => localeMap[useContext(LanguageContext).language]

@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import { Info, Clock, UsersRound } from "lucide-react";
 import { useExecutionData } from "@/features/transcription/hooks/useAudioDetail";
-import { useTranslation } from "@/i18n";
+import { useTranslation, useLocale } from "@/i18n";
 
 interface ExecutionInfoDialogProps {
     audioId: string;
@@ -18,6 +18,7 @@ interface ExecutionInfoDialogProps {
 export function ExecutionInfoDialog({ audioId, isOpen, onClose }: ExecutionInfoDialogProps) {
     const { data: executionData, isLoading } = useExecutionData(audioId);
     const { t } = useTranslation();
+    const locale = useLocale();
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
@@ -48,13 +49,13 @@ export function ExecutionInfoDialog({ audioId, isOpen, onClose }: ExecutionInfoD
                             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
                                 <MetricCard
                                     label={t('detail.execution.started')}
-                                    value={executionData.started_at ? new Date(executionData.started_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'}
-                                    subtext={executionData.started_at ? new Date(executionData.started_at).toLocaleDateString() : ''}
+                                    value={executionData.started_at ? new Date(executionData.started_at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' }) : 'N/A'}
+                                    subtext={executionData.started_at ? new Date(executionData.started_at).toLocaleDateString(locale) : ''}
                                 />
                                 <MetricCard
                                     label={t('detail.execution.completed')}
-                                    value={executionData.completed_at ? new Date(executionData.completed_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : t('detail.execution.inProgress')}
-                                    subtext={executionData.completed_at ? new Date(executionData.completed_at).toLocaleDateString() : ''}
+                                    value={executionData.completed_at ? new Date(executionData.completed_at).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' }) : t('detail.execution.inProgress')}
+                                    subtext={executionData.completed_at ? new Date(executionData.completed_at).toLocaleDateString(locale) : ''}
                                 />
                                 <MetricCard
                                     label={t('detail.execution.duration')}
@@ -82,9 +83,9 @@ export function ExecutionInfoDialog({ audioId, isOpen, onClose }: ExecutionInfoD
                                                 </span>
                                             </div>
                                             <div className="flex justify-between text-[11px] text-[var(--text-tertiary)] bg-[var(--bg-main)]/50 p-1.5 rounded-[var(--radius-sm)]">
-                                                <span>{new Date(timing.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}</span>
+                                                <span>{new Date(timing.start_time).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}</span>
                                                 <span>→</span>
-                                                <span>{new Date(timing.end_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}</span>
+                                                <span>{new Date(timing.end_time).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}</span>
                                             </div>
                                         </div>
                                     ))}

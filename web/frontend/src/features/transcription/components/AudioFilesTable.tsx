@@ -48,7 +48,7 @@ const JobStatusMonitor = memo(function JobStatusMonitor({ jobId }: { jobId: stri
 import { DebouncedSearchInput } from "@/components/DebouncedSearchInput";
 import { SwipeableItem } from "@/components/ui/swipeable-item";
 import { useSwipeHint } from "@/hooks/use-swipe-hint";
-import { useTranslation } from "@/i18n";
+import { useTranslation, useLocale } from "@/i18n";
 
 
 
@@ -63,6 +63,7 @@ export const AudioFilesTable = memo(function AudioFilesTable({
 	const navigate = useNavigate();
 	const { getAuthHeaders } = useAuth();
 	const { t } = useTranslation();
+	const locale = useLocale();
 	const { shouldShowHint, markHintShown } = useSwipeHint();
 
 	// Table State
@@ -710,12 +711,12 @@ export const AudioFilesTable = memo(function AudioFilesTable({
 	// formatDuration removed as requested
 
 	const formatDate = useCallback((dateString: string) => {
-		return new Date(dateString).toLocaleDateString("en-US", {
+		return new Date(dateString).toLocaleDateString(locale, {
 			year: "numeric",
 			month: "short",
 			day: "numeric",
 		});
-	}, []);
+	}, [locale]);
 
 
 

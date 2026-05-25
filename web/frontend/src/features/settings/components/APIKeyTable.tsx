@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Trash2, Calendar, Clock } from "lucide-react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { useTranslation } from "@/i18n";
+import { useTranslation, useLocale } from "@/i18n";
 
 interface APIKey {
 	id: string;
@@ -20,6 +20,7 @@ interface APIKeyTableProps {
 
 export function APIKeyTable({ refreshTrigger, onKeyChange }: APIKeyTableProps) {
 	const { t } = useTranslation();
+	const locale = useLocale();
 	const [apiKeys, setApiKeys] = useState<APIKey[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -75,7 +76,7 @@ export function APIKeyTable({ refreshTrigger, onKeyChange }: APIKeyTableProps) {
 	};
 
 	const formatDate = (dateString: string) => {
-		return new Date(dateString).toLocaleDateString("en-US", {
+		return new Date(dateString).toLocaleDateString(locale, {
 			year: "numeric",
 			month: "short",
 			day: "numeric",
@@ -83,7 +84,7 @@ export function APIKeyTable({ refreshTrigger, onKeyChange }: APIKeyTableProps) {
 	};
 
 	const formatDateTime = (dateString: string) => {
-		return new Date(dateString).toLocaleString("en-US", {
+		return new Date(dateString).toLocaleString(locale, {
 			year: "numeric",
 			month: "short",
 			day: "numeric",

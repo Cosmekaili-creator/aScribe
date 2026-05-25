@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Pencil, Trash2, Save, ExternalLink, Check, Copy } from "lucide-react";
 import { useState } from "react";
-import { useTranslation } from "@/i18n";
+import { useTranslation, useLocale } from "@/i18n";
 
 interface NotesSidebarProps {
   notes: Note[];
@@ -15,6 +15,7 @@ interface NotesSidebarProps {
 
 export function NotesSidebar({ notes, onEdit, onDelete, onJumpTo }: NotesSidebarProps) {
   const { t } = useTranslation();
+  const locale = useLocale();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draft, setDraft] = useState("");
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -64,7 +65,7 @@ export function NotesSidebar({ notes, onEdit, onDelete, onJumpTo }: NotesSidebar
               <ExternalLink className="inline h-3 w-3 mr-1" /> {formatTime(n.start_time)} - {formatTime(n.end_time)}
             </button>
             <span className="text-[10px] text-carbon-400">
-              {n.created_at ? new Date(n.created_at).toLocaleString() : ''}
+              {n.created_at ? new Date(n.created_at).toLocaleString(locale) : ''}
             </span>
           </div>
 

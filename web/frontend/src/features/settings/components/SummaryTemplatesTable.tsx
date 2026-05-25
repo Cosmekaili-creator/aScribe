@@ -5,7 +5,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Trash2, FileText } from "lucide-react";
 import type { SummaryTemplate } from "./SummaryTemplateDialog";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { useTranslation } from "@/i18n";
+import { useTranslation, useLocale } from "@/i18n";
 
 interface SummaryTemplatesTableProps {
   onEdit: (tpl: SummaryTemplate) => void;
@@ -15,6 +15,7 @@ interface SummaryTemplatesTableProps {
 
 export function SummaryTemplatesTable({ onEdit, refreshTrigger = 0, disabled = false }: SummaryTemplatesTableProps) {
   const { t } = useTranslation();
+  const locale = useLocale();
   const { getAuthHeaders } = useAuth();
   const [items, setItems] = useState<SummaryTemplate[]>([]);
   const [loading, setLoading] = useState(true);
@@ -51,7 +52,7 @@ export function SummaryTemplatesTable({ onEdit, refreshTrigger = 0, disabled = f
     }
   };
 
-  const formatDate = (d?: string) => d ? new Date(d).toLocaleString() : '';
+  const formatDate = (d?: string) => d ? new Date(d).toLocaleString(locale) : '';
 
   if (loading) {
     return (

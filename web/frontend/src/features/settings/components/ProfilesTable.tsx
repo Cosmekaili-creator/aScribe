@@ -15,6 +15,7 @@ import {
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import type { WhisperXParams } from "@/components/TranscriptionConfigDialog";
+import { useLocale } from "@/i18n";
 
 interface TranscriptionProfile {
 	id: string;
@@ -40,6 +41,7 @@ export function ProfilesTable({
 	onCreateProfile,
 }: ProfilesTableProps) {
 	const { getAuthHeaders } = useAuth();
+	const locale = useLocale();
 	const [profiles, setProfiles] = useState<TranscriptionProfile[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [openPopovers, setOpenPopovers] = useState<Record<string, boolean>>({});
@@ -106,14 +108,14 @@ export function ProfilesTable({
 	);
 
 	const formatDate = useCallback((dateString: string) => {
-		return new Date(dateString).toLocaleDateString("en-US", {
+		return new Date(dateString).toLocaleDateString(locale, {
 			year: "numeric",
 			month: "short",
 			day: "numeric",
 			hour: "2-digit",
 			minute: "2-digit",
 		});
-	}, []);
+	}, [locale]);
 
 	if (loading) {
 		return (

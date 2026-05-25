@@ -23,7 +23,7 @@ import { LogsDialog } from "./audio-detail/LogsDialog";
 import { SummaryDialog } from "./audio-detail/SummaryDialog";
 import { ChatSidePanel } from "./ChatSidePanel";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useTranslation } from "@/i18n";
+import { useTranslation, useLocale } from "@/i18n";
 
 // Types
 interface AudioDetailViewProps {
@@ -35,6 +35,7 @@ export const AudioDetailView = function AudioDetailView({ audioId: propAudioId }
     const audioId = propAudioId || paramAudioId;
     const navigate = useNavigate();
     const { t } = useTranslation();
+    const locale = useLocale();
 
     // Refs
     const audioPlayerRef = useRef<EmberPlayerRef>(null);
@@ -176,7 +177,7 @@ export const AudioDetailView = function AudioDetailView({ audioId: propAudioId }
     }
 
     // Helper to format date "Premium" style
-    const formattedDate = new Date(audioFile.created_at).toLocaleDateString("en-US", {
+    const formattedDate = new Date(audioFile.created_at).toLocaleDateString(locale, {
         month: "short",
         day: "numeric",
         year: "numeric"
