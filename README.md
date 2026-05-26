@@ -10,7 +10,7 @@
 
 Audio transcription application with speaker diarization, AI summaries, and multi-provider support.
 
-Fork of [Scriberr](https://github.com/rishikanthc/Scriberr), significantly extended for the ARCS agency stack.
+Fork of [Scriberr](https://github.com/rishikanthc/Scriberr), significantly extended. This version is maintained by [Majorum Network](https://majorum.net/) under the original licence.
 
 ## Features
 
