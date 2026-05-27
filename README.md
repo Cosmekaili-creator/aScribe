@@ -42,6 +42,31 @@ Fork of [Scriberr](https://github.com/rishikanthc/Scriberr), significantly exten
 - Compact and timeline transcript views with playback speed control
 - French / English UI
 
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <img src="screenshots/dashboard-light.jpeg" alt="Dashboard" />
+      <br /><sub>Dashboard — light mode</sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="screenshots/input-menu.jpeg" alt="Input menu" />
+      <br /><sub>Input sources menu</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="screenshots/settings-profiles.jpeg" alt="Settings — transcription profiles" />
+      <br /><sub>Settings — transcription profiles with global publishing</sub>
+    </td>
+    <td align="center" width="50%">
+      <img src="screenshots/user-management-dark.jpeg" alt="User management — dark mode" />
+      <br /><sub>User management — dark mode</sub>
+    </td>
+  </tr>
+</table>
+
 ## Quick start (Docker)
 
 ```bash
