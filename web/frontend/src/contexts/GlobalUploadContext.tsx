@@ -6,10 +6,14 @@ import {
     type PropsWithChildren,
 } from "react";
 import { useLocation } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { useAudioUpload, useMultiTrackUpload } from "@/features/transcription/hooks/useAudioFiles";
 import { useToast } from "@/components/ui/toast";
 import { MultiTrackUploadDialog } from "@/features/transcription/components/MultiTrackUploadDialog";
 import { useSharedAudio } from "@/hooks/useSharedAudio";
+import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useSpeakerWizardAutoOpen } from "@/features/transcription/hooks/useSpeakerWizardAutoOpen";
+import { SpeakerWizardModal } from "@/features/transcription/components/SpeakerWizardModal";
 
 // Types
 interface FileWithType {
@@ -53,6 +57,22 @@ export function GlobalUploadProvider({ children }: PropsWithChildren) {
     const { mutateAsync: uploadMultiTrack } = useMultiTrackUpload();
     const { toast } = useToast();
     const location = useLocation();
+    const { getAuthHeaders, isAuthenticated } = useAuth();
+
+    // Cache the default profile so recordings can be auto-transcribed with the
+    // right params.  Same query key as Header.tsx → shared TanStack Query cache.
+    const { data: defaultProfile } = useQuery<{ parameters?: Record<string, unknown> } | null>({
+        queryKey: ['user', 'default-profile'],
+        queryFn: async () => {
+            const resp = await fetch('/api/v1/user/default-profile', {
+                headers: getAuthHeaders(),
+            });
+            if (!resp.ok) return null;
+            return resp.json();
+        },
+        enabled: isAuthenticated,
+        staleTime: 60_000,
+    });
 
     // Check if we're on the dashboard (home page)
     const isOnDashboard = location.pathname === "/" || location.pathname === "";
@@ -231,9 +251,38 @@ export function GlobalUploadProvider({ children }: PropsWithChildren) {
         async (blob: Blob, title: string) => {
             const ext = blob.type.includes('mp4') ? 'mp4' : blob.type.includes('ogg') ? 'ogg' : 'webm';
             const file = new File([blob], `${title}.${ext}`, { type: blob.type });
-            await handleFileSelect(file);
+
+            // Upload the recording and get the job response directly so we can
+            // auto-transcribe it regardless of the user's auto_transcription_enabled
+            // setting.  (The plan: "recorder always sets autoTranscribe: true.")
+            let uploadedJob: { id?: string; status?: string } | null = null;
+            try {
+                uploadedJob = await uploadFile({ file, isVideo: false });
+            } catch {
+                // Upload failed — fall back to handleFileSelect for toast/progress UI.
+                await handleFileSelect(file);
+                return;
+            }
+
+            // If the server-side auto-transcription already queued the job
+            // (status=pending|processing) we leave it alone to avoid a double-start.
+            if (uploadedJob?.id && uploadedJob.status === 'uploaded') {
+                const params = defaultProfile?.parameters ?? {};
+                try {
+                    await fetch(`/api/v1/transcription/${uploadedJob.id}/start`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            ...getAuthHeaders(),
+                        },
+                        body: JSON.stringify(params),
+                    });
+                } catch {
+                    // Non-fatal — the user can start transcription manually.
+                }
+            }
         },
-        [handleFileSelect]
+        [uploadFile, handleFileSelect, getAuthHeaders, defaultProfile]
     );
 
     const handleMultiTrackDialogClose = useCallback(() => {
@@ -253,6 +302,9 @@ export function GlobalUploadProvider({ children }: PropsWithChildren) {
     useSharedAudio((file) => {
         handleFileSelect(file);
     });
+
+    // Speaker Wizard auto-open: listens for completed jobs with unnamed speakers.
+    const { pendingJobId: wizardJobId, dismiss: dismissWizard } = useSpeakerWizardAutoOpen();
 
     const value: GlobalUploadContextValue = {
         handleFileSelect,
@@ -277,6 +329,15 @@ export function GlobalUploadProvider({ children }: PropsWithChildren) {
                 prePopulatedAupFile={multiTrackPreview?.aupFile}
                 prePopulatedTitle={multiTrackPreview?.title}
             />
+
+            {/* Speaker Wizard (auto-pops after multi-speaker transcription completes) */}
+            {wizardJobId && (
+                <SpeakerWizardModal
+                    jobId={wizardJobId}
+                    open={!!wizardJobId}
+                    onClose={dismissWizard}
+                />
+            )}
         </GlobalUploadContext.Provider>
     );
 }

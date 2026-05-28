@@ -1010,4 +1010,30 @@ export const fr: Record<string, string> = {
   // Global toggle
   'settings.profile.makeGlobal': 'Rendre global (visible par tous les utilisateurs)',
   'settings.summary.makeGlobal': 'Rendre global (visible par tous les utilisateurs)',
+
+  // Transcription en temps réel (Niveau 1)
+  'realtime.recorder.title': 'Transcription en direct',
+  'realtime.recorder.description': 'Diffuser l\'audio en direct vers',
+  'realtime.status.starting': 'Connexion à {provider}…',
+  'realtime.status.streaming': 'En direct',
+  'realtime.status.stopping': 'Arrêt en cours…',
+  'realtime.status.ended': 'Session terminée',
+  'realtime.error.providerFailed': 'Erreur : {error}',
+  'realtime.live.waiting': 'En attente de parole…',
+  'realtime.live.partialHint': '(en cours)',
+  'recorder.defaultMic': 'Microphone par défaut',
+  'realtime.speakers.detected': 'Locuteurs détectés',
+  'realtime.speakers.label': 'Locuteur {n}',
+  'realtime.speakers.inputPlaceholder': 'Saisir un nom…',
+  'realtime.speakers.rename': 'Renommer',
+
+  // Assistant d\'identification des locuteurs (Niveau 2)
+  'speakerWizard.title': 'Nommer les locuteurs',
+  'speakerWizard.description': '{count} locuteur(s) détecté(s). Consultez les citations ci-dessous et ajoutez des noms pour identifier qui a dit quoi.',
+  'speakerWizard.speakerLabel': 'Locuteur {n}',
+  'speakerWizard.namePlaceholder': 'Saisir un nom…',
+  'speakerWizard.skip': 'Ignorer',
+  'speakerWizard.saving': 'Enregistrement…',
+  'speakerWizard.save': 'Enregistrer les noms',
+  'detail.menu.nameSpeakers': 'Nommer les locuteurs',
 };

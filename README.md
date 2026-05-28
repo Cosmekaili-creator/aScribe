@@ -37,6 +37,12 @@ Fork of [Scriberr](https://github.com/rishikanthc/Scriberr), significantly exten
 - Webhook callbacks on job completion
 - Per-job API key override for all cloud providers
 
+### Real-time transcription
+- Live streaming transcription via AssemblyAI or Deepgram — words appear as you speak
+- Real-time speaker diarization with color-coded speaker pills
+- Inline speaker renaming during the recording (names saved with the transcript on stop)
+- Language and diarize settings inherited from your default transcription profile
+
 ### Interface
 - Inline transcript editing and speaker renaming
 - Compact and timeline transcript views with playback speed control

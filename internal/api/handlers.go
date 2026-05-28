@@ -25,6 +25,7 @@ import (
 	"ascribe/internal/service"
 	"ascribe/internal/sse"
 	"ascribe/internal/transcription"
+	"ascribe/internal/transcription/realtime"
 	"ascribe/pkg/logger"
 
 	"github.com/gin-gonic/gin"
@@ -55,6 +56,7 @@ type Handler struct {
 	quickTranscription  *transcription.QuickTranscriptionService
 	multiTrackProcessor *processing.MultiTrackProcessor
 	broadcaster         *sse.Broadcaster
+	realtimeManager     *realtime.Manager
 }
 
 // NewHandler creates a new handler
@@ -80,6 +82,7 @@ func NewHandler(
 	quickTranscription *transcription.QuickTranscriptionService,
 	multiTrackProcessor *processing.MultiTrackProcessor,
 	broadcaster *sse.Broadcaster,
+	realtimeManager *realtime.Manager,
 ) *Handler {
 	return &Handler{
 		config:              cfg,
@@ -103,6 +106,7 @@ func NewHandler(
 		quickTranscription:  quickTranscription,
 		multiTrackProcessor: multiTrackProcessor,
 		broadcaster:         broadcaster,
+		realtimeManager:     realtimeManager,
 	}
 }
 

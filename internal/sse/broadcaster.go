@@ -134,6 +134,10 @@ func (b *Broadcaster) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/event-stream")
 	w.Header().Set("Cache-Control", "no-cache")
 	w.Header().Set("Connection", "keep-alive")
+	// Tell Nginx (and any other reverse proxy) not to buffer this response.
+	// Without this, Nginx's default proxy_buffering accumulates SSE frames in a
+	// 4–8 KB buffer and the browser never receives events in real-time.
+	w.Header().Set("X-Accel-Buffering", "no")
 
 	flusher, ok := w.(http.Flusher)
 	if !ok {

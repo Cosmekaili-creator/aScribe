@@ -11,7 +11,8 @@ import {
     Download,
     FileImage,
     FileJson,
-    MessageCircle
+    MessageCircle,
+    Wand2,
 } from 'lucide-react';
 import {
     DropdownMenu,
@@ -36,6 +37,7 @@ interface TranscriptToolbarProps {
     hasSpeakers: boolean;
     detectedSpeakersCount: number;
     onOpenSpeakerRename: () => void;
+    onOpenSpeakerWizard?: () => void;
     onOpenSummarize: () => void;
     llmReady: boolean | null;
     onDownloadSRT: () => void;
@@ -58,6 +60,7 @@ export const TranscriptToolbar: React.FC<TranscriptToolbarProps> = ({
     hasSpeakers,
     detectedSpeakersCount,
     onOpenSpeakerRename,
+    onOpenSpeakerWizard,
     onOpenSummarize,
     llmReady,
     onDownloadSRT,
@@ -108,6 +111,16 @@ export const TranscriptToolbar: React.FC<TranscriptToolbarProps> = ({
                     </span>
                 )}
             </ToolbarButton>
+
+            {/* Speaker Wizard (Conditional) */}
+            {hasSpeakers && detectedSpeakersCount > 0 && onOpenSpeakerWizard && (
+                <ToolbarButton
+                    onClick={onOpenSpeakerWizard}
+                    title={t('detail.menu.nameSpeakers')}
+                >
+                    <Wand2 className="w-4 h-4" />
+                </ToolbarButton>
+            )}
 
             {/* Speaker Rename (Conditional) */}
             {hasSpeakers && detectedSpeakersCount > 0 && (

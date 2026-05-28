@@ -126,6 +126,9 @@ func SetupRoutes(handler *Handler, authService *auth.AuthService) *gin.Engine {
 				uploadRoutes.POST("/upload-video", handler.UploadVideo)
 				uploadRoutes.POST("/upload-multitrack", handler.UploadMultiTrack)
 				uploadRoutes.GET("/:id/audio", handler.GetAudioFile) // Audio streaming shouldn't be compressed
+
+				// Realtime finalize — no compression (multipart audio upload)
+				uploadRoutes.POST("/realtime/:id/finalize", handler.FinalizeRealtimeSession)
 			}
 
 			// Regular API routes with compression
@@ -154,9 +157,21 @@ func SetupRoutes(handler *Handler, authService *auth.AuthService) *gin.Engine {
 			transcription.GET("/:id/speakers", handler.GetSpeakerMappings)
 			transcription.POST("/:id/speakers", handler.UpdateSpeakerMappings)
 
+			// Realtime streaming session start (returns session_id + ws_url)
+			transcription.POST("/realtime/start", handler.StartRealtimeSession)
+
 			// Quick transcription endpoints
 			transcription.POST("/quick", handler.SubmitQuickTranscription)
 			transcription.GET("/quick/:id", handler.GetQuickTranscriptionStatus)
+		}
+
+		// Realtime WebSocket endpoint — separate group, NO AuthMiddleware.
+		// Auth is handled inside the handler via ?token= query parameter
+		// (browsers cannot set headers on WS handshakes).
+		realtimeWS := v1.Group("/transcription")
+		realtimeWS.Use(middleware.NoCompressionMiddleware())
+		{
+			realtimeWS.GET("/realtime/ws", handler.RealtimeWebSocket)
 		}
 
 		// Profile routes (require authentication)

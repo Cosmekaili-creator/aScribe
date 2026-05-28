@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { useParams, useNavigate } from "react-router-dom";
-import { MoreVertical, Edit2, Activity, FileText, Bot, Check, Loader2, List, AlignLeft, ArrowDownCircle, StickyNote, MessageCircle, FileImage, FileJson, Clock, AlertCircle, Users, Pencil } from "lucide-react";
+import { MoreVertical, Edit2, Activity, FileText, Bot, Check, Loader2, List, AlignLeft, ArrowDownCircle, StickyNote, MessageCircle, FileImage, FileJson, Clock, AlertCircle, Users, Pencil, Wand2 } from "lucide-react";
 import { Header } from "@/components/Header";
 
 import { Button } from "@/components/ui/button";
@@ -22,6 +22,7 @@ import { ExecutionInfoDialog } from "./audio-detail/ExecutionInfoDialog";
 import { LogsDialog } from "./audio-detail/LogsDialog";
 import { SummaryDialog } from "./audio-detail/SummaryDialog";
 import { ChatSidePanel } from "./ChatSidePanel";
+import { SpeakerWizardModal } from "./SpeakerWizardModal";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useTranslation, useLocale } from "@/i18n";
 
@@ -53,6 +54,7 @@ export const AudioDetailView = function AudioDetailView({ audioId: propAudioId }
     const [autoScrollEnabled, setAutoScrollEnabled] = useState(true);
     const [notesOpen, setNotesOpen] = useState(false);
     const [speakerRenameOpen, setSpeakerRenameOpen] = useState(false);
+    const [speakerWizardOpen, setSpeakerWizardOpen] = useState(false);
     const [downloadDialogOpen, setDownloadDialogOpen] = useState(false);
     const [downloadFormat, setDownloadFormat] = useState<'txt' | 'json'>('txt');
 
@@ -350,10 +352,16 @@ export const AudioDetailView = function AudioDetailView({ audioId: propAudioId }
                                                         </DropdownMenuItem>
                                                     )}
                                                     {transcript?.segments?.some((s: TranscriptSegment) => s.speaker) && (
-                                                        <DropdownMenuItem onClick={() => setSpeakerRenameOpen(true)} className="rounded-[8px] cursor-pointer">
-                                                            <Users className="mr-2 h-4 w-4 opacity-70" />
-                                                            {t('detail.menu.renameSpeakers')}
-                                                        </DropdownMenuItem>
+                                                        <>
+                                                            <DropdownMenuItem onClick={() => setSpeakerWizardOpen(true)} className="rounded-[8px] cursor-pointer">
+                                                                <Wand2 className="mr-2 h-4 w-4 opacity-70" />
+                                                                {t('detail.menu.nameSpeakers')}
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuItem onClick={() => setSpeakerRenameOpen(true)} className="rounded-[8px] cursor-pointer">
+                                                                <Users className="mr-2 h-4 w-4 opacity-70" />
+                                                                {t('detail.menu.renameSpeakers')}
+                                                            </DropdownMenuItem>
+                                                        </>
                                                     )}
                                                     <DropdownMenuSeparator className="bg-[var(--border-subtle)] my-1" />
                                                     <DropdownMenuItem onClick={() => transcript && downloadSRT(transcript, audioFile?.title || 'transcript', speakerMappings)} className="rounded-[8px] cursor-pointer">
@@ -464,6 +472,13 @@ export const AudioDetailView = function AudioDetailView({ audioId: propAudioId }
                 isOpen={summaryDialogOpen}
                 onClose={setSummaryDialogOpen}
                 llmReady={true}
+            />
+
+            {/* Speaker Wizard — name speakers with sample quotes */}
+            <SpeakerWizardModal
+                jobId={audioId}
+                open={speakerWizardOpen}
+                onClose={() => setSpeakerWizardOpen(false)}
             />
 
             {/* Mobile / Overlay Chat */}

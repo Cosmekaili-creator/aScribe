@@ -23,6 +23,7 @@ import (
 	"ascribe/internal/transcription"
 	"ascribe/internal/transcription/adapters"
 	"ascribe/internal/transcription/adapters/cloudprovider"
+	"ascribe/internal/transcription/realtime"
 	"ascribe/internal/transcription/registry"
 	"ascribe/pkg/logger"
 )
@@ -73,6 +74,10 @@ func main() {
 	// Initialize structured logging first
 	logger.Init(os.Getenv("LOG_LEVEL"))
 	logger.Info("Starting aScribe", "version", version)
+
+	// Root context cancelled on shutdown signal.
+	rootCtx, rootCancel := context.WithCancel(context.Background())
+	defer rootCancel()
 
 	// Load configuration
 	logger.Startup("config", "Loading configuration")
@@ -147,6 +152,11 @@ func main() {
 	// Initialize multi-track processor
 	multiTrackProcessor := processing.NewMultiTrackProcessor(database.DB, jobRepo)
 
+	// Initialize real-time transcription manager
+	logger.Startup("realtime", "Initializing real-time transcription manager")
+	realtimeMgr := realtime.NewManager(jobRepo, broadcaster, cfg)
+	realtimeMgr.StartReaper(rootCtx)
+
 	// Initialize API handlers
 	handler := api.NewHandler(
 		cfg,
@@ -170,6 +180,7 @@ func main() {
 		quickTranscriptionService,
 		multiTrackProcessor,
 		broadcaster,
+		realtimeMgr,
 	)
 
 	// Set up router
@@ -206,6 +217,14 @@ func main() {
 	// Create a deadline for shutdown
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
+
+	// Cancel root context to stop background goroutines (realtime reaper, etc.)
+	rootCancel()
+
+	// Shutdown realtime manager (closes all active streaming sessions).
+	if realtimeMgr != nil {
+		realtimeMgr.Shutdown()
+	}
 
 	// Shutdown broadcaster to close all active SSE connections
 	if broadcaster != nil {

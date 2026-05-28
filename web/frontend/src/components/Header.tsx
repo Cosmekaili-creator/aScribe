@@ -6,11 +6,12 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Upload, Mic, Settings, LogOut, Home, Plus, Grip, Zap, Youtube, Video, Users, MonitorSpeaker, FolderOpen } from "lucide-react";
+import { Upload, Mic, Settings, LogOut, Home, Plus, Grip, Zap, Youtube, Video, Users, MonitorSpeaker, FolderOpen, Radio } from "lucide-react";
 import { AScribeLogo } from "./AScribeLogo";
 import { ThemeSwitcher } from "./ThemeSwitcher";
 import { AudioRecorder } from "./AudioRecorder";
 import { SystemAudioRecorder } from "./SystemAudioRecorder";
+import { RealtimeRecorderDialog } from "@/features/transcription/realtime/RealtimeRecorderDialog";
 import { QuickTranscriptionDialog } from "@/features/transcription/components/QuickTranscriptionDialog";
 import { YouTubeDownloadDialog } from "@/features/transcription/components/YouTubeDownloadDialog";
 import { useNavigate } from "react-router-dom";
@@ -18,6 +19,7 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 import { isVideoFile, isAudioFile } from "../utils/fileProcessor";
 import { useGlobalUpload } from "@/contexts/GlobalUploadContext";
 import { useTranslation } from "@/i18n";
+import { useQuery } from "@tanstack/react-query";
 
 interface FileWithType {
 	file: File;
@@ -32,14 +34,35 @@ interface HeaderProps {
 
 export function Header({ onFileSelect, onMultiTrackClick, onDownloadComplete }: HeaderProps) {
 	const navigate = useNavigate();
-	const { logout, isAdmin } = useAuth();
+	const { logout, isAdmin, getAuthHeaders } = useAuth();
 	const { t } = useTranslation();
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const videoFileInputRef = useRef<HTMLInputElement>(null);
 	const [isRecorderOpen, setIsRecorderOpen] = useState(false);
+	const [isRealtimeRecorderOpen, setIsRealtimeRecorderOpen] = useState(false);
 	const [isSystemRecorderOpen, setIsSystemRecorderOpen] = useState(false);
 	const [isQuickTranscriptionOpen, setIsQuickTranscriptionOpen] = useState(false);
 	const [isYouTubeDialogOpen, setIsYouTubeDialogOpen] = useState(false);
+
+	// Detect real-time provider from the user's default profile.
+	const { data: defaultProfile } = useQuery({
+		queryKey: ['user', 'default-profile'],
+		queryFn: async () => {
+			const resp = await fetch('/api/v1/user/default-profile', {
+				headers: getAuthHeaders(),
+			});
+			if (!resp.ok) return null;
+			return resp.json();
+		},
+		staleTime: 60_000,
+	});
+
+	const realtimeProvider: 'assemblyai' | 'deepgram' | null = (() => {
+		const family = (defaultProfile as { parameters?: { model_family?: string } } | null)?.parameters?.model_family;
+		if (family === 'assemblyai') return 'assemblyai';
+		if (family === 'deepgram') return 'deepgram';
+		return null;
+	})();
 
 	// Use global upload context as fallback when props are not provided
 	const globalUpload = useGlobalUpload();
@@ -58,7 +81,11 @@ export function Header({ onFileSelect, onMultiTrackClick, onDownloadComplete }: 
 	};
 
 	const handleRecordClick = () => {
-		setIsRecorderOpen(true);
+		if (realtimeProvider) {
+			setIsRealtimeRecorderOpen(true);
+		} else {
+			setIsRecorderOpen(true);
+		}
 	};
 
 	const handleSystemRecordClick = () => {
@@ -229,13 +256,17 @@ export function Header({ onFileSelect, onMultiTrackClick, onDownloadComplete }: 
 								onClick={handleRecordClick}
 								className="group flex items-center gap-3 px-3 py-3 cursor-pointer rounded-[var(--radius-btn)] focus:bg-[var(--brand-light)] focus:text-[var(--brand-solid)] transition-colors"
 							>
-								<div className="p-2 bg-emerald-500/10 rounded-[var(--radius-btn)] text-emerald-600 group-focus:text-[var(--brand-solid)]">
-									<Mic className="h-4 w-4" />
+								<div className={`p-2 rounded-[var(--radius-btn)] group-focus:text-[var(--brand-solid)] ${realtimeProvider ? 'bg-red-500/10 text-red-600' : 'bg-emerald-500/10 text-emerald-600'}`}>
+									{realtimeProvider ? <Radio className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
 								</div>
 								<div>
-									<div className="font-medium text-sm">{t('header.recordAudio')}</div>
+									<div className="font-medium text-sm">
+										{realtimeProvider ? t('realtime.recorder.title') : t('header.recordAudio')}
+									</div>
 									<div className="text-xs text-[var(--text-secondary)]">
-										{t('header.recordAudioDesc')}
+										{realtimeProvider
+											? t('realtime.recorder.description')
+											: t('header.recordAudioDesc')}
 									</div>
 								</div>
 							</DropdownMenuItem>
@@ -335,12 +366,21 @@ export function Header({ onFileSelect, onMultiTrackClick, onDownloadComplete }: 
 				</div>
 			</div>
 
-			{/* Audio Recorder Dialog */}
+			{/* Audio Recorder Dialog (local models) */}
 			<AudioRecorder
 				isOpen={isRecorderOpen}
 				onClose={() => setIsRecorderOpen(false)}
 				onRecordingComplete={handleRecordingComplete}
 			/>
+
+			{/* Real-time Recorder Dialog (AssemblyAI / Deepgram) */}
+			{realtimeProvider && (
+				<RealtimeRecorderDialog
+					isOpen={isRealtimeRecorderOpen}
+					onClose={() => setIsRealtimeRecorderOpen(false)}
+					provider={realtimeProvider}
+				/>
+			)}
 
 			{/* System Audio Recorder Dialog */}
 			<SystemAudioRecorder

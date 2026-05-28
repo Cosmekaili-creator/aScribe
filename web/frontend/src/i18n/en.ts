@@ -1010,4 +1010,30 @@ export const en: Record<string, string> = {
   // Global toggle
   'settings.profile.makeGlobal': 'Make global (visible to all users)',
   'settings.summary.makeGlobal': 'Make global (visible to all users)',
+
+  // Real-time streaming (Tier 1)
+  'realtime.recorder.title': 'Live Transcription',
+  'realtime.recorder.description': 'Stream audio live to',
+  'realtime.status.starting': 'Connecting to {provider}…',
+  'realtime.status.streaming': 'Live',
+  'realtime.status.stopping': 'Stopping…',
+  'realtime.status.ended': 'Session ended',
+  'realtime.error.providerFailed': 'Error: {error}',
+  'realtime.live.waiting': 'Waiting for speech…',
+  'realtime.live.partialHint': '(live)',
+  'recorder.defaultMic': 'Default Microphone',
+  'realtime.speakers.detected': 'Detected speakers',
+  'realtime.speakers.label': 'Speaker {n}',
+  'realtime.speakers.inputPlaceholder': 'Enter a name…',
+  'realtime.speakers.rename': 'Rename',
+
+  // Speaker Wizard (Tier 2)
+  'speakerWizard.title': 'Name the Speakers',
+  'speakerWizard.description': '{count} speaker(s) detected. Review the quotes below and add names to identify who said what.',
+  'speakerWizard.speakerLabel': 'Speaker {n}',
+  'speakerWizard.namePlaceholder': 'Enter a name…',
+  'speakerWizard.skip': 'Skip',
+  'speakerWizard.saving': 'Saving…',
+  'speakerWizard.save': 'Save Names',
+  'detail.menu.nameSpeakers': 'Name Speakers',
 };

@@ -29,6 +29,10 @@ type TranscriptionJob struct {
 	UpdatedAt             time.Time      `json:"updated_at" gorm:"autoUpdateTime"`
 	DeletedAt             gorm.DeletedAt `json:"deleted_at,omitempty" gorm:"index" swaggertype:"string"`
 
+	// Realtime/streaming mode (cloud provider live transcription)
+	StreamingMode bool   `json:"streaming_mode" gorm:"type:boolean;default:false"`
+	SessionID     string `json:"session_id,omitempty" gorm:"type:varchar(36);index"`
+
 	// WhisperX parameters
 	Parameters WhisperXParams `json:"parameters" gorm:"embedded"`
 

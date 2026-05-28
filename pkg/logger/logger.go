@@ -232,12 +232,42 @@ func Performance(operation string, duration time.Duration, details ...any) {
 		append([]any{"operation", operation, "duration", duration.String()}, details...)...)
 }
 
+// sensitiveParams lists query-string parameter names that must never appear in
+// logs.  Values are replaced with "[redacted]".
+var sensitiveParams = map[string]bool{
+	"token": true,
+}
+
+// sanitizeQuery removes sensitive values from a raw query string so JWT tokens
+// and API keys are never written to container logs.
+func sanitizeQuery(raw string) string {
+	if raw == "" {
+		return raw
+	}
+	var out strings.Builder
+	first := true
+	for _, part := range strings.Split(raw, "&") {
+		k, _, found := strings.Cut(part, "=")
+		if !first {
+			out.WriteByte('&')
+		}
+		first = false
+		if found && sensitiveParams[strings.ToLower(k)] {
+			out.WriteString(k)
+			out.WriteString("=[redacted]")
+		} else {
+			out.WriteString(part)
+		}
+	}
+	return out.String()
+}
+
 // GIN middleware for clean HTTP logging
 func GinLogger() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		start := time.Now()
 		path := c.Request.URL.Path
-		raw := c.Request.URL.RawQuery
+		raw := sanitizeQuery(c.Request.URL.RawQuery)
 
 		// Process request
 		c.Next()
