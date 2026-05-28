@@ -89,7 +89,6 @@ func (c *DeepgramClient) Start(ctx context.Context, apiKey string, params map[st
 		events <- ProviderEvent{Kind: "open"}
 		logger.Info("deepgram: WebSocket open, waiting for messages")
 
-		var deepgramMsgCount int
 		for {
 			_, msgBytes, err := conn.ReadMessage()
 			if err != nil {
@@ -109,40 +108,12 @@ func (c *DeepgramClient) Start(ctx context.Context, apiKey string, params map[st
 				}
 			}
 
-			deepgramMsgCount++
 			var envelope struct {
 				Type string `json:"type"`
 			}
 			if err := json.Unmarshal(msgBytes, &envelope); err != nil {
 				logger.Warn("deepgram: failed to parse message", "bytes", len(msgBytes), "raw", string(msgBytes[:min(len(msgBytes), 200)]))
 				continue
-			}
-			if deepgramMsgCount <= 5 {
-				if envelope.Type == "Results" {
-					// Log transcript + is_final to diagnose silent/empty results.
-					var r struct {
-						IsFinal bool `json:"is_final"`
-						Channel struct {
-							Alternatives []struct {
-								Transcript string `json:"transcript"`
-							} `json:"alternatives"`
-						} `json:"channel"`
-					}
-					transcript := "(parse error)"
-					isFinal := false
-					if json.Unmarshal(msgBytes, &r) == nil {
-						isFinal = r.IsFinal
-						if len(r.Channel.Alternatives) > 0 {
-							transcript = r.Channel.Alternatives[0].Transcript
-						} else {
-							transcript = "(no alternatives)"
-						}
-					}
-					logger.Info("deepgram: received Results", "count", deepgramMsgCount,
-						"is_final", isFinal, "transcript", transcript)
-				} else {
-					logger.Info("deepgram: received message", "count", deepgramMsgCount, "type", envelope.Type)
-				}
 			}
 
 			switch envelope.Type {

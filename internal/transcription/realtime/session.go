@@ -13,9 +13,7 @@ package realtime
 
 import (
 	"context"
-	"encoding/binary"
 	"encoding/json"
-	"math"
 	"sync"
 	"time"
 
@@ -202,24 +200,7 @@ func (s *Session) WriteAudio(frame []byte) error {
 	s.mu.Lock()
 	s.LastSeen = time.Now()
 	s.audioFrameCount++
-	count := s.audioFrameCount
 	s.mu.Unlock()
-	if count == 1 {
-		// Measure peak amplitude of the first frame to detect silent audio.
-		var peakAbs float64
-		for i := 0; i+1 < len(frame); i += 2 {
-			sample := int16(binary.LittleEndian.Uint16(frame[i : i+2]))
-			v := math.Abs(float64(sample))
-			if v > peakAbs {
-				peakAbs = v
-			}
-		}
-		logger.Info("realtime: first audio frame forwarded to provider",
-			"session_id", s.ID, "provider", s.Provider,
-			"bytes", len(frame),
-			"peak_amplitude", int(peakAbs),
-			"is_silent", peakAbs < 100)
-	}
 	return s.client.WriteAudio(frame)
 }
 
