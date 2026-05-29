@@ -15,15 +15,21 @@ Fork of [Scriberr](https://github.com/rishikanthc/Scriberr), significantly exten
 ## Features
 
 ### Transcription
-- Local models: WhisperX, Parakeet, Canary, Voxtral
+- Local models: WhisperX (tiny → large-v3-turbo), Parakeet, Canary, Voxtral
 - Cloud providers: AssemblyAI, Deepgram, OpenAI Whisper
 - Speaker diarization (PyAnnote, SortFormer)
+- Diarization failures are non-fatal — transcript is always preserved even if the speaker-labelling step errors
 - Transcription profiles — save and reuse parameter sets; admins can publish global profiles visible to all users
 
 ### AI & summaries
 - AI summaries with reusable prompt templates; admins can publish global templates
 - In-recording chat (OpenAI-compatible)
 - Collections for grouping and batch-summarizing recordings
+
+### Search
+- Full-text search across transcript content powered by SQLite FTS5 (BM25 ranking)
+- Match snippets with highlighted terms shown directly in the results list
+- Searches title and full spoken transcript — not just filenames
 
 ### Multi-user
 - Multiple accounts with `admin` and `user` roles
@@ -36,6 +42,7 @@ Fork of [Scriberr](https://github.com/rishikanthc/Scriberr), significantly exten
 - CLI watcher for automated folder upload
 - Webhook callbacks on job completion
 - Per-job API key override for all cloud providers
+- Auto-export: optional per-user toggle that saves a plain-text copy of every completed transcript to a server-side exports folder (`data/exports/`, configurable via `EXPORTS_DIR`)
 
 ### Real-time transcription
 - Live streaming transcription via AssemblyAI or Deepgram — words appear as you speak
@@ -110,6 +117,7 @@ Requires Go 1.24+, Node 20+.
 | `HF_TOKEN` | Hugging Face token (required for PyAnnote diarization) |
 | `APP_ENV` | Set to `production` for secure cookies |
 | `WHISPERX_ENV` | UV environment root (default `data/whisperx-env`) |
+| `EXPORTS_DIR` | Directory for auto-exported transcripts (default `data/exports`) |
 
 ## License
 
