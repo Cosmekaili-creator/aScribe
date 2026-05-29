@@ -74,6 +74,17 @@ internal/web/dist
 # Runtime artifacts
 startup_log.txt
 
+# Directories that were previously committed in error
+asr-engines/
+diarize/
+docs/
+static/
+speech-recognition/
+web/landing/
+web/project-site/
+tests/data/
+data/
+
 # Development files
 prompt.txt
 agent-bak/
